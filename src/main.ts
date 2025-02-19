@@ -1,7 +1,7 @@
-import path from 'node:path';
-import { execSync } from 'child_process';
-import { app, BrowserWindow, ipcMain } from 'electron';
-import started from 'electron-squirrel-startup';
+import path from "node:path";
+import { execSync } from "child_process";
+import { app, BrowserWindow, ipcMain } from "electron";
+import started from "electron-squirrel-startup";
 
 // BTHENUM\{0000111E-0000-1000-8000-00805F9B34FB}_VID&00010075_PID&A013\7&3B1D614A&0&DCCCE61F7DB1_C00000000
 // powershell -Command "Get-PnpDevice | Get-PnpDeviceProperty -KeyName '{104EA319-6EE2-4701-BD47-8DDBF425BBE5} 2' | Where-Object { $_.Type -eq 'Byte' } | Select-Object InstanceId"
@@ -22,25 +22,31 @@ const createWindow = () => {
     width: 900,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, "preload.js"),
     },
   });
 
-  ipcMain.handle('get-paired-bluetooth', () => {
+  ipcMain.handle("get-paired-bluetooth", () => {
     try {
-      const stdout = execSync('powershell -Command "[System.Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-PnpDevice -Class Bluetooth | Select-Object FriendlyName"');
-      
+      const stdout = execSync(
+        'powershell -Command "[System.Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-PnpDevice -Class Bluetooth | Select-Object FriendlyName"',
+      );
+
       const enc = new TextDecoder("utf-8");
       const arr = new Uint8Array(stdout);
       const str = enc.decode(arr);
 
-      const result = str.trim().split("\n").slice(2).map(text => text.trim());
+      const result = str
+        .trim()
+        .split("\n")
+        .slice(2)
+        .map((text) => text.trim());
 
       return result;
-    } catch(error) {
+    } catch (error) {
       console.error(error);
     }
-  })
+  });
 
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
@@ -56,18 +62,18 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on("ready", createWindow);
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
     app.quit();
   }
 });
 
-app.on('activate', () => {
+app.on("activate", () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {

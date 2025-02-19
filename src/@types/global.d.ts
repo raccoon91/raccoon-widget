@@ -1,3 +1,3 @@
 interface Window {
-  electronAPI: any
+  electronAPI: any;
 }
