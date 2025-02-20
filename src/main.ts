@@ -1,5 +1,5 @@
-import path from "node:path";
-import { execSync } from "child_process";
+import path, { resolve } from "node:path";
+import { exec, execSync } from "child_process";
 import { app, BrowserWindow, ipcMain } from "electron";
 import started from "electron-squirrel-startup";
 
@@ -27,25 +27,20 @@ const createWindow = () => {
   });
 
   ipcMain.handle("get-paired-bluetooth", () => {
-    try {
-      const stdout = execSync(
-        'powershell -Command "[System.Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-PnpDevice -Class Bluetooth | Select-Object FriendlyName"',
+    return new Promise((resolve, reject) => {
+      exec(
+        'powershell -Command "[System.Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-PnpDevice -Class Bluetooth | ConvertTo-Json"',
+        (error, stdout, stderr) => {
+          if (error) return reject(error);
+
+          if (stderr) return reject(stderr);
+
+          resolve(stdout);
+        },
       );
-
-      const enc = new TextDecoder("utf-8");
-      const arr = new Uint8Array(stdout);
-      const str = enc.decode(arr);
-
-      const result = str
-        .trim()
-        .split("\n")
-        .slice(2)
-        .map((text) => text.trim());
-
-      return result;
-    } catch (error) {
+    }).catch((error) => {
       console.error(error);
-    }
+    });
   });
 
   // and load the index.html of the app.

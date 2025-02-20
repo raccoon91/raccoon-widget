@@ -1,9 +1,8 @@
-import "./index.css";
-
-async function testIt() {
+const getPairedBluetooth = async () => {
   const result = await window.electronAPI.getPairedBluetooth();
 
+  console.log(typeof result);
   console.log(result);
-}
+};
 
-document.getElementById("clickme").addEventListener("click", testIt);
+document.getElementById("get-paired-bluetooth").addEventListener("click", getPairedBluetooth);
