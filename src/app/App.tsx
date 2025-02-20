@@ -1,56 +1,47 @@
-import { MouseEvent, useState } from "react";
+import { MouseEvent } from "react";
+import { useShallow } from "zustand/shallow";
 import { Button, Center, Container, Flex, Heading, HStack, Spinner, Stack, Text } from "@chakra-ui/react";
-import { SYSTEM_DEVICE_PROPERTY_NAMES } from "./constants/system";
+
+import { PROPERTY_MAP } from "./constants/system";
+import { useSystemStore } from "./stores/system.store";
 
 export const App = () => {
-  const [loading, setLoading] = useState(false);
-  const [devices, setDevices] = useState<Device[]>([]);
-  const [properties, setProperties] = useState<DeviceProperty[]>([]);
+  const {
+    loading,
+    devices,
+    deviceProperties,
+    system,
+    systemProperties,
+    getDeviceByClass,
+    getDevicePropertyById,
+    getSystemByContainerId,
+  } = useSystemStore(
+    useShallow((state) => ({
+      loading: state.loading,
+      devices: state.devices,
+      deviceProperties: state.deviceProperties,
+      system: state.system,
+      systemProperties: state.systemProperties,
+      getDeviceByClass: state.getDeviceByClass,
+      getDevicePropertyById: state.getDevicePropertyById,
+      getSystemByContainerId: state.getSystemByContainerId,
+    })),
+  );
 
   const handleClickGetPairedBluetooth = async () => {
-    setLoading(true);
-
-    const result = await window.electronAPI.getDeviceByClass("Bluetooth");
-
-    if (!result) {
-      setDevices([]);
-      setLoading(false);
-
-      return;
-    }
-
-    const devices = JSON.parse(result);
-
-    setDevices(devices);
-    setLoading(false);
+    getDeviceByClass("Bluetooth");
   };
 
   const handleClickBluetooth = async (e: MouseEvent<HTMLButtonElement>) => {
-    setLoading(true);
-
     const instanceId = e.currentTarget.dataset["instanceId"];
 
-    if (!instanceId) {
-      setProperties([]);
-      setLoading(false);
+    getDevicePropertyById(instanceId);
+  };
 
-      return;
-    }
+  const handleClickProperty = async (e: MouseEvent<HTMLButtonElement>) => {
+    const containerId = e.currentTarget.dataset["containerId"];
 
-    const result = await window.electronAPI.getDevicePropertyById(instanceId);
-
-    if (!result) {
-      setProperties([]);
-      setLoading(false);
-
-      return;
-    }
-
-    const properties: DeviceProperty[] = JSON.parse(result);
-    const filteredProperties = properties.filter((property) => SYSTEM_DEVICE_PROPERTY_NAMES.includes(property.KeyName));
-
-    setProperties(filteredProperties);
-    setLoading(false);
+    getSystemByContainerId(containerId);
   };
 
   return (
@@ -70,8 +61,8 @@ export const App = () => {
           </Button>
         </Flex>
 
-        <HStack overflow="hidden" flex="1" gap="32px">
-          <Stack overflowY="auto" gap="12px" flex="1" h="full">
+        <Stack flex="1" gap="32px">
+          <Stack overflowY="auto" gap="4px">
             {devices.map((device) => (
               <HStack key={device.DeviceID} w="full" justify="space-between">
                 <Text>{device.FriendlyName}</Text>
@@ -83,17 +74,45 @@ export const App = () => {
             ))}
           </Stack>
 
-          <Stack overflowY="auto" gap="12px" flex="2" h="full">
-            {properties.map((property, index) => (
+          <Stack overflowY="auto" gap="4px">
+            {deviceProperties.map((property, index) => (
               <HStack key={index} w="full" gap="16px">
-                <Text w="400px">{property.KeyName}</Text>
+                <Text w="480px">{PROPERTY_MAP[property.KeyName].name}</Text>
+                <Text flex="1" truncate>
+                  {property.Data.toString()}
+                </Text>
+
+                {property.KeyName === "DEVPKEY_Device_ContainerId" ? (
+                  <Button size="xs" data-container-id={property.Data.toString()} onClick={handleClickProperty}>
+                    Select
+                  </Button>
+                ) : null}
+              </HStack>
+            ))}
+          </Stack>
+
+          {system ? (
+            <Stack gap="4px">
+              <HStack w="full" gap="16px">
+                <Text w="480px">container id</Text>
+                <Text flex="1" truncate>
+                  {system.InstanceId}
+                </Text>
+              </HStack>
+            </Stack>
+          ) : null}
+
+          <Stack overflowY="auto" gap="4px">
+            {systemProperties.map((property, index) => (
+              <HStack key={index} w="full" gap="16px">
+                <Text w="480px">{PROPERTY_MAP[property.KeyName].name}</Text>
                 <Text flex="1" truncate>
                   {property.Data.toString()}
                 </Text>
               </HStack>
             ))}
           </Stack>
-        </HStack>
+        </Stack>
       </Stack>
     </Container>
   );
