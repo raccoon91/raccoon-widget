@@ -3,6 +3,10 @@
     "source.fixAll": "explicit"
   },
   "editor.formatOnSave": false,
+  "[html]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "[jsonc]": {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
