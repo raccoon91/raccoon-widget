@@ -21,15 +21,16 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 600,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
   });
 
-  ipcMain.handle("get-paired-bluetooth", () => {
+  ipcMain.handle("get-device-by-class", async (_, param) => {
     return new Promise((resolve, reject) => {
       exec(
-        'powershell -Command "[System.Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-PnpDevice -Class Bluetooth | ConvertTo-Json"',
+        `powershell -Command "[System.Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-PnpDevice -Class '${param}' | ConvertTo-Json"`,
         (error, stdout, stderr) => {
           if (error) return reject(error);
 
@@ -42,6 +43,25 @@ const createWindow = () => {
       console.error(error);
     });
   });
+
+  ipcMain.handle("get-device-property-by-id", async (_, param) => {
+    return new Promise((resolve, reject) => {
+      exec(
+        `powershell -Command "[System.Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-PnpDevice -InstanceId '${param}' | Get-PnpDeviceProperty | ConvertTo-Json"`,
+        (error, stdout, stderr) => {
+          if (error) return reject(error);
+
+          if (stderr) return reject(stderr);
+
+          resolve(stdout);
+        },
+      );
+    }).catch((error) => {
+      console.error(error);
+    });
+  });
+
+  mainWindow.setMenu(null);
 
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
