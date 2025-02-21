@@ -52,7 +52,7 @@ export const useSystemStore = create<SystemStore>()(
       try {
         set({ loadingDevice: true, deviceLoadingMessage: "Loading Device ..." });
 
-        const result = await window.electronAPI.getDeviceByClass(className);
+        const result = await window.api.getDeviceByClass(className);
 
         if (!result) throw new Error("No Device Data");
 
@@ -74,7 +74,7 @@ export const useSystemStore = create<SystemStore>()(
         const devices = get().devices;
         const selectedDevice = devices.find((device) => device.InstanceId === instanceId);
 
-        const devicePropertyResult = await window.electronAPI.getDevicePropertyById(instanceId);
+        const devicePropertyResult = await window.api.getDevicePropertyById(instanceId);
 
         if (!devicePropertyResult) throw new Error("No Device Property");
 
@@ -89,7 +89,7 @@ export const useSystemStore = create<SystemStore>()(
 
         set({ propertyLoadingMessage: "Loading System ..." });
 
-        const systemResult = await window.electronAPI.getSystemByContainerId(containerId);
+        const systemResult = await window.api.getSystemByContainerId(containerId);
 
         if (!systemResult) throw new Error("No System Data");
 
@@ -99,7 +99,7 @@ export const useSystemStore = create<SystemStore>()(
 
         set({ propertyLoadingMessage: "Loading System Property ..." });
 
-        const systemPropertyResult = await window.electronAPI.getSystemPropertyById(system.InstanceId);
+        const systemPropertyResult = await window.api.getSystemPropertyById(system.InstanceId);
 
         if (!systemPropertyResult) throw new Error("No System Property");
 

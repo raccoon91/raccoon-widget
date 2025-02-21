@@ -1,6 +1,6 @@
 {
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
-  "ignorePatterns": ["node_modules", "dist", ".vite", ".gitignore"],
+  "ignorePatterns": ["node_modules", "out", "build", ".gitignore"],
   "parser": "@typescript-eslint/parser",
   "plugins": ["prettier"],
   "rules": {

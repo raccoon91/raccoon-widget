@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
+
 import { PROPERTY_MAP } from "../constants/system.constant";
 
 interface BluetoothStore {
@@ -29,7 +30,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
           const bluetooth = get().bluetooth;
 
           for (const data of bluetooth) {
-            window.electronAPI.getDevicePropertyById(data.device.InstanceId).then((result: string) => {
+            window.api.getDevicePropertyById(data.device.InstanceId).then((result: string) => {
               if (!result) return;
 
               const deviceProperties: DeviceProperty[] = JSON.parse(result);
@@ -54,7 +55,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
               }));
             });
 
-            window.electronAPI.getSystemPropertyById(data.system.InstanceId).then((result: string) => {
+            window.api.getSystemPropertyById(data.system.InstanceId).then((result: string) => {
               if (!result) return;
 
               const systemProperties: DeviceProperty[] = JSON.parse(result);
