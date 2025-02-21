@@ -1,8 +1,9 @@
+import { join } from "path";
 import { app, shell, BrowserWindow } from "electron";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
-import { join } from "path";
-import icon from "../../resources/icon.png?asset";
+
 import { createIpcHandler } from "./createIpcHandler";
+import icon from "../../resources/icon.png?asset";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -14,6 +15,8 @@ function createWindow(): void {
       sandbox: false,
     },
   });
+
+  createIpcHandler();
 
   mainWindow.setMenu(null);
   mainWindow.maximize();
@@ -50,8 +53,6 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
 
     window.webContents.openDevTools({ mode: "right" });
-
-    createIpcHandler(window);
   });
 
   createWindow();
