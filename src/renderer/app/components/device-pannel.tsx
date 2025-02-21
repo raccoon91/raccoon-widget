@@ -36,7 +36,7 @@ export const DevicePannel = () => {
 
   return (
     <>
-      <Stack w="full" h="full" gap="32px" p="64px 32px ">
+      <Stack w="full" h="full" gap="32px" p="48px ">
         <HStack justify="space-between">
           <Heading>Bluetooth</Heading>
           <Button onClick={handleOpenDeviceModal}>Add</Button>
@@ -47,8 +47,8 @@ export const DevicePannel = () => {
             {bluetooth.map((data, index) => (
               <DeviceCard
                 key={index}
-                device={data.device}
-                system={data.system}
+                deviceInstanceId={data.device.InstanceId}
+                deviceName={data.device.FriendlyName}
                 info={bluetoothInfoMap?.[data.device.InstanceId]}
               />
             ))}
@@ -56,7 +56,6 @@ export const DevicePannel = () => {
         ) : (
           <Center flexDirection="column" gap="16px" py="32px">
             <Text>No Devices</Text>
-
             <Button onClick={handleOpenDeviceModal}>Add Device</Button>
           </Center>
         )}

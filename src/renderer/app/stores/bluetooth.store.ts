@@ -9,6 +9,7 @@ interface BluetoothStore {
 
   addDevice: (device?: Device, system?: System) => void;
   pullDeviceInfo: () => void;
+  pullSystemInfo: (deviceInstanceId?: string) => void;
 }
 
 export const useBluetoothStore = create<BluetoothStore>()(
@@ -54,32 +55,41 @@ export const useBluetoothStore = create<BluetoothStore>()(
                 },
               }));
             });
-
-            window.api.getSystemPropertyById(data.system.InstanceId).then((result: string) => {
-              if (!result) return;
-
-              const systemProperties: DeviceProperty[] = JSON.parse(result);
-              const system = systemProperties
-                .filter((property) => !!PROPERTY_MAP?.[property.KeyName])
-                .reduce<Record<string, string>>((acc, cur) => {
-                  const key = PROPERTY_MAP[cur.KeyName].value;
-
-                  acc[key] = cur.Data.toString();
-
-                  return acc;
-                }, {});
-
-              set((p) => ({
-                bluetoothInfoMap: {
-                  ...p.bluetoothInfoMap,
-                  [data.device.InstanceId]: {
-                    ...(p.bluetoothInfoMap[data.device.InstanceId] ?? {}),
-                    system,
-                  },
-                },
-              }));
-            });
           }
+        },
+        pullSystemInfo: (deviceInstanceId) => {
+          console.log("system info");
+          if (!deviceInstanceId) return;
+
+          const bluetooth = get().bluetooth;
+          const data = bluetooth.find((data) => data?.device?.InstanceId === deviceInstanceId);
+
+          if (!data) return;
+
+          window.api.getSystemPropertyById(data.system.InstanceId).then((result: string) => {
+            if (!result) return;
+
+            const systemProperties: DeviceProperty[] = JSON.parse(result);
+            const system = systemProperties
+              .filter((property) => !!PROPERTY_MAP?.[property.KeyName])
+              .reduce<Record<string, string>>((acc, cur) => {
+                const key = PROPERTY_MAP[cur.KeyName].value;
+
+                acc[key] = cur.Data.toString();
+
+                return acc;
+              }, {});
+
+            set((p) => ({
+              bluetoothInfoMap: {
+                ...p.bluetoothInfoMap,
+                [data.device.InstanceId]: {
+                  ...(p.bluetoothInfoMap[data.device.InstanceId] ?? {}),
+                  system,
+                },
+              },
+            }));
+          });
         },
       }),
       {

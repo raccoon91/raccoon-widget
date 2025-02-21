@@ -1,20 +1,32 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Card, CardHeader, CardBody, HStack, Text, Box } from "@chakra-ui/react";
 
+import { useBluetoothStore } from "../stores/bluetooth.store";
+
 interface DeviceCardProps {
-  device: Device;
-  system: System;
+  deviceInstanceId: string;
+  deviceName: string;
   info?: Record<string, Record<string, string>>;
 }
 
-export const DeviceCard: FC<DeviceCardProps> = ({ device, system, info }) => {
+export const DeviceCard: FC<DeviceCardProps> = ({ deviceInstanceId, deviceName, info }) => {
+  const pullSystemInfo = useBluetoothStore((state) => state.pullSystemInfo);
+
+  useEffect(() => {
+    if (info?.device?.connected === "true") {
+      pullSystemInfo(deviceInstanceId);
+    }
+  }, [deviceInstanceId, info?.device?.connected]);
+
   return (
     <Card p="16px 24px" minW="200px" boxShadow="md">
-      <HStack justify="space-between" gap="16px">
-        <CardHeader p="0">{device.FriendlyName}</CardHeader>
+      <Box position="relative" pr="24px">
+        <CardHeader p="0">{deviceName}</CardHeader>
 
-        {info?.device?.connected === "true" ? <Box w="10px" h="10px" rounded="md" bg="green.400" /> : null}
-      </HStack>
+        {info?.device?.connected === "true" ? (
+          <Box position="absolute" top="8px" right="0px" w="10px" h="10px" rounded="md" bg="green.400" />
+        ) : null}
+      </Box>
 
       <CardBody mt="8px" p="0">
         {info?.device?.connected === "true" ? (
