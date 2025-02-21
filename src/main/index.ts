@@ -2,7 +2,7 @@ import { join } from "path";
 import { app, shell, BrowserWindow } from "electron";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
-import { createIpcHandler } from "./createIpcHandler";
+import { ipcHandler } from "./ipc-handler";
 import icon from "../../resources/icon.png?asset";
 
 function createWindow(): void {
@@ -15,7 +15,7 @@ function createWindow(): void {
     },
   });
 
-  createIpcHandler();
+  ipcHandler();
 
   mainWindow.setMenu(null);
   mainWindow.maximize();

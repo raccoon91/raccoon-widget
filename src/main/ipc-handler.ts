@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 import { ipcMain } from "electron";
 
-export const createIpcHandler = () => {
+export const ipcHandler = () => {
   ipcMain.handle("get-device-by-class", async (_, className) => {
     return new Promise((resolve, reject) => {
       exec(
