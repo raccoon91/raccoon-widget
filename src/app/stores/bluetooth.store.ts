@@ -85,7 +85,6 @@ export const useBluetoothStore = create<BluetoothStore>()(
         name: "bluetooth-store",
         partialize: (state) => ({
           bluetooth: state.bluetooth,
-          bluetoothInfoMap: state.bluetoothInfoMap,
         }),
       },
     ),

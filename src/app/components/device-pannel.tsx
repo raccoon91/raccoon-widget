@@ -43,7 +43,7 @@ export const DevicePannel = () => {
         </HStack>
 
         {bluetooth.length ? (
-          <Flex gap="8px">
+          <Flex gap="12px">
             {bluetooth.map((data, index) => (
               <DeviceCard
                 key={index}
