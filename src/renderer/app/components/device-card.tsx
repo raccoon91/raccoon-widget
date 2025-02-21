@@ -32,7 +32,7 @@ export const DeviceCard: FC<DeviceCardProps> = ({ deviceInstanceId, deviceName, 
         {info?.device?.connected === "true" ? (
           <HStack justify="end">
             <Text fontSize="14px">Battery</Text>
-            <Text fontSize="14px">{info?.system?.battery_level}%</Text>
+            <Text fontSize="14px">{info?.system?.battery_level ? `${info?.system?.battery_level}%` : "-"}</Text>
           </HStack>
         ) : (
           <Text textAlign="right" fontSize="14px">

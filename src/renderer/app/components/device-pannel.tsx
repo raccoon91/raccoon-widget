@@ -19,11 +19,11 @@ export const DevicePannel = () => {
   const getDeviceByClass = useSystemStore((state) => state.getDeviceByClass);
 
   useEffect(() => {
-    getDeviceByClass("Bluetooth");
+    pullDeviceInfo();
   }, []);
 
   useEffect(() => {
-    pullDeviceInfo();
+    getDeviceByClass("Bluetooth");
   }, []);
 
   const handleOpenDeviceModal = () => {

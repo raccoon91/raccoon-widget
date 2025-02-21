@@ -58,7 +58,6 @@ export const useBluetoothStore = create<BluetoothStore>()(
           }
         },
         pullSystemInfo: (deviceInstanceId) => {
-          console.log("system info");
           if (!deviceInstanceId) return;
 
           const bluetooth = get().bluetooth;
