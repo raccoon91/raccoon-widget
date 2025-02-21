@@ -1,15 +1,21 @@
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
 
-import { PROPERTY_MAP } from "../constants/system";
+import { PROPERTY_MAP } from "../constants/system.constant";
 
 interface SystemStore {
-  loading: boolean;
+  loadingDevice: boolean;
+  loadingProperty: boolean;
+  deviceLoadingMessage: string | null;
+  propertyLoadingMessage: string | null;
 
   devices: Device[];
   deviceProperties: DeviceProperty[];
-  system: System | null;
+  selectedDevice: Device | null;
+  selectedSystem: System | null;
   systemProperties: SystemProperty[];
+
+  clearState: () => void;
 
   getDeviceByClass: (className: string) => Promise<void>;
   getDevicePropertyById: (instanceId?: string) => Promise<void>;
@@ -17,110 +23,109 @@ interface SystemStore {
 }
 
 export const useSystemStore = create<SystemStore>()(
-  devtools(
-    persist(
-      (set) => ({
-        loading: false,
+  devtools((set, get) => ({
+    loadingDevice: false,
+    loadingProperty: false,
+    deviceLoadingMessage: null,
+    propertyLoadingMessage: null,
 
-        devices: [],
+    devices: [],
+    deviceProperties: [],
+    selectedDevice: null,
+    selectedSystem: null,
+    systemProperties: [],
+
+    clearState: () => {
+      set({
+        loadingDevice: false,
+        loadingProperty: false,
+        deviceLoadingMessage: null,
+        propertyLoadingMessage: null,
         deviceProperties: [],
-        system: null,
+        selectedDevice: null,
+        selectedSystem: null,
         systemProperties: [],
+      });
+    },
 
-        getDeviceByClass: async (className) => {
-          try {
-            set({ loading: true });
+    getDeviceByClass: async (className) => {
+      try {
+        set({ loadingDevice: true, deviceLoadingMessage: "Loading Device ..." });
 
-            const result = await window.electronAPI.getDeviceByClass(className);
+        const result = await window.electronAPI.getDeviceByClass(className);
 
-            if (!result) {
-              set({ loading: false, devices: [] });
+        if (!result) throw new Error("No Device Data");
 
-              return;
-            }
+        const devices: Device[] = JSON.parse(result);
 
-            const devices: Device[] = JSON.parse(result);
+        set({ loadingDevice: false, deviceLoadingMessage: null, devices });
+      } catch (error) {
+        console.error(error);
 
-            set({ loading: false, devices });
-          } catch (error) {
-            console.error(error);
+        set({ loadingDevice: false, deviceLoadingMessage: null, devices: [] });
+      }
+    },
+    getDevicePropertyById: async (instanceId) => {
+      try {
+        if (!instanceId) throw new Error("No Instance Id");
 
-            set({ loading: false });
-          }
-        },
-        getDevicePropertyById: async (instanceId) => {
-          try {
-            if (!instanceId) {
-              set({ loading: false, deviceProperties: [] });
+        set({ loadingProperty: true, propertyLoadingMessage: "Loading Device Property ..." });
 
-              return;
-            }
+        const devices = get().devices;
+        const selectedDevice = devices.find((device) => device.InstanceId === instanceId);
 
-            set({ loading: true });
+        const devicePropertyResult = await window.electronAPI.getDevicePropertyById(instanceId);
 
-            const result = await window.electronAPI.getDevicePropertyById(instanceId);
+        if (!devicePropertyResult) throw new Error("No Device Property");
 
-            if (!result) {
-              set({ loading: false, deviceProperties: [] });
+        const deviceProperties: DeviceProperty[] = JSON.parse(devicePropertyResult);
+        const filteredDeviceProperties = deviceProperties.filter((property) => !!PROPERTY_MAP?.[property.KeyName]);
 
-              return;
-            }
+        const containerId = filteredDeviceProperties.find(
+          (property) => property.KeyName === "DEVPKEY_Device_ContainerId",
+        )?.Data;
 
-            const properties: DeviceProperty[] = JSON.parse(result);
-            const filteredProperties = properties.filter((property) => !!PROPERTY_MAP?.[property.KeyName]);
+        if (!containerId) throw new Error("No Container Id");
 
-            set({ loading: false, deviceProperties: filteredProperties });
-          } catch (error) {
-            console.error(error);
+        set({ propertyLoadingMessage: "Loading System ..." });
 
-            set({ loading: false });
-          }
-        },
-        getSystemByContainerId: async (containerId) => {
-          try {
-            if (!containerId) {
-              set({ loading: false, system: null, systemProperties: [] });
+        const systemResult = await window.electronAPI.getSystemByContainerId(containerId);
 
-              return;
-            }
+        if (!systemResult) throw new Error("No System Data");
 
-            set({ loading: true });
+        const system = JSON.parse(systemResult);
 
-            const systemResult = await window.electronAPI.getSystemByContainerId(containerId);
+        if (!system.InstanceId) throw new Error("No System Instance Id");
 
-            if (!systemResult) {
-              set({ loading: false, system: null, systemProperties: [] });
+        set({ propertyLoadingMessage: "Loading System Property ..." });
 
-              return;
-            }
+        const systemPropertyResult = await window.electronAPI.getSystemPropertyById(system.InstanceId);
 
-            const system = JSON.parse(systemResult);
+        if (!systemPropertyResult) throw new Error("No System Property");
 
-            if (!system.InstanceId) return;
+        const systemProperties: SystemProperty[] = JSON.parse(systemPropertyResult);
+        const filteredSystemProperties = systemProperties.filter((property) => !!PROPERTY_MAP?.[property.KeyName]);
 
-            const propertyResult = await window.electronAPI.getSystemPropertyById(system.InstanceId);
+        set({
+          loadingProperty: false,
+          propertyLoadingMessage: null,
+          deviceProperties: filteredDeviceProperties,
+          selectedDevice,
+          selectedSystem: system,
+          systemProperties: filteredSystemProperties,
+        });
+      } catch (error) {
+        console.error(error);
 
-            if (!propertyResult) {
-              set({ loading: false, system: null });
-
-              return;
-            }
-
-            const properties: SystemProperty[] = JSON.parse(propertyResult);
-            const filteredProperties = properties.filter((property) => !!PROPERTY_MAP?.[property.KeyName]);
-
-            set({ loading: false, system, systemProperties: filteredProperties });
-          } catch (error) {
-            console.error(error);
-
-            set({ loading: false });
-          }
-        },
-      }),
-      {
-        name: "system-store",
-        partialize: (state) => ({ devices: state.devices }),
-      },
-    ),
-  ),
+        set({
+          loadingProperty: false,
+          propertyLoadingMessage: null,
+          deviceProperties: [],
+          selectedDevice: null,
+          selectedSystem: null,
+          systemProperties: [],
+        });
+      }
+    },
+  })),
 );
