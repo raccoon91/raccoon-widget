@@ -14,14 +14,16 @@ export const DeviceCard: FC<DeviceCardProps> = ({ deviceInstanceId, deviceName, 
 
   useEffect(() => {
     if (info?.device?.connected === "true") {
-      pullSystemInfo(deviceInstanceId);
+      // pullSystemInfo(deviceInstanceId);
     }
   }, [deviceInstanceId, info?.device?.connected]);
 
   return (
-    <Card p="16px 24px" minW="200px" boxShadow="md">
+    <Card p="16px 24px" minW="160px" boxShadow="md">
       <Box position="relative" pr="24px">
-        <CardHeader p="0">{deviceName}</CardHeader>
+        <CardHeader p="0" fontWeight="semibold">
+          {deviceName}
+        </CardHeader>
 
         {info?.device?.connected === "true" ? (
           <Box position="absolute" top="8px" right="0px" w="10px" h="10px" rounded="md" bg="green.400" />

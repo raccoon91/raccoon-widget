@@ -2,7 +2,8 @@ import { join } from "path";
 import { app, shell, BrowserWindow } from "electron";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
-import { ipcHandler } from "./ipc-handler";
+import widget from "./lib/widget";
+import { bluetoothIpcHandler } from "./ipc/bluetooth.ipc";
 import icon from "../../resources/icon.png?asset";
 
 function createWindow(): void {
@@ -15,13 +16,22 @@ function createWindow(): void {
     },
   });
 
-  ipcHandler();
+  bluetoothIpcHandler();
 
   mainWindow.setMenu(null);
-  mainWindow.maximize();
+  // mainWindow.maximize();
 
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();
+
+    // Prevent BrowserWindow from being hidden in AeroPeek.
+    widget.preventFromAeroPeek(mainWindow);
+
+    // Prevent BrowserWindow from being hidden in ShowDesktop.
+    widget.preventFromShowDesktop(mainWindow);
+
+    // Move BrowserWindow to the bottom of the windows
+    widget.moveToBottom(mainWindow);
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {

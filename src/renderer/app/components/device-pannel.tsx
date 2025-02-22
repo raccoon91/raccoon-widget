@@ -19,11 +19,11 @@ export const DevicePannel = () => {
   const getDeviceByClass = useSystemStore((state) => state.getDeviceByClass);
 
   useEffect(() => {
-    pullDeviceInfo();
+    // pullDeviceInfo();
   }, []);
 
   useEffect(() => {
-    getDeviceByClass("Bluetooth");
+    // getDeviceByClass("Bluetooth");
   }, []);
 
   const handleOpenDeviceModal = () => {
@@ -36,14 +36,16 @@ export const DevicePannel = () => {
 
   return (
     <>
-      <Stack w="full" h="full" gap="32px" p="48px ">
+      <Stack w="full" h="full" gap="24px" p="48px ">
         <HStack justify="space-between">
-          <Heading>Bluetooth</Heading>
-          <Button onClick={handleOpenDeviceModal}>Add</Button>
+          <Heading fontSize="24px">Bluetooth</Heading>
+          <Button size="sm" onClick={handleOpenDeviceModal}>
+            Add
+          </Button>
         </HStack>
 
         {bluetooth.length ? (
-          <Flex gap="12px">
+          <Flex wrap="wrap" gap="12px">
             {bluetooth.map((data, index) => (
               <DeviceCard
                 key={index}
