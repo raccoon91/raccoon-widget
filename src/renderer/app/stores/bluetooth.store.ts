@@ -31,7 +31,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
           const bluetooth = get().bluetooth;
 
           for (const data of bluetooth) {
-            window.api.getDevicePropertyById(data.device.InstanceId).then((result) => {
+            window.systemAPI.getDevicePropertyById(data.device.InstanceId).then((result) => {
               if (!result) return;
 
               const deviceProperties: DeviceProperty[] = JSON.parse(result);
@@ -65,7 +65,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
           if (!data) return;
 
-          window.api.getSystemPropertyById(data.system.InstanceId).then((result) => {
+          window.systemAPI.getSystemPropertyById(data.system.InstanceId).then((result) => {
             if (!result) return;
 
             const systemProperties: DeviceProperty[] = JSON.parse(result);

@@ -1,8 +1,9 @@
 import { BrowserWindow } from "electron";
 
 import { WM_WINDOWPOSCHANGING } from "@/constants/windows";
-import { Win } from "@/main/helper/utils";
 import {
+  attachWindow,
+  detachWindow,
   getDesktopWindow,
   getSHELLDLL_DefViewHandle,
   preventFromAeroPeek,
@@ -11,35 +12,33 @@ import {
 } from "@/main/helper/ffi";
 
 class WidgetModule {
-  preventFromAeroPeek(win: Win) {
-    return preventFromAeroPeek(win);
+  preventFromAeroPeek(browserWindow: BrowserWindow) {
+    return preventFromAeroPeek(browserWindow);
   }
 
-  preventFromShowDesktop(win: Win) {
-    return setOwnerWindow(win, getSHELLDLL_DefViewHandle());
+  preventFromShowDesktop(browserWindow: BrowserWindow) {
+    attachWindow(browserWindow);
+    return setOwnerWindow(browserWindow, getSHELLDLL_DefViewHandle());
   }
 
-  cancelPreventFromShowDesktop(win: Win) {
-    return setOwnerWindow(win, getDesktopWindow());
+  cancelPreventFromShowDesktop(browserWindow: BrowserWindow) {
+    detachWindow(browserWindow);
+    return setOwnerWindow(browserWindow, getDesktopWindow());
   }
 
-  moveToBottom(win: Win) {
-    return zOrderToBottom(win);
+  moveToBottom(browserWindow: BrowserWindow) {
+    return zOrderToBottom(browserWindow);
   }
 
   alwaysOnBottom(browserWindow: BrowserWindow) {
-    const winBuffer = browserWindow.getNativeWindowHandle();
-
-    this.moveToBottom(winBuffer);
-    this.preventFromShowDesktop(winBuffer);
+    this.moveToBottom(browserWindow);
+    this.preventFromShowDesktop(browserWindow);
   }
 
   cancelAlwaysOnBottom(browserWindow: BrowserWindow) {
-    const winBuffer = browserWindow.getNativeWindowHandle();
-
     browserWindow.unhookWindowMessage(WM_WINDOWPOSCHANGING);
 
-    this.cancelPreventFromShowDesktop(winBuffer);
+    this.cancelPreventFromShowDesktop(browserWindow);
   }
 }
 
@@ -60,20 +59,20 @@ class Widget {
     }
   }
 
-  preventFromAeroPeek(win: Win) {
-    return this.module?.preventFromAeroPeek(win);
+  preventFromAeroPeek(browserWindow: BrowserWindow) {
+    return this.module?.preventFromAeroPeek(browserWindow);
   }
 
-  preventFromShowDesktop(win: Win) {
-    return this.module?.preventFromShowDesktop(win);
+  preventFromShowDesktop(browserWindow: BrowserWindow) {
+    return this.module?.preventFromShowDesktop(browserWindow);
   }
 
-  cancelPreventFromShowDesktop(win: Win) {
-    return this.module?.cancelPreventFromShowDesktop(win);
+  cancelPreventFromShowDesktop(browserWindow: BrowserWindow) {
+    return this.module?.cancelPreventFromShowDesktop(browserWindow);
   }
 
-  moveToBottom(win: Win) {
-    return this.module?.moveToBottom(win);
+  moveToBottom(browserWindow: BrowserWindow) {
+    return this.module?.moveToBottom(browserWindow);
   }
 
   alwaysOnBottom(browserWindow: BrowserWindow) {

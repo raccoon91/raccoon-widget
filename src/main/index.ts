@@ -3,23 +3,29 @@ import { app, shell, BrowserWindow } from "electron";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
 import widget from "@/main/lib/widget";
+import { appIpcHandler } from "@/main/ipc/app.ipc";
 import { bluetoothIpcHandler } from "@/main/ipc/bluetooth.ipc";
+import { widgetIpcHandler } from "@/main/ipc/widget.ipc";
 import icon from "@resources/icon.png?asset";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
     show: false,
     icon,
+    titleBarStyle: "hidden",
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
       sandbox: false,
     },
   });
 
+  appIpcHandler(mainWindow);
+
   bluetoothIpcHandler();
 
+  widgetIpcHandler(mainWindow);
+
   mainWindow.setMenu(null);
-  // mainWindow.maximize();
 
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();
@@ -36,6 +42,7 @@ function createWindow(): void {
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url);
+
     return { action: "deny" };
   });
 
@@ -61,7 +68,7 @@ app.whenReady().then(() => {
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
 
-    window.webContents.openDevTools({ mode: "right" });
+    // window.webContents.openDevTools({ mode: "right" });
   });
 
   createWindow();
