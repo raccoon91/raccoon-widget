@@ -1,13 +1,15 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
 
+import { BLUETOOTH_IPC } from "@/constants/ipc";
+
 const api: PreloadAPI = {
-  getDeviceByClass: (className) => ipcRenderer.invoke("get-device-by-class", className),
-  getDevicePropertyById: (instanceId) => ipcRenderer.invoke("get-device-property-by-id", instanceId),
-  getSystemByContainerId: (containerId) => ipcRenderer.invoke("get-system-by-container-id", containerId),
-  getSystemPropertyById: (containerId) => ipcRenderer.invoke("get-system-property-by-id", containerId),
+  getDeviceByClass: (className) => ipcRenderer.invoke(BLUETOOTH_IPC.GET_DEVICE_BY_CLASS, className),
+  getDevicePropertyById: (instanceId) => ipcRenderer.invoke(BLUETOOTH_IPC.GET_DEVICE_PROPERTY_BY_ID, instanceId),
+  getSystemByContainerId: (containerId) => ipcRenderer.invoke(BLUETOOTH_IPC.GET_SYSTEM_BY_CONTAINER_ID, containerId),
+  getSystemPropertyById: (containerId) => ipcRenderer.invoke(BLUETOOTH_IPC.GET_SYSTEM_PROPERTY_BY_ID, containerId),
   getSystemPropertyByContainerId: (containerId) =>
-    ipcRenderer.invoke("get-system-property-by-container-id", containerId),
+    ipcRenderer.invoke(BLUETOOTH_IPC.GET_SYSTEM_PROPERTY_BY_CONTAINER_ID, containerId),
 };
 
 if (process.contextIsolated) {
