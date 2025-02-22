@@ -1,11 +1,11 @@
 import { Box } from "@chakra-ui/react";
 
-import { BluetoothPannel } from "@app/components/bluetooth/bluetooth-pannel";
+import { BluetoothPanel } from "@app/components/bluetooth/bluetooth-panel";
 
 export const App = () => {
   return (
-    <Box overflow="hidden" position="relative" w="100wh" h="100vh">
-      <BluetoothPannel />
+    <Box overflow="hidden" w="100wh" h="100vh" p="36px 48px">
+      <BluetoothPanel />
     </Box>
   );
 };

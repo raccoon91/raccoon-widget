@@ -7,7 +7,7 @@ import { useSystemStore } from "@app/stores/system.store";
 import { BluetoothDialog } from "./bluetooth-dialog";
 import { BluetoothCard } from "./bluetooth-card";
 
-export const BluetoothPannel = () => {
+export const BluetoothPanel = () => {
   const [isOpenBluetoothDialog, setIsOpenBluetoothDialog] = useState(false);
   const { bluetooth, bluetoothInfoMap, pullDeviceInfo } = useBluetoothStore(
     useShallow((state) => ({
@@ -32,10 +32,10 @@ export const BluetoothPannel = () => {
 
   return (
     <>
-      <Stack w="full" h="full" gap="24px" p="48px ">
+      <Stack gap="24px" p="24px" bg="bg.panel" rounded="xl">
         <HStack justify="space-between">
           <Heading fontSize="24px">Bluetooth</Heading>
-          <Button size="xs" onClick={handleOpenBluetoothDialog}>
+          <Button variant="subtle" size="xs" onClick={handleOpenBluetoothDialog}>
             Add
           </Button>
         </HStack>
@@ -52,9 +52,11 @@ export const BluetoothPannel = () => {
             ))}
           </Flex>
         ) : (
-          <Center flexDirection="column" gap="16px" py="32px">
+          <Center flexDirection="column" gap="12px" py="24px">
             <Text>No Devices</Text>
-            <Button onClick={handleOpenBluetoothDialog}>Add Device</Button>
+            <Button size="xs" onClick={handleOpenBluetoothDialog}>
+              Add Device
+            </Button>
           </Center>
         )}
       </Stack>

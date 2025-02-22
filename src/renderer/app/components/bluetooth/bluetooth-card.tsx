@@ -19,8 +19,8 @@ export const BluetoothCard: FC<BluetoothCardProps> = ({ deviceInstanceId, device
   }, [deviceInstanceId, info?.device?.connected]);
 
   return (
-    <Card.Root p="16px 24px" minW="160px">
-      <Box position="relative" pr="24px">
+    <Card.Root minW="160px" gap="8px" p="16px 24px">
+      <Box position="relative" pr="16px">
         <Card.Header p="0" fontWeight="semibold">
           {deviceName}
         </Card.Header>
@@ -30,14 +30,14 @@ export const BluetoothCard: FC<BluetoothCardProps> = ({ deviceInstanceId, device
         ) : null}
       </Box>
 
-      <Card.Body mt="8px" p="0">
+      <Card.Body p="0">
         {info?.device?.connected === "true" ? (
           <HStack justify="end">
             <Text fontSize="14px">Battery</Text>
             <Text fontSize="14px">{info?.system?.battery_level ? `${info?.system?.battery_level}%` : "-"}</Text>
           </HStack>
         ) : (
-          <Text textAlign="right" fontSize="14px">
+          <Text color="fg.subtle" textAlign="right" fontSize="14px">
             Unconnected
           </Text>
         )}
