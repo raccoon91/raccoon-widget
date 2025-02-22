@@ -1,13 +1,13 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
-import { PROPERTY_MAP } from "../constants/system.constant";
+import { PROPERTY_MAP } from "@/constants/system";
 
 interface BluetoothStore {
   bluetooth: { device: Device; system: System }[];
   bluetoothInfoMap: Record<string, any>;
 
-  addDevice: (device?: Device, system?: System) => void;
+  addDevice: (device?: Nullable<Device>, system?: Nullable<System>) => void;
   pullDeviceInfo: () => void;
   pullSystemInfo: (deviceInstanceId?: string) => void;
 }
@@ -31,7 +31,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
           const bluetooth = get().bluetooth;
 
           for (const data of bluetooth) {
-            window.api.getDevicePropertyById(data.device.InstanceId).then((result: string) => {
+            window.api.getDevicePropertyById(data.device.InstanceId).then((result) => {
               if (!result) return;
 
               const deviceProperties: DeviceProperty[] = JSON.parse(result);
@@ -65,7 +65,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
           if (!data) return;
 
-          window.api.getSystemPropertyById(data.system.InstanceId).then((result: string) => {
+          window.api.getSystemPropertyById(data.system.InstanceId).then((result) => {
             if (!result) return;
 
             const systemProperties: DeviceProperty[] = JSON.parse(result);

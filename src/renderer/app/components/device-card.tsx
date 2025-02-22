@@ -1,7 +1,7 @@
 import { FC, useEffect } from "react";
 import { Card, CardHeader, CardBody, HStack, Text, Box } from "@chakra-ui/react";
 
-import { useBluetoothStore } from "../stores/bluetooth.store";
+import { useBluetoothStore } from "@app/stores/bluetooth.store";
 
 interface DeviceCardProps {
   deviceInstanceId: string;

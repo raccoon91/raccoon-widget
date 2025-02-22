@@ -1,14 +1,14 @@
 import { BrowserWindow } from "electron";
 
-import { WM_WINDOWPOSCHANGING } from "../constants/windows";
-import { Win } from "../helper/utils";
+import { WM_WINDOWPOSCHANGING } from "@/constants/windows";
+import { Win } from "@/main/helper/utils";
 import {
   getDesktopWindow,
   getSHELLDLL_DefViewHandle,
   preventFromAeroPeek,
   setOwnerWindow,
   zOrderToBottom,
-} from "../helper/ffi";
+} from "@/main/helper/ffi";
 
 class WidgetModule {
   preventFromAeroPeek(win: Win) {

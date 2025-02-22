@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 
-import { DevicePannel } from "./components/device-pannel";
+import { DevicePannel } from "@app/components/device-pannel";
 
 export const App = () => {
   return (

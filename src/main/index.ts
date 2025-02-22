@@ -2,9 +2,9 @@ import { join } from "path";
 import { app, shell, BrowserWindow } from "electron";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
-import widget from "./lib/widget";
-import { bluetoothIpcHandler } from "./ipc/bluetooth.ipc";
-import icon from "../../resources/icon.png?asset";
+import widget from "@/main/lib/widget";
+import { bluetoothIpcHandler } from "@/main/ipc/bluetooth.ipc";
+import icon from "@resources/icon.png?asset";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({

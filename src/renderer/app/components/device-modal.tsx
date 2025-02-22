@@ -1,9 +1,8 @@
-import { FC, MouseEvent, useEffect } from "react";
+import { FC, MouseEvent } from "react";
 import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
   ModalFooter,
   ModalBody,
   ModalCloseButton,
@@ -18,9 +17,9 @@ import {
 } from "@chakra-ui/react";
 import { useShallow } from "zustand/shallow";
 
-import { PROPERTY_MAP } from "../constants/system.constant";
-import { useSystemStore } from "../stores/system.store";
-import { useBluetoothStore } from "../stores/bluetooth.store";
+import { PROPERTY_MAP } from "@/constants/system";
+import { useSystemStore } from "@app/stores/system.store";
+import { useBluetoothStore } from "@app/stores/bluetooth.store";
 
 interface DeviceModalProps {
   isOpen: boolean;

@@ -1,15 +1,34 @@
 {
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
-  "ignorePatterns": ["node_modules", "out", "build", ".gitignore"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "ignorePatterns": [
+    "node_modules",
+    "out",
+    "build",
+    ".gitignore"
+  ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["prettier"],
+  "plugins": [
+    "prettier"
+  ],
   "rules": {
     "no-undef": "off",
     "react/prop-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-unused-vars": "off",
-    "linebreak-style": ["error", "unix"],
-    "prettier/prettier": ["error", { "endOfLine": "lf" }]
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "lf"
+      }
+    ]
   }
 }

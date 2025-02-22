@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import { Button, Center, Flex, Heading, HStack, Stack, Text } from "@chakra-ui/react";
 
-import { useBluetoothStore } from "../stores/bluetooth.store";
-import { useSystemStore } from "../stores/system.store";
+import { useBluetoothStore } from "@app/stores/bluetooth.store";
+import { useSystemStore } from "@app/stores/system.store";
 import { DeviceModal } from "./device-modal";
 import { DeviceCard } from "./device-card";
 

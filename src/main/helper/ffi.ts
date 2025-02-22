@@ -1,7 +1,7 @@
 import koffi from "koffi";
 
-import { DWMWA_EXCLUDED_FROM_PEEK, GWLP_HWNDPARENT, HWND_BOTTOM, SWP_NOMOVE, SWP_NOSIZE } from "../constants/windows";
-import { getWindowBuffer, Win } from "./utils";
+import { DWMWA_EXCLUDED_FROM_PEEK, GWLP_HWNDPARENT, HWND_BOTTOM, SWP_NOMOVE, SWP_NOSIZE } from "@/constants/windows";
+import { getWindowBuffer, Win } from "@/main/helper/utils";
 
 const isWindows = process.platform === "win32";
 

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-import { PROPERTY_MAP } from "../constants/system.constant";
+import { PROPERTY_MAP } from "@/constants/system";
 
 interface SystemStore {
   loadingDevice: boolean;
