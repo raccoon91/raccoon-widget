@@ -4,11 +4,11 @@ import { Button, Center, Flex, Heading, HStack, Stack, Text } from "@chakra-ui/r
 
 import { useBluetoothStore } from "@app/stores/bluetooth.store";
 import { useSystemStore } from "@app/stores/system.store";
-import { DeviceModal } from "./device-modal";
-import { DeviceCard } from "./device-card";
+import { BluetoothDialog } from "./bluetooth-dialog";
+import { BluetoothCard } from "./bluetooth-card";
 
-export const DevicePannel = () => {
-  const [isOpenDeviceModal, setIsOpenDeviceModal] = useState(false);
+export const BluetoothPannel = () => {
+  const [isOpenBluetoothDialog, setIsOpenBluetoothDialog] = useState(false);
   const { bluetooth, bluetoothInfoMap, pullDeviceInfo } = useBluetoothStore(
     useShallow((state) => ({
       bluetooth: state.bluetooth,
@@ -26,12 +26,8 @@ export const DevicePannel = () => {
     // getDeviceByClass("Bluetooth");
   }, []);
 
-  const handleOpenDeviceModal = () => {
-    setIsOpenDeviceModal(true);
-  };
-
-  const handleCloseDeviceModal = () => {
-    setIsOpenDeviceModal(false);
+  const handleOpenBluetoothDialog = () => {
+    setIsOpenBluetoothDialog(true);
   };
 
   return (
@@ -39,7 +35,7 @@ export const DevicePannel = () => {
       <Stack w="full" h="full" gap="24px" p="48px ">
         <HStack justify="space-between">
           <Heading fontSize="24px">Bluetooth</Heading>
-          <Button size="sm" onClick={handleOpenDeviceModal}>
+          <Button size="xs" onClick={handleOpenBluetoothDialog}>
             Add
           </Button>
         </HStack>
@@ -47,7 +43,7 @@ export const DevicePannel = () => {
         {bluetooth.length ? (
           <Flex wrap="wrap" gap="12px">
             {bluetooth.map((data, index) => (
-              <DeviceCard
+              <BluetoothCard
                 key={index}
                 deviceInstanceId={data.device.InstanceId}
                 deviceName={data.device.FriendlyName}
@@ -58,12 +54,12 @@ export const DevicePannel = () => {
         ) : (
           <Center flexDirection="column" gap="16px" py="32px">
             <Text>No Devices</Text>
-            <Button onClick={handleOpenDeviceModal}>Add Device</Button>
+            <Button onClick={handleOpenBluetoothDialog}>Add Device</Button>
           </Center>
         )}
       </Stack>
 
-      <DeviceModal isOpen={isOpenDeviceModal} onClose={handleCloseDeviceModal} />
+      <BluetoothDialog open={isOpenBluetoothDialog} setOpen={setIsOpenBluetoothDialog} />
     </>
   );
 };

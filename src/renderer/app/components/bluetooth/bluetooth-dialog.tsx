@@ -1,32 +1,36 @@
 import { FC, MouseEvent } from "react";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Button,
-  Stack,
-  Text,
-  Center,
-  Spinner,
-  HStack,
-  Box,
-  Divider,
-} from "@chakra-ui/react";
 import { useShallow } from "zustand/shallow";
 
 import { PROPERTY_MAP } from "@/constants/system";
 import { useSystemStore } from "@app/stores/system.store";
 import { useBluetoothStore } from "@app/stores/bluetooth.store";
+import {
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+} from "@app/components/ui/dialog";
+import {
+  Box,
+  Button,
+  Center,
+  DialogOpenChangeDetails,
+  HStack,
+  Separator,
+  Spinner,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 
-interface DeviceModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+interface BluetoothDialogProps {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const DeviceModal: FC<DeviceModalProps> = ({ isOpen, onClose }) => {
+export const BluetoothDialog: FC<BluetoothDialogProps> = ({ open, setOpen }) => {
   const {
     loadingDevice,
     loadingProperty,
@@ -58,6 +62,14 @@ export const DeviceModal: FC<DeviceModalProps> = ({ isOpen, onClose }) => {
   );
   const addDevice = useBluetoothStore((state) => state.addDevice);
 
+  const handleChangeOpen = (e: DialogOpenChangeDetails) => {
+    setOpen(e.open);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+  };
+
   const handleReloadDevice = () => {
     getDeviceByClass("Bluetooth");
   };
@@ -71,35 +83,34 @@ export const DeviceModal: FC<DeviceModalProps> = ({ isOpen, onClose }) => {
   const handleAddDevice = () => {
     addDevice(selectedDevice, selectedSystem);
 
-    onClose();
+    handleCloseDialog();
     clearState();
   };
 
   return (
-    <Modal size="lg" isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalBody as={Stack} gap="16px" p="24px 24px 0">
+    <DialogRoot size="md" closeOnEscape open={open} onOpenChange={handleChangeOpen}>
+      <DialogContent>
+        <DialogHeader as={HStack} justifyContent="space-between" pb="8px">
+          <HStack gap="16px">
+            <DialogTitle fontSize="xl" fontWeight="semibold">
+              Bluetooth Device
+            </DialogTitle>
+
+            <Button size="2xs" onClick={handleReloadDevice}>
+              Reload
+            </Button>
+          </HStack>
+
+          <DialogCloseTrigger position="unset" />
+        </DialogHeader>
+
+        <DialogBody as={Stack} gap="16px" p="0 24px">
           <Stack gap="8px">
-            <HStack justify="space-between">
-              <HStack gap="8px">
-                <Text fontSize="xl" fontWeight="semibold">
-                  Bluetooth Device
-                </Text>
-
-                <Button size="xs" onClick={handleReloadDevice}>
-                  Reload
-                </Button>
-              </HStack>
-
-              <ModalCloseButton position="unset" top="unset" left="unset" />
-            </HStack>
-
             <Box
               position="relative"
               overflowY={loadingDevice ? "hidden" : "auto"}
               h="240px"
-              bg="blackAlpha.300"
+              border="1px solid"
               rounded="md"
             >
               {loadingDevice ? (
@@ -129,11 +140,11 @@ export const DeviceModal: FC<DeviceModalProps> = ({ isOpen, onClose }) => {
                   bg={device.InstanceId === selectedDevice?.InstanceId ? "gray.900" : "unset"}
                   _hover={{ bg: "gray.800" }}
                 >
-                  <Text flex="1" noOfLines={1}>
+                  <Text flex="1" truncate>
                     {device.FriendlyName}
                   </Text>
 
-                  <Button data-instance-id={device.InstanceId} size="xs" onClick={handleClickBluetooth}>
+                  <Button data-instance-id={device.InstanceId} size="2xs" onClick={handleClickBluetooth}>
                     Select
                   </Button>
                 </HStack>
@@ -150,7 +161,7 @@ export const DeviceModal: FC<DeviceModalProps> = ({ isOpen, onClose }) => {
               position="relative"
               overflowY={loadingDevice ? "hidden" : "auto"}
               h="240px"
-              bg="blackAlpha.300"
+              border="1px solid"
               rounded="md"
             >
               {loadingProperty ? (
@@ -179,7 +190,7 @@ export const DeviceModal: FC<DeviceModalProps> = ({ isOpen, onClose }) => {
                     deviceProperties?.map((property, index) => (
                       <HStack key={index} gap="16px" p="4px 12px">
                         <Text w="160px">{PROPERTY_MAP[property.KeyName].name}</Text>
-                        <Text flex="1" noOfLines={1}>
+                        <Text flex="1" truncate>
                           {property.Data.toString()}
                         </Text>
                       </HStack>
@@ -190,14 +201,14 @@ export const DeviceModal: FC<DeviceModalProps> = ({ isOpen, onClose }) => {
                     </Text>
                   )}
 
-                  <Divider my="4px" />
+                  <Separator my="4px" />
 
                   <Text p="4px 12px">System</Text>
 
                   {selectedSystem ? (
                     <HStack gap="16px" p="4px 12px">
                       <Text w="160px">system instance id</Text>
-                      <Text flex="1" noOfLines={1}>
+                      <Text flex="1" truncate>
                         {selectedDevice.InstanceId}
                       </Text>
                     </HStack>
@@ -207,7 +218,7 @@ export const DeviceModal: FC<DeviceModalProps> = ({ isOpen, onClose }) => {
                     </Text>
                   )}
 
-                  <Divider my="4px" />
+                  <Separator my="4px" />
 
                   <Text p="4px 12px">System Property</Text>
 
@@ -215,7 +226,7 @@ export const DeviceModal: FC<DeviceModalProps> = ({ isOpen, onClose }) => {
                     systemProperties.map((property, index) => (
                       <HStack key={index} gap="16px" p="4px 12px">
                         <Text w="160px">{PROPERTY_MAP[property.KeyName].name}</Text>
-                        <Text flex="1" noOfLines={1}>
+                        <Text flex="1" truncate>
                           {property.Data.toString()}
                         </Text>
                       </HStack>
@@ -239,17 +250,17 @@ export const DeviceModal: FC<DeviceModalProps> = ({ isOpen, onClose }) => {
               )}
             </Box>
           </Stack>
-        </ModalBody>
+        </DialogBody>
 
-        <ModalFooter>
-          <Button size="sm" variant="ghost" mr={3} onClick={onClose}>
+        <DialogFooter>
+          <Button size="sm" variant="ghost" mr={3} onClick={handleCloseDialog}>
             Close
           </Button>
-          <Button size="sm" isDisabled={!selectedDevice || !selectedSystem} onClick={handleAddDevice}>
+          <Button size="sm" disabled={!selectedDevice || !selectedSystem} onClick={handleAddDevice}>
             Add
           </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </DialogRoot>
   );
 };
