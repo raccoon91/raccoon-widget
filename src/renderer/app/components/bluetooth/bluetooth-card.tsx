@@ -1,7 +1,8 @@
-import { FC, useEffect } from "react";
+import { FC, useCallback, useEffect } from "react";
 import { Card, HStack, Text, Box } from "@chakra-ui/react";
 
 import { useBluetoothStore } from "@app/stores/bluetooth.store";
+import { useInterval } from "@app/hooks/useInterval";
 
 interface BluetoothCardProps {
   deviceInstanceId: string;
@@ -12,11 +13,17 @@ interface BluetoothCardProps {
 export const BluetoothCard: FC<BluetoothCardProps> = ({ deviceInstanceId, deviceName, info }) => {
   const pullSystemInfo = useBluetoothStore((state) => state.pullSystemInfo);
 
-  useEffect(() => {
-    if (info?.device?.connected === "true") {
-      // pullSystemInfo(deviceInstanceId);
-    }
+  const pullSystemInfoCallback = useCallback(() => {
+    if (info?.device?.connected === "false") return;
+
+    pullSystemInfo(deviceInstanceId);
   }, [deviceInstanceId, info?.device?.connected]);
+
+  useInterval(pullSystemInfoCallback);
+
+  useEffect(() => {
+    pullSystemInfoCallback();
+  }, [pullSystemInfoCallback]);
 
   return (
     <Card.Root minW="160px" gap="4px" p="12px 24px">

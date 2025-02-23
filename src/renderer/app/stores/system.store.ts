@@ -1,11 +1,12 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 
 import { PROPERTY_MAP } from "@/constants/system";
 
 interface SystemStore {
   loadingDevice: boolean;
   loadingProperty: boolean;
+  loadingPropertyMap: Record<string, boolean>;
   deviceLoadingMessage: string | null;
   propertyLoadingMessage: string | null;
 
@@ -19,113 +20,147 @@ interface SystemStore {
 
   getDeviceByClass: (className: string) => Promise<void>;
   getDevicePropertyById: (instanceId?: string) => Promise<void>;
-  getSystemByContainerId: (containerId?: string) => Promise<void>;
 }
 
 export const useSystemStore = create<SystemStore>()(
-  devtools((set, get) => ({
-    loadingDevice: false,
-    loadingProperty: false,
-    deviceLoadingMessage: null,
-    propertyLoadingMessage: null,
-
-    devices: [],
-    deviceProperties: [],
-    selectedDevice: null,
-    selectedSystem: null,
-    systemProperties: [],
-
-    clearState: () => {
-      set({
+  devtools(
+    persist(
+      (set, get) => ({
         loadingDevice: false,
         loadingProperty: false,
+        loadingPropertyMap: {},
         deviceLoadingMessage: null,
         propertyLoadingMessage: null,
+
+        devices: [],
         deviceProperties: [],
         selectedDevice: null,
         selectedSystem: null,
         systemProperties: [],
-      });
-    },
 
-    getDeviceByClass: async (className) => {
-      try {
-        set({ loadingDevice: true, deviceLoadingMessage: "Loading Device ..." });
+        clearState: () => {
+          set({
+            loadingDevice: false,
+            loadingProperty: false,
+            deviceLoadingMessage: null,
+            propertyLoadingMessage: null,
+            deviceProperties: [],
+            selectedDevice: null,
+            selectedSystem: null,
+            systemProperties: [],
+          });
+        },
 
-        const result = await window.systemAPI.getDeviceByClass(className);
+        getDeviceByClass: async (className) => {
+          try {
+            const loadingDevice = get().loadingDevice;
 
-        if (!result) throw new Error("No Device Data");
+            if (loadingDevice) return;
 
-        const devices: Device[] = JSON.parse(result);
+            set({ loadingDevice: true, deviceLoadingMessage: "Loading Device ..." });
 
-        set({ loadingDevice: false, deviceLoadingMessage: null, devices });
-      } catch (error) {
-        console.error(error);
+            const result = await window.systemAPI.getDeviceByClass(className);
 
-        set({ loadingDevice: false, deviceLoadingMessage: null, devices: [] });
-      }
-    },
-    getDevicePropertyById: async (instanceId) => {
-      try {
-        if (!instanceId) throw new Error("No Instance Id");
+            if (!result) throw new Error("No Device Data");
 
-        set({ loadingProperty: true, propertyLoadingMessage: "Loading Device Property ..." });
+            const devices: Device[] = JSON.parse(result);
 
-        const devices = get().devices;
-        const selectedDevice = devices.find((device) => device.InstanceId === instanceId);
+            console.log("get device");
 
-        const devicePropertyResult = await window.systemAPI.getDevicePropertyById(instanceId);
+            set({ loadingDevice: false, deviceLoadingMessage: null, devices });
+          } catch (error) {
+            console.error(error);
 
-        if (!devicePropertyResult) throw new Error("No Device Property");
+            set({ loadingDevice: false, deviceLoadingMessage: null, devices: [] });
+          }
+        },
+        getDevicePropertyById: async (instanceId) => {
+          try {
+            if (!instanceId) throw new Error("No Instance Id");
 
-        const deviceProperties: DeviceProperty[] = JSON.parse(devicePropertyResult);
-        const filteredDeviceProperties = deviceProperties.filter((property) => !!PROPERTY_MAP?.[property.KeyName]);
+            const loadingPropertyMap = get().loadingPropertyMap;
 
-        const containerId = filteredDeviceProperties.find(
-          (property) => property.KeyName === "DEVPKEY_Device_ContainerId",
-        )?.Data;
+            if (loadingPropertyMap[instanceId]) return;
 
-        if (!containerId) throw new Error("No Container Id");
+            set({
+              loadingProperty: true,
+              loadingPropertyMap: { ...loadingPropertyMap, [instanceId]: true },
+              propertyLoadingMessage: "Loading Device Property ...",
+            });
 
-        set({ propertyLoadingMessage: "Loading System ..." });
+            const devices = get().devices;
+            const selectedDevice = devices.find((device) => device.InstanceId === instanceId);
 
-        const systemResult = await window.systemAPI.getSystemByContainerId(containerId);
+            const devicePropertyResult = await window.systemAPI.getDevicePropertyById(instanceId);
 
-        if (!systemResult) throw new Error("No System Data");
+            if (!devicePropertyResult) throw new Error("No Device Property");
 
-        const system = JSON.parse(systemResult);
+            console.log("get device property");
 
-        if (!system.InstanceId) throw new Error("No System Instance Id");
+            const deviceProperties: DeviceProperty[] = JSON.parse(devicePropertyResult);
+            const filteredDeviceProperties = deviceProperties.filter((property) => !!PROPERTY_MAP?.[property.KeyName]);
 
-        set({ propertyLoadingMessage: "Loading System Property ..." });
+            const containerId = filteredDeviceProperties.find(
+              (property) => property.KeyName === "DEVPKEY_Device_ContainerId",
+            )?.Data;
 
-        const systemPropertyResult = await window.systemAPI.getSystemPropertyById(system.InstanceId);
+            if (!containerId) throw new Error("No Container Id");
 
-        if (!systemPropertyResult) throw new Error("No System Property");
+            set({ propertyLoadingMessage: "Loading System ..." });
 
-        const systemProperties: SystemProperty[] = JSON.parse(systemPropertyResult);
-        const filteredSystemProperties = systemProperties.filter((property) => !!PROPERTY_MAP?.[property.KeyName]);
+            const systemResult = await window.systemAPI.getSystemByContainerId(containerId);
 
-        set({
-          loadingProperty: false,
-          propertyLoadingMessage: null,
-          deviceProperties: filteredDeviceProperties,
-          selectedDevice,
-          selectedSystem: system,
-          systemProperties: filteredSystemProperties,
-        });
-      } catch (error) {
-        console.error(error);
+            if (!systemResult) throw new Error("No System Data");
 
-        set({
-          loadingProperty: false,
-          propertyLoadingMessage: null,
-          deviceProperties: [],
-          selectedDevice: null,
-          selectedSystem: null,
-          systemProperties: [],
-        });
-      }
-    },
-  })),
+            console.log("get system");
+
+            const system = JSON.parse(systemResult);
+
+            if (!system.InstanceId) throw new Error("No System Instance Id");
+
+            set({ propertyLoadingMessage: "Loading System Property ..." });
+
+            const systemPropertyResult = await window.systemAPI.getSystemPropertyById(system.InstanceId);
+
+            if (!systemPropertyResult) throw new Error("No System Property");
+
+            console.log("get system property");
+
+            const systemProperties: SystemProperty[] = JSON.parse(systemPropertyResult);
+            const filteredSystemProperties = systemProperties.filter((property) => !!PROPERTY_MAP?.[property.KeyName]);
+
+            set({
+              loadingProperty: false,
+              loadingPropertyMap: { ...loadingPropertyMap, [instanceId]: false },
+              propertyLoadingMessage: null,
+              deviceProperties: filteredDeviceProperties,
+              selectedDevice,
+              selectedSystem: system,
+              systemProperties: filteredSystemProperties,
+            });
+          } catch (error) {
+            console.error(error);
+
+            set({
+              loadingProperty: false,
+              loadingPropertyMap: {},
+              propertyLoadingMessage: null,
+              deviceProperties: [],
+              selectedDevice: null,
+              selectedSystem: null,
+              systemProperties: [],
+            });
+          }
+        },
+      }),
+      {
+        name: "system-store",
+        partialize: (state) => ({
+          loadingDevice: state.loadingDevice,
+          loadingProperty: state.loadingProperty,
+          loadingPropertyMap: state.loadingPropertyMap,
+        }),
+      },
+    ),
+  ),
 );

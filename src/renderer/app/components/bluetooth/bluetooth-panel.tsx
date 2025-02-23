@@ -5,6 +5,7 @@ import { Button, Center, Flex, HStack, Stack, Text } from "@chakra-ui/react";
 import { useAppStore } from "@app/stores/app.store";
 import { useSystemStore } from "@app/stores/system.store";
 import { useBluetoothStore } from "@app/stores/bluetooth.store";
+import { useInterval } from "@app/hooks/useInterval";
 import { BluetoothDialog } from "./bluetooth-dialog";
 import { BluetoothCard } from "./bluetooth-card";
 
@@ -20,12 +21,16 @@ export const BluetoothPanel = () => {
   );
   const [isOpenBluetoothDialog, setIsOpenBluetoothDialog] = useState(false);
 
+  useInterval(() => {
+    pullDeviceInfo();
+  });
+
   useEffect(() => {
-    // pullDeviceInfo();
+    pullDeviceInfo();
   }, []);
 
   useEffect(() => {
-    // getDeviceByClass("Bluetooth");
+    getDeviceByClass("Bluetooth");
   }, []);
 
   const handleOpenBluetoothDialog = () => {

@@ -1,3 +1,9 @@
+export const POWERSHELL_COMMAND = "powershell -Command";
+
+export const POWERSHELL_TEXT_ENCODING = "[System.Console]::OutputEncoding = [System.Text.Encoding]::UTF8";
+
+export const POWERSHELL_CONVERT_TO_JSON = "ConvertTo-Json";
+
 export const PROPERTY_MAP: Record<string, Record<string, string>> = {
   DEVPKEY_NAME: {
     name: "name",
@@ -37,13 +43,20 @@ export const PROPERTY_MAP: Record<string, Record<string, string>> = {
   "{104EA319-6EE2-4701-BD47-8DDBF425BBE5} 2": {
     name: "battery level",
     value: "battery_level",
-    keyName: "{104EA319-6EE2-4701-BD47-8DDBF425BBE5} 2",
+    keyName: "'{104EA319-6EE2-4701-BD47-8DDBF425BBE5} 2'",
   },
   "{83DA6326-97A6-4088-9453-A1923F573B29} 15": {
     name: "connected",
     value: "connected",
-    keyName: "{83DA6326-97A6-4088-9453-A1923F573B29} 15",
+    keyName: "'{83DA6326-97A6-4088-9453-A1923F573B29} 15'",
   },
 };
 
-export const PROPERTY_NAMES = Object.keys(PROPERTY_MAP);
+export const POWERSHELL = {
+  POWERSHELL_COMMAND,
+  POWERSHELL_TEXT_ENCODING,
+  POWERSHELL_CONVERT_TO_JSON,
+  POWERSHELL_PROPERTIES: Object.values(PROPERTY_MAP)
+    .map((property) => property.keyName)
+    .join(", "),
+};
