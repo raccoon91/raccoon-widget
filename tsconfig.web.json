@@ -21,6 +21,9 @@
       "@app/*": [
         "src/renderer/app/*"
       ],
-    }
+    },
+    "types": [
+      "electron-vite/node"
+    ]
   }
 }
