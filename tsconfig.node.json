@@ -6,6 +6,10 @@
   ],
   "compilerOptions": {
     "composite": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@/*": [
