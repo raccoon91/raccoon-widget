@@ -31,7 +31,7 @@ export const BluetoothDeviceSection = () => {
   return (
     <Stack gap="12px">
       <HStack gap="16px">
-        <Text fontSize="xl" fontWeight="semibold">
+        <Text fontSize="16px" fontWeight="semibold">
           Bluetooth Device
         </Text>
 
@@ -67,7 +67,7 @@ export const BluetoothDeviceSection = () => {
               bg={device.InstanceId === selectedDevice?.InstanceId ? "bg.emphasized" : "unset"}
               _hover={{ bg: "bg" }}
             >
-              <Text flex="1" truncate>
+              <Text flex="1" truncate fontSize="14px">
                 {device.FriendlyName}
               </Text>
               <Button size="2xs" data-instance-id={device.InstanceId} onClick={handleClickBluetooth}>

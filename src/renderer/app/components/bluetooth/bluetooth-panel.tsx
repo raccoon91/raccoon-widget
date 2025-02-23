@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
-import { Button, Center, Flex, Heading, HStack, Stack, Text } from "@chakra-ui/react";
+import { Button, Center, Flex, HStack, Stack, Text } from "@chakra-ui/react";
 
-import { useBluetoothStore } from "@app/stores/bluetooth.store";
+import { useAppStore } from "@app/stores/app.store";
 import { useSystemStore } from "@app/stores/system.store";
+import { useBluetoothStore } from "@app/stores/bluetooth.store";
 import { BluetoothDialog } from "./bluetooth-dialog";
 import { BluetoothCard } from "./bluetooth-card";
 
 export const BluetoothPanel = () => {
-  const [isOpenBluetoothDialog, setIsOpenBluetoothDialog] = useState(false);
+  const mode = useAppStore((state) => state.mode);
+  const getDeviceByClass = useSystemStore((state) => state.getDeviceByClass);
   const { bluetooth, bluetoothInfoMap, pullDeviceInfo } = useBluetoothStore(
     useShallow((state) => ({
       bluetooth: state.bluetooth,
@@ -16,7 +18,7 @@ export const BluetoothPanel = () => {
       pullDeviceInfo: state.pullDeviceInfo,
     })),
   );
-  const getDeviceByClass = useSystemStore((state) => state.getDeviceByClass);
+  const [isOpenBluetoothDialog, setIsOpenBluetoothDialog] = useState(false);
 
   useEffect(() => {
     // pullDeviceInfo();
@@ -32,12 +34,17 @@ export const BluetoothPanel = () => {
 
   return (
     <>
-      <Stack gap="24px" p="24px" bg="bg.panel" rounded="xl">
-        <HStack justify="space-between">
-          <Heading fontSize="24px">Bluetooth</Heading>
-          <Button variant="subtle" size="xs" onClick={handleOpenBluetoothDialog}>
-            Add
-          </Button>
+      <Stack gap="16px" p="24px" bg="bg.panel" rounded="xl">
+        <HStack justify="space-between" h="24px">
+          <Text fontSize="16px" fontWeight="bold">
+            Bluetooth
+          </Text>
+
+          {mode === "setting" ? (
+            <Button variant="subtle" size="2xs" onClick={handleOpenBluetoothDialog}>
+              Add
+            </Button>
+          ) : null}
         </HStack>
 
         {bluetooth.length ? (
@@ -52,8 +59,8 @@ export const BluetoothPanel = () => {
             ))}
           </Flex>
         ) : (
-          <Center flexDirection="column" gap="12px" py="24px">
-            <Text>No Devices</Text>
+          <Center flexDirection="column" gap="8px" py="24px">
+            <Text fontSize="14px">No Devices</Text>
             <Button size="xs" onClick={handleOpenBluetoothDialog}>
               Add Device
             </Button>

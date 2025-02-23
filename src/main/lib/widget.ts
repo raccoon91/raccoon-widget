@@ -2,8 +2,6 @@ import { BrowserWindow } from "electron";
 
 import { WM_WINDOWPOSCHANGING } from "@/constants/windows";
 import {
-  attachWindow,
-  detachWindow,
   getDesktopWindow,
   getSHELLDLL_DefViewHandle,
   preventFromAeroPeek,
@@ -17,12 +15,10 @@ class WidgetModule {
   }
 
   preventFromShowDesktop(browserWindow: BrowserWindow) {
-    attachWindow(browserWindow);
     return setOwnerWindow(browserWindow, getSHELLDLL_DefViewHandle());
   }
 
   cancelPreventFromShowDesktop(browserWindow: BrowserWindow) {
-    detachWindow(browserWindow);
     return setOwnerWindow(browserWindow, getDesktopWindow());
   }
 
@@ -31,11 +27,15 @@ class WidgetModule {
   }
 
   alwaysOnBottom(browserWindow: BrowserWindow) {
+    browserWindow.setResizable(false);
+
     this.moveToBottom(browserWindow);
     this.preventFromShowDesktop(browserWindow);
   }
 
   cancelAlwaysOnBottom(browserWindow: BrowserWindow) {
+    browserWindow.moveTop();
+    browserWindow.setResizable(true);
     browserWindow.unhookWindowMessage(WM_WINDOWPOSCHANGING);
 
     this.cancelPreventFromShowDesktop(browserWindow);

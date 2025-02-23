@@ -44,17 +44,17 @@ export const BluetoothDialog: FC<BluetoothDialogProps> = ({ open, setOpen }) => 
       <DialogContent>
         <DialogCloseTrigger top="12px" right="12px" zIndex="1" />
 
-        <DialogBody as={Stack} position="relative" gap="16px" p="24px">
+        <DialogBody as={Stack} position="relative" gap="12px" p="24px">
           <BluetoothDeviceSection />
 
           <BluetoothInfoSection />
         </DialogBody>
 
         <DialogFooter>
-          <Button size="sm" variant="ghost" mr={3} onClick={handleCloseDialog}>
+          <Button size="xs" variant="ghost" mr={3} onClick={handleCloseDialog}>
             Close
           </Button>
-          <Button size="sm" disabled={!selectedDevice || !selectedSystem} onClick={handleAddDevice}>
+          <Button size="xs" disabled={!selectedDevice || !selectedSystem} onClick={handleAddDevice}>
             Add
           </Button>
         </DialogFooter>

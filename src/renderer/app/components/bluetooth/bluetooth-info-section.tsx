@@ -28,7 +28,7 @@ export const BluetoothInfoSection = () => {
   return (
     <Stack gap="12px">
       <HStack h="24px">
-        <Text fontSize="xl" fontWeight="semibold">
+        <Text fontSize="16px" fontWeight="semibold">
           Info
         </Text>
       </HStack>
@@ -47,13 +47,13 @@ export const BluetoothInfoSection = () => {
             zIndex="10"
           >
             <Spinner size="xl" borderWidth="4px" />
-            <Text>{propertyLoadingMessage}</Text>
+            <Text fontSize="14px">{propertyLoadingMessage}</Text>
           </Center>
         ) : null}
 
         {selectedDevice ? (
           <>
-            <Text p="4px 12px" fontWeight="semibold">
+            <Text p="4px 12px" fontSize="14px" fontWeight="semibold">
               Device Property
             </Text>
 
@@ -74,14 +74,16 @@ export const BluetoothInfoSection = () => {
 
             <Separator my="8px" />
 
-            <Text p="4px 12px" fontWeight="semibold">
+            <Text p="4px 12px" fontSize="14px" fontWeight="semibold">
               System
             </Text>
 
             {selectedSystem ? (
               <HStack gap="16px" p="4px 12px">
-                <Text w="160px">system instance id</Text>
-                <Text flex="1" truncate>
+                <Text w="160px" fontSize="14px">
+                  system instance id
+                </Text>
+                <Text flex="1" truncate fontSize="14px">
                   {selectedDevice.InstanceId}
                 </Text>
               </HStack>
@@ -93,15 +95,17 @@ export const BluetoothInfoSection = () => {
 
             <Separator my="8px" />
 
-            <Text p="4px 12px" fontWeight="semibold">
+            <Text p="4px 12px" fontWeight="semibold" fontSize="14px">
               System Property
             </Text>
 
             {systemProperties.length ? (
               systemProperties.map((property, index) => (
                 <HStack key={index} gap="16px" p="4px 12px">
-                  <Text w="160px">{PROPERTY_MAP[property.KeyName].name}</Text>
-                  <Text flex="1" truncate>
+                  <Text w="160px" fontSize="14px">
+                    {PROPERTY_MAP[property.KeyName].name}
+                  </Text>
+                  <Text flex="1" truncate fontSize="14px">
                     {property.Data.toString()}
                   </Text>
                 </HStack>

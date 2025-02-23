@@ -12,6 +12,9 @@ function createWindow(): void {
   const mainWindow = new BrowserWindow({
     show: false,
     icon,
+    frame: false,
+    transparent: true,
+    hasShadow: false,
     titleBarStyle: "hidden",
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
@@ -68,7 +71,7 @@ app.whenReady().then(() => {
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
 
-    // window.webContents.openDevTools({ mode: "right" });
+    window.webContents.openDevTools({ mode: "right" });
   });
 
   createWindow();

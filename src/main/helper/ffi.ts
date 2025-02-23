@@ -2,7 +2,6 @@ import koffi from "koffi";
 
 import { DWMWA_EXCLUDED_FROM_PEEK, GWLP_HWNDPARENT, HWND_BOTTOM, SWP_NOMOVE, SWP_NOSIZE } from "@/constants/windows";
 import { getWindowBuffer, Win } from "@/main/helper/utils";
-import { BrowserWindow } from "electron";
 
 const isWindows = process.platform === "win32";
 
@@ -49,14 +48,6 @@ export function getSHELLDLL_DefViewHandle() {
   if (!defView) throw new Error("Not found SHELLDLL_DefView window handle.");
 
   return defView as number;
-}
-
-export function attachWindow(win: BrowserWindow) {
-  win.setResizable(false);
-}
-
-export function detachWindow(win: BrowserWindow) {
-  win.setResizable(true);
 }
 
 export function setOwnerWindow(win: Win, target: Win | number) {
