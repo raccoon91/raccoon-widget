@@ -105,6 +105,8 @@ export const useBluetoothStore = create<BluetoothStore>()(
                 return acc;
               }, {});
 
+            console.log("pull system info");
+
             set((p) => ({
               loadingSystemMap: {
                 ...p.loadingSystemMap,
