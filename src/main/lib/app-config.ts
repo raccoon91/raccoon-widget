@@ -19,7 +19,7 @@ class AppConfig {
     this.makeDirectory();
 
     this.writeFile(
-      "config.txt",
+      APP.APP_CONFIG_FILE_NAME,
       JSON.stringify({
         width: APP.APP_DEFAULT_WIDTH,
         height: APP.APP_DEFAULT_HEIGHT,
