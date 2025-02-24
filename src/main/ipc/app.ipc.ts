@@ -3,49 +3,102 @@ import { BrowserWindow, ipcMain } from "electron";
 import { APP_IPC } from "@/constants/ipc";
 import { APP } from "@/constants/app";
 import appConfig from "@/main/lib/app-config";
+import log from "@/main/lib/log";
 
 export const appIpcHandler = (browserWindow: BrowserWindow) => {
   ipcMain.handle(APP_IPC.MINIMIZE_WINDOW, async () => {
-    if (browserWindow.isMinimizable()) {
-      browserWindow.minimize();
+    try {
+      if (browserWindow.isMinimizable()) {
+        browserWindow.minimize();
+      }
+
+      log.info("APP_IPC MINIMIZE_WINDOW");
+    } catch (error) {
+      log.error(error);
     }
   });
 
   ipcMain.handle(APP_IPC.MAXIMIZE_WINDOW, async () => {
-    if (browserWindow.isMaximizable()) {
-      browserWindow.maximize();
+    try {
+      if (browserWindow.isMaximizable()) {
+        browserWindow.maximize();
+      }
+
+      log.info("APP_IPC MAXIMIZE_WINDOW");
+    } catch (error) {
+      log.error(error);
     }
   });
 
   ipcMain.handle(APP_IPC.IS_DEV_TOOLS_OPENED, async () => {
-    return browserWindow.webContents.isDevToolsOpened();
+    try {
+      log.info("APP_IPC IS_DEV_TOOLS_OPENED");
+
+      return browserWindow.webContents.isDevToolsOpened();
+    } catch (error) {
+      log.error(error);
+
+      return false;
+    }
   });
 
   ipcMain.handle(APP_IPC.OPEN_DEV_TOOLS, async () => {
-    if (!browserWindow.webContents.isDevToolsOpened()) {
-      browserWindow.webContents.openDevTools({ mode: "detach" });
+    try {
+      if (!browserWindow.webContents.isDevToolsOpened()) {
+        browserWindow.webContents.openDevTools({ mode: "detach" });
+      }
+
+      log.info("APP_IPC OPEN_DEV_TOOLS");
+    } catch (error) {
+      log.error(error);
     }
   });
 
   ipcMain.handle(APP_IPC.CLOSE_DEV_TOOLS, async () => {
-    if (browserWindow.webContents.isDevToolsOpened()) {
-      browserWindow.webContents.closeDevTools();
+    try {
+      if (browserWindow.webContents.isDevToolsOpened()) {
+        browserWindow.webContents.closeDevTools();
+      }
+
+      log.info("APP_IPC CLOSE_DEV_TOOLS");
+    } catch (error) {
+      log.error(error);
     }
   });
 
   ipcMain.handle(APP_IPC.CLOSE_WINDOW, async () => {
-    if (browserWindow.isClosable()) {
-      browserWindow.close();
+    try {
+      if (browserWindow.isClosable()) {
+        browserWindow.close();
+      }
+
+      log.info("APP_IPC CLOSE_WINDOW");
+    } catch (error) {
+      log.error(error);
     }
   });
 
   ipcMain.handle(APP_IPC.GET_APP_CONFIG, () => {
-    const result = appConfig.readFile(APP.APP_CONFIG_FILE_NAME);
+    try {
+      const result = appConfig.readFile(APP.APP_CONFIG_FILE_NAME);
 
-    return result;
+      log.info("APP_IPC GET_APP_CONFIG");
+
+      return result;
+    } catch (error) {
+      log.error(error);
+
+      return null;
+    }
   });
 
   ipcMain.handle(APP_IPC.SET_APP_CONFIG, (_, data?: string) => {
-    appConfig.writeFile(APP.APP_CONFIG_FILE_NAME, data);
+    try {
+      appConfig.writeFile(APP.APP_CONFIG_FILE_NAME, data);
+
+      log.info("APP_IPC SET_APP_CONFIG");
+    } catch (error) {
+      log.error(error);
+    }
   });
 };

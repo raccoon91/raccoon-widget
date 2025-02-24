@@ -5,6 +5,7 @@ import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import { APP } from "@/constants/app";
 import appConfig from "@/main/lib/app-config";
 import widget from "@/main/lib/widget";
+import log from "@/main/lib/log";
 import { appIpcHandler } from "@/main/ipc/app.ipc";
 import { widgetIpcHandler } from "@/main/ipc/widget.ipc";
 import { bluetoothIpcHandler } from "@/main/ipc/bluetooth.ipc";
@@ -88,6 +89,10 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+});
+
+app.on("before-quit", () => {
+  log.end();
 });
 
 app.on("window-all-closed", () => {

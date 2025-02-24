@@ -90,8 +90,6 @@ export const useBluetoothStore = create<BluetoothStore>()(
                     return acc;
                   }, {});
 
-                console.log("get device info");
-
                 set((p) => ({
                   bluetoothInfoMap: {
                     ...p.bluetoothInfoMap,
@@ -104,8 +102,6 @@ export const useBluetoothStore = create<BluetoothStore>()(
               }),
             ),
           ).then(() => {
-            console.log("pull device info");
-
             set({ loadingDeviceInfo: false });
           });
         },
@@ -136,8 +132,6 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
                 return acc;
               }, {});
-
-            console.log("pull system info");
 
             set((p) => ({
               loadingSystemInfoMap: {
@@ -178,8 +172,6 @@ export const useBluetoothStore = create<BluetoothStore>()(
             const devices: Device[] = JSON.parse(result);
             const filteredDevices = devices.filter((device) => !bluetoothMap[device.InstanceId]);
 
-            console.log("get device");
-
             set({ loadingDevice: false, deviceLoadingMessage: null, devices: filteredDevices });
           } catch (error) {
             console.error(error);
@@ -208,8 +200,6 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
             if (!devicePropertyResult) throw new Error("No Device Property");
 
-            console.log("get device property");
-
             const deviceProperties: DeviceProperty[] = JSON.parse(devicePropertyResult);
             const filteredDeviceProperties = deviceProperties.filter((property) => !!PROPERTY_MAP?.[property.KeyName]);
 
@@ -225,8 +215,6 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
             if (!systemResult) throw new Error("No System Data");
 
-            console.log("get system");
-
             const system = JSON.parse(systemResult);
 
             if (!system.InstanceId) throw new Error("No System Instance Id");
@@ -236,8 +224,6 @@ export const useBluetoothStore = create<BluetoothStore>()(
             const systemPropertyResult = await window.systemAPI.getSystemPropertyById(system.InstanceId);
 
             if (!systemPropertyResult) throw new Error("No System Property");
-
-            console.log("get system property");
 
             const systemProperties: SystemProperty[] = JSON.parse(systemPropertyResult);
             const filteredSystemProperties = systemProperties.filter((property) => !!PROPERTY_MAP?.[property.KeyName]);

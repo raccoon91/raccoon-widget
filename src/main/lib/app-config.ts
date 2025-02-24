@@ -12,8 +12,6 @@ class AppConfig {
 
     const isExist = this.isExist();
 
-    console.log("app config is exist", isExist);
-
     if (isExist) return;
 
     this.makeDirectory();
