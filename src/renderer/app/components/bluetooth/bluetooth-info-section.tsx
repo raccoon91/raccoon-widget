@@ -1,7 +1,7 @@
 import { useShallow } from "zustand/shallow";
 import { Box, Center, HStack, Separator, Spinner, Stack, Text } from "@chakra-ui/react";
 
-import { PROPERTY_MAP } from "@/constants/system";
+import { PROPERTY_MAP } from "@/constants/bluetooth";
 import { useBluetoothStore } from "@app/stores/bluetooth.store";
 
 export const BluetoothInfoSection = () => {

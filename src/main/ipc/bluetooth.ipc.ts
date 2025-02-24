@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 import { ipcMain } from "electron";
 
-import { POWERSHELL } from "@/constants/system";
+import { POWERSHELL } from "@/constants/bluetooth";
 import { BLUETOOTH_IPC } from "@/constants/ipc";
 
 export const bluetoothIpcHandler = () => {

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
-import { PROPERTY_MAP } from "@/constants/system";
+import { PROPERTY_MAP } from "@/constants/bluetooth";
 import { useLocalStore } from "./local.store";
 
 interface BluetoothStore {
