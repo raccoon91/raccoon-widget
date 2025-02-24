@@ -39,7 +39,7 @@ export const BluetoothPanel = () => {
 
   return (
     <>
-      <Stack gap="16px" p="24px" bg="bg.panel" rounded="xl">
+      <Stack gap="16px" minW="240px" p="24px" bg="bg.panel" rounded="xl">
         <HStack justify="space-between" h="24px">
           <Text fontSize="16px" fontWeight="bold">
             Bluetooth

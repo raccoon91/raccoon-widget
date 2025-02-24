@@ -29,9 +29,9 @@ export const App = () => {
   };
 
   return (
-    <Box w="vw" h="vh" backgroundColor={mode === "setting" ? "blackAlpha.700" : "transparent"}>
+    <Box overflow="hidden" w="vw" h="vh" backgroundColor={mode === "setting" ? "blackAlpha.700" : "transparent"}>
       {mode === "setting" ? (
-        <Flex alignItems="stretch" justifyContent="end" gap="0" h="36px" bg="bg.subtle">
+        <Flex align="stretch" justify="end" gap="0" h="36px" bg="bg.subtle">
           <Box flex="1" css={{ WebkitAppRegion: "drag" }}></Box>
           <Center
             h="36px"
@@ -51,7 +51,7 @@ export const App = () => {
           </Center>
         </Flex>
       ) : (
-        <Flex alignItems="stretch" h="36px">
+        <Flex align="stretch" justify="end" h="36px" pr="44px">
           <Center
             px="12px"
             rounded="md"
@@ -64,7 +64,7 @@ export const App = () => {
         </Flex>
       )}
 
-      <Box p="36px 48px">
+      <Box p="16px 32px">
         <BluetoothPanel />
       </Box>
     </Box>
