@@ -2,6 +2,12 @@ export const MINIMIZE_WINDOW = "minimize-window";
 
 export const MAXIMIZE_WINDOW = "maximize-window";
 
+export const IS_DEV_TOOLS_OPENED = "is-dev-tools-opened";
+
+export const OPEN_DEV_TOOLS = "open-dev-tools";
+
+export const CLOSE_DEV_TOOLS = "close-dev-tools";
+
 export const CLOSE_WINDOW = "close-window";
 
 export const GET_DEVICE_BY_CLASS = "get-device-by-class";
@@ -29,6 +35,9 @@ export const CANCEL_ALWAYS_TO_BOTTOM = "cancel-always-on-bottom";
 export const APP_IPC = {
   MINIMIZE_WINDOW,
   MAXIMIZE_WINDOW,
+  IS_DEV_TOOLS_OPENED,
+  OPEN_DEV_TOOLS,
+  CLOSE_DEV_TOOLS,
   CLOSE_WINDOW,
 };
 

@@ -15,6 +15,22 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
     }
   });
 
+  ipcMain.handle(APP_IPC.IS_DEV_TOOLS_OPENED, async () => {
+    return browserWindow.webContents.isDevToolsOpened();
+  });
+
+  ipcMain.handle(APP_IPC.OPEN_DEV_TOOLS, async () => {
+    if (!browserWindow.webContents.isDevToolsOpened()) {
+      browserWindow.webContents.openDevTools({ mode: "detach" });
+    }
+  });
+
+  ipcMain.handle(APP_IPC.CLOSE_DEV_TOOLS, async () => {
+    if (browserWindow.webContents.isDevToolsOpened()) {
+      browserWindow.webContents.closeDevTools();
+    }
+  });
+
   ipcMain.handle(APP_IPC.CLOSE_WINDOW, async () => {
     if (browserWindow.isClosable()) {
       browserWindow.close();

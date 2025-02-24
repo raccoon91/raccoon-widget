@@ -3,9 +3,12 @@ type Nullish<T> = T | null | undefined;
 type Nullable<T> = T | null;
 
 interface AppAPI {
-  minimize: () => void;
-  maximize: () => void;
-  close: () => void;
+  minimize: () => Promise<void>;
+  maximize: () => Promise<void>;
+  isDevToolsOpened: () => Promise<boolean>;
+  openDevTools: () => Promise<void>;
+  closeDevTools: () => Promise<void>;
+  close: () => Promise<void>;
 }
 
 interface SystemAPI {
@@ -17,12 +20,12 @@ interface SystemAPI {
 }
 
 interface WidgetAPI {
-  preventFromAeroPeek: () => void;
-  preventFromShowDesktop: () => void;
-  cancelPreventFromShowDesktop: () => void;
-  moveToBottom: () => void;
-  alwaysOnBottom: () => void;
-  cancelAlwaysOnBottom: () => void;
+  preventFromAeroPeek: () => Promise<void>;
+  preventFromShowDesktop: () => Promise<void>;
+  cancelPreventFromShowDesktop: () => Promise<void>;
+  moveToBottom: () => Promise<void>;
+  alwaysOnBottom: () => Promise<void>;
+  cancelAlwaysOnBottom: () => Promise<void>;
 }
 
 interface Window {

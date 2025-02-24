@@ -3,6 +3,12 @@ import { devtools } from "zustand/middleware";
 
 interface AppStore {
   mode: string;
+  isDevToolsOpen: boolean;
+
+  initAppInfo: () => Promise<void>;
+
+  openDevTools: () => Promise<void>;
+  closeDevTools: () => Promise<void>;
 
   changeToDisplayMode: () => void;
   changeToSettingMode: () => void;
@@ -15,6 +21,24 @@ interface AppStore {
 export const useAppStore = create<AppStore>()(
   devtools((set) => ({
     mode: "display",
+    isDevToolsOpen: false,
+
+    initAppInfo: async () => {
+      const isDevToolsOpen = await window.appAPI.isDevToolsOpened();
+
+      set({ isDevToolsOpen });
+    },
+
+    openDevTools: async () => {
+      await window.appAPI.openDevTools();
+
+      set({ isDevToolsOpen: true });
+    },
+    closeDevTools: async () => {
+      await window.appAPI.closeDevTools();
+
+      set({ isDevToolsOpen: false });
+    },
 
     changeToDisplayMode: () => {
       window.widgetAPI.alwaysOnBottom();

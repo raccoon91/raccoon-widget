@@ -6,6 +6,9 @@ import { APP_IPC, BLUETOOTH_IPC, WIDGET_IPC } from "@/constants/ipc";
 const appAPI: AppAPI = {
   minimize: () => ipcRenderer.invoke(APP_IPC.MINIMIZE_WINDOW),
   maximize: () => ipcRenderer.invoke(APP_IPC.MAXIMIZE_WINDOW),
+  isDevToolsOpened: () => ipcRenderer.invoke(APP_IPC.IS_DEV_TOOLS_OPENED),
+  openDevTools: () => ipcRenderer.invoke(APP_IPC.OPEN_DEV_TOOLS),
+  closeDevTools: () => ipcRenderer.invoke(APP_IPC.CLOSE_DEV_TOOLS),
   close: () => ipcRenderer.invoke(APP_IPC.CLOSE_WINDOW),
 };
 
