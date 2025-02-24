@@ -3,6 +3,7 @@ import { devtools } from "zustand/middleware";
 
 interface AppStore {
   mode: string;
+  config: Record<string, number>;
   isDevToolsOpen: boolean;
 
   initAppInfo: () => Promise<void>;
@@ -10,7 +11,7 @@ interface AppStore {
   openDevTools: () => Promise<void>;
   closeDevTools: () => Promise<void>;
 
-  changeToDisplayMode: () => void;
+  changeToDisplayMode: (width: number, height: number, x: number, y: number) => void;
   changeToSettingMode: () => void;
 
   minimize: () => void;
@@ -19,14 +20,18 @@ interface AppStore {
 }
 
 export const useAppStore = create<AppStore>()(
-  devtools((set) => ({
+  devtools((set, get) => ({
     mode: "display",
     isDevToolsOpen: false,
 
     initAppInfo: async () => {
+      const stringConfig = await window.appAPI.getAppConfig();
+
+      const config = stringConfig ? JSON.parse(stringConfig) : {};
+
       const isDevToolsOpen = await window.appAPI.isDevToolsOpened();
 
-      set({ isDevToolsOpen });
+      set({ config, isDevToolsOpen });
     },
 
     openDevTools: async () => {
@@ -40,15 +45,32 @@ export const useAppStore = create<AppStore>()(
       set({ isDevToolsOpen: false });
     },
 
-    changeToDisplayMode: () => {
+    changeToDisplayMode: (width, height, x, y) => {
       window.widgetAPI.alwaysOnBottom();
 
-      set({ mode: "display" });
+      const config = get().config;
+      const newConfig = {
+        ...config,
+        width,
+        height,
+        x,
+        y,
+      };
+
+      const stringConfig = JSON.stringify(newConfig);
+
+      window.appAPI.setAppConfig(stringConfig);
+
+      set({ mode: "display", config: newConfig });
     },
-    changeToSettingMode: () => {
+    changeToSettingMode: async () => {
       window.widgetAPI.cancelAlwaysOnBottom();
 
-      set({ mode: "setting" });
+      const stringConfig = await window.appAPI.getAppConfig();
+
+      const config = stringConfig ? JSON.parse(stringConfig) : {};
+
+      set({ mode: "setting", config });
     },
 
     minimize: () => {

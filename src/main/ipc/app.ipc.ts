@@ -1,6 +1,8 @@
 import { BrowserWindow, ipcMain } from "electron";
 
 import { APP_IPC } from "@/constants/ipc";
+import { APP } from "@/constants/app";
+import appConfig from "@/main/lib/app-config";
 
 export const appIpcHandler = (browserWindow: BrowserWindow) => {
   ipcMain.handle(APP_IPC.MINIMIZE_WINDOW, async () => {
@@ -35,5 +37,15 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
     if (browserWindow.isClosable()) {
       browserWindow.close();
     }
+  });
+
+  ipcMain.handle(APP_IPC.GET_APP_CONFIG, () => {
+    const result = appConfig.readFile(APP.APP_CONFIG_FILE_NAME);
+
+    return result;
+  });
+
+  ipcMain.handle(APP_IPC.SET_APP_CONFIG, (_, data?: string) => {
+    appConfig.writeFile(APP.APP_CONFIG_FILE_NAME, data);
   });
 };

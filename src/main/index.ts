@@ -2,13 +2,18 @@ import { join } from "path";
 import { app, shell, BrowserWindow } from "electron";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
+import { APP } from "@/constants/app";
+import appConfig from "@/main/lib/app-config";
 import widget from "@/main/lib/widget";
 import { appIpcHandler } from "@/main/ipc/app.ipc";
-import { bluetoothIpcHandler } from "@/main/ipc/bluetooth.ipc";
 import { widgetIpcHandler } from "@/main/ipc/widget.ipc";
+import { bluetoothIpcHandler } from "@/main/ipc/bluetooth.ipc";
 import icon from "@resources/icon.png?asset";
 
 function createWindow(): void {
+  const stringConfig = appConfig.readFile(APP.APP_CONFIG_FILE_NAME);
+  const config = stringConfig ? JSON.parse(stringConfig) : null;
+
   const mainWindow = new BrowserWindow({
     show: false,
     icon,
@@ -16,6 +21,10 @@ function createWindow(): void {
     transparent: true,
     hasShadow: false,
     titleBarStyle: "hidden",
+    width: config?.width ?? APP.APP_DEFAULT_WIDTH,
+    height: config?.height ?? APP.APP_DEFAULT_HEIGHT,
+    x: config?.x ?? APP.APP_DEFAULT_POSITION_X,
+    y: config?.y ?? APP.APP_DEFAULT_POSITION_Y,
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
       sandbox: false,
@@ -24,9 +33,9 @@ function createWindow(): void {
 
   appIpcHandler(mainWindow);
 
-  bluetoothIpcHandler();
-
   widgetIpcHandler(mainWindow);
+
+  bluetoothIpcHandler();
 
   mainWindow.setMenu(null);
 

@@ -9,6 +9,8 @@ interface AppAPI {
   openDevTools: () => Promise<void>;
   closeDevTools: () => Promise<void>;
   close: () => Promise<void>;
+  getAppConfig: () => Promise<string>;
+  setAppConfig: (data?: string) => Promise<void>;
 }
 
 interface SystemAPI {

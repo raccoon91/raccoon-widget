@@ -48,7 +48,7 @@ export const App = () => {
   };
 
   const handleClickDisplayMode = () => {
-    changeToDisplayMode();
+    changeToDisplayMode(window.innerWidth, window.innerHeight, window.screenX, window.screenY);
   };
 
   const handleClickCloseApp = () => {

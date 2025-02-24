@@ -10,6 +10,8 @@ const appAPI: AppAPI = {
   openDevTools: () => ipcRenderer.invoke(APP_IPC.OPEN_DEV_TOOLS),
   closeDevTools: () => ipcRenderer.invoke(APP_IPC.CLOSE_DEV_TOOLS),
   close: () => ipcRenderer.invoke(APP_IPC.CLOSE_WINDOW),
+  getAppConfig: () => ipcRenderer.invoke(APP_IPC.GET_APP_CONFIG),
+  setAppConfig: (data?: string) => ipcRenderer.invoke(APP_IPC.SET_APP_CONFIG, data),
 };
 
 const systemAPI: SystemAPI = {

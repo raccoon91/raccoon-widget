@@ -10,6 +10,10 @@ export const CLOSE_DEV_TOOLS = "close-dev-tools";
 
 export const CLOSE_WINDOW = "close-window";
 
+export const GET_APP_CONFIG = "get-app-config";
+
+export const SET_APP_CONFIG = "set-app-config";
+
 export const GET_DEVICE_BY_CLASS = "get-device-by-class";
 
 export const GET_DEVICE_PROPERTY_BY_ID = "get-device-property-by-id";
@@ -39,6 +43,8 @@ export const APP_IPC = {
   OPEN_DEV_TOOLS,
   CLOSE_DEV_TOOLS,
   CLOSE_WINDOW,
+  GET_APP_CONFIG,
+  SET_APP_CONFIG,
 };
 
 export const BLUETOOTH_IPC = {
