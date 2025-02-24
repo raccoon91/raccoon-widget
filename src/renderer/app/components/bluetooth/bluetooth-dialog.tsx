@@ -2,7 +2,7 @@ import { FC } from "react";
 import { useShallow } from "zustand/shallow";
 import { Button, DialogOpenChangeDetails, Stack } from "@chakra-ui/react";
 
-import { useSystemStore } from "@app/stores/system.store";
+import { useLocalStore } from "@app/stores/local.store";
 import { useBluetoothStore } from "@app/stores/bluetooth.store";
 import { DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogRoot } from "@app/components/ui/dialog";
 import { BluetoothDeviceSection } from "./bluetooth-device-section";
@@ -14,15 +14,16 @@ interface BluetoothDialogProps {
 }
 
 export const BluetoothDialog: FC<BluetoothDialogProps> = ({ open, setOpen }) => {
-  const { selectedDevice, selectedSystem, clearState } = useSystemStore(
+  const addDevice = useLocalStore((state) => state.addDevice);
+  const { selectedDevice, selectedSystem, clearDeviceState, pullDeviceInfo } = useBluetoothStore(
     useShallow((state) => ({
       selectedDevice: state.selectedDevice,
       selectedSystem: state.selectedSystem,
       systemProperties: state.systemProperties,
-      clearState: state.clearState,
+      clearDeviceState: state.clearDeviceState,
+      pullDeviceInfo: state.pullDeviceInfo,
     })),
   );
-  const addDevice = useBluetoothStore((state) => state.addDevice);
 
   const handleChangeOpen = (e: DialogOpenChangeDetails) => {
     setOpen(e.open);
@@ -36,7 +37,9 @@ export const BluetoothDialog: FC<BluetoothDialogProps> = ({ open, setOpen }) => 
     addDevice(selectedDevice, selectedSystem);
 
     handleCloseDialog();
-    clearState();
+    clearDeviceState();
+
+    pullDeviceInfo();
   };
 
   return (

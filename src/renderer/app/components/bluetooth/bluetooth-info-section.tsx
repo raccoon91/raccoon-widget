@@ -2,7 +2,7 @@ import { useShallow } from "zustand/shallow";
 import { Box, Center, HStack, Separator, Spinner, Stack, Text } from "@chakra-ui/react";
 
 import { PROPERTY_MAP } from "@/constants/system";
-import { useSystemStore } from "@app/stores/system.store";
+import { useBluetoothStore } from "@app/stores/bluetooth.store";
 
 export const BluetoothInfoSection = () => {
   const {
@@ -13,7 +13,7 @@ export const BluetoothInfoSection = () => {
     selectedDevice,
     selectedSystem,
     systemProperties,
-  } = useSystemStore(
+  } = useBluetoothStore(
     useShallow((state) => ({
       loadingDevice: state.loadingDevice,
       loadingProperty: state.loadingProperty,

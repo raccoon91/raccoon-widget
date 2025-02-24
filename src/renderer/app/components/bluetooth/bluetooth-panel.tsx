@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import { Button, Center, Flex, HStack, Stack, Text } from "@chakra-ui/react";
 
+import { useLocalStore } from "@app/stores/local.store";
 import { useAppStore } from "@app/stores/app.store";
-import { useSystemStore } from "@app/stores/system.store";
 import { useBluetoothStore } from "@app/stores/bluetooth.store";
 import { useInterval } from "@app/hooks/useInterval";
 import { BluetoothDialog } from "./bluetooth-dialog";
@@ -11,12 +11,12 @@ import { BluetoothCard } from "./bluetooth-card";
 
 export const BluetoothPanel = () => {
   const mode = useAppStore((state) => state.mode);
-  const getDeviceByClass = useSystemStore((state) => state.getDeviceByClass);
-  const { bluetooth, bluetoothInfoMap, pullDeviceInfo } = useBluetoothStore(
+  const bluetooth = useLocalStore((state) => state.bluetooth);
+  const { bluetoothInfoMap, pullDeviceInfo, getDeviceByClass } = useBluetoothStore(
     useShallow((state) => ({
-      bluetooth: state.bluetooth,
       bluetoothInfoMap: state.bluetoothInfoMap,
       pullDeviceInfo: state.pullDeviceInfo,
+      getDeviceByClass: state.getDeviceByClass,
     })),
   );
   const [isOpenBluetoothDialog, setIsOpenBluetoothDialog] = useState(false);
@@ -64,7 +64,7 @@ export const BluetoothPanel = () => {
             ))}
           </Flex>
         ) : (
-          <Center flexDirection="column" gap="8px" py="24px">
+          <Center flexDirection="column" gap="12px" py="24px">
             <Text fontSize="14px">No Devices</Text>
             <Button size="xs" onClick={handleOpenBluetoothDialog}>
               Add Device

@@ -14,9 +14,9 @@ export const BluetoothCard: FC<BluetoothCardProps> = ({ deviceInstanceId, device
   const pullSystemInfo = useBluetoothStore((state) => state.pullSystemInfo);
 
   const pullSystemInfoCallback = useCallback(() => {
-    if (info?.device?.connected === "false") return;
-
-    pullSystemInfo(deviceInstanceId);
+    if (info?.device?.connected === "true") {
+      pullSystemInfo(deviceInstanceId);
+    }
   }, [deviceInstanceId, info?.device?.connected]);
 
   useInterval(pullSystemInfoCallback);
@@ -33,7 +33,7 @@ export const BluetoothCard: FC<BluetoothCardProps> = ({ deviceInstanceId, device
         </Card.Header>
 
         {info?.device?.connected === "true" ? (
-          <Box position="absolute" top="8px" right="0px" w="10px" h="10px" rounded="md" bg="green.400" />
+          <Box position="absolute" top="6px" right="0px" w="10px" h="10px" rounded="md" bg="green.300" />
         ) : null}
       </Box>
 
