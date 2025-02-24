@@ -27,13 +27,13 @@ export const BluetoothCard: FC<BluetoothCardProps> = ({ deviceInstanceId, device
 
   return (
     <Card.Root minW="160px" gap="4px" p="12px 24px">
-      <Box position="relative" pr="16px">
+      <Box position="relative" pr="12px">
         <Card.Header p="0" fontSize="14px" fontWeight="semibold">
           {deviceName}
         </Card.Header>
 
         {info?.device?.connected === "true" ? (
-          <Box position="absolute" top="6px" right="0px" w="10px" h="10px" rounded="md" bg="green.300" />
+          <Box position="absolute" top="6px" right="-4px" w="10px" h="10px" rounded="md" bg="green.300" />
         ) : null}
       </Box>
 
