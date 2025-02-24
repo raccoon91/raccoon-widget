@@ -161,6 +161,14 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
             if (loadingDevice) return;
 
+            const bluetooth = useLocalStore.getState().bluetooth;
+
+            const bluetoothMap = bluetooth.reduce<Record<string, boolean>>((acc, cur) => {
+              acc[cur.device.InstanceId] = true;
+
+              return acc;
+            }, {});
+
             set({ loadingDevice: true, deviceLoadingMessage: "Loading Device ..." });
 
             const result = await window.systemAPI.getDeviceByClass(className);
@@ -168,10 +176,11 @@ export const useBluetoothStore = create<BluetoothStore>()(
             if (!result) throw new Error("No Device Data");
 
             const devices: Device[] = JSON.parse(result);
+            const filteredDevices = devices.filter((device) => !bluetoothMap[device.InstanceId]);
 
             console.log("get device");
 
-            set({ loadingDevice: false, deviceLoadingMessage: null, devices });
+            set({ loadingDevice: false, deviceLoadingMessage: null, devices: filteredDevices });
           } catch (error) {
             console.error(error);
 

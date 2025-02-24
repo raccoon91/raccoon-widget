@@ -17,6 +17,15 @@ export const useLocalStore = create<LocalStore>()(
           if (!device || !system) return;
 
           const bluetooth = get().bluetooth;
+
+          const bluetoothMap = bluetooth.reduce<Record<string, boolean>>((acc, cur) => {
+            acc[cur.device.InstanceId] = true;
+
+            return acc;
+          }, {});
+
+          if (bluetoothMap[device.InstanceId]) return;
+
           bluetooth.push({ device, system });
 
           set({ bluetooth });
