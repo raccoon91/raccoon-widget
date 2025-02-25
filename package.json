@@ -8,7 +8,7 @@
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "pnpm typecheck:node && pnpm typecheck:web",
-    "shell": "node src/scripts/shell.js",
+    "shell": "ts-node src/scripts/shell.ts",
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
     "build": "pnpm typecheck && electron-vite build",

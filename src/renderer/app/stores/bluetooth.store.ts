@@ -201,9 +201,8 @@ export const useBluetoothStore = create<BluetoothStore>()(
             if (!devicePropertyResult) throw new Error("No Device Property");
 
             const deviceProperties: DeviceProperty[] = JSON.parse(devicePropertyResult);
-            const filteredDeviceProperties = deviceProperties.filter((property) => !!PROPERTY_MAP?.[property.KeyName]);
 
-            const containerId = filteredDeviceProperties.find(
+            const containerId = deviceProperties.find(
               (property) => property.KeyName === "DEVPKEY_Device_ContainerId",
             )?.Data;
 
@@ -226,16 +225,15 @@ export const useBluetoothStore = create<BluetoothStore>()(
             if (!systemPropertyResult) throw new Error("No System Property");
 
             const systemProperties: SystemProperty[] = JSON.parse(systemPropertyResult);
-            const filteredSystemProperties = systemProperties.filter((property) => !!PROPERTY_MAP?.[property.KeyName]);
 
             set({
               loadingProperty: false,
               loadingPropertyMap: { ...loadingPropertyMap, [instanceId]: false },
               propertyLoadingMessage: null,
-              deviceProperties: filteredDeviceProperties,
+              deviceProperties,
               selectedDevice,
               selectedSystem: system,
-              systemProperties: filteredSystemProperties,
+              systemProperties,
             });
           } catch (error) {
             console.error(error);
