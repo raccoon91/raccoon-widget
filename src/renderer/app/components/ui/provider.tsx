@@ -8,6 +8,13 @@ const customConfig = defineConfig({
     html: {
       backgroundColor: "transparent",
     },
+    "::-webkit-scrollbar": {
+      width: "8px",
+    },
+    "::-webkit-scrollbar-thumb": {
+      background: "bg.emphasized",
+      rounded: "sm",
+    },
   },
 });
 
