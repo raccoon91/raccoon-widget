@@ -10,6 +10,14 @@ export const CLOSE_DEV_TOOLS = "close-dev-tools";
 
 export const CLOSE_WINDOW = "close-window";
 
+export const IS_CHILD_DEV_TOOLS_OPENED = "is-child-dev-tools-opened";
+
+export const OPEN_CHILD_DEV_TOOLS = "open-child-dev-tools";
+
+export const CLOSE_CHILD_DEV_TOOLS = "close-child-dev-tools";
+
+export const CLOSE_CHILD_WINDOW = "close-child-window";
+
 export const GET_APP_CONFIG = "get-app-config";
 
 export const SET_APP_CONFIG = "set-app-config";
@@ -43,6 +51,10 @@ export const APP_IPC = {
   OPEN_DEV_TOOLS,
   CLOSE_DEV_TOOLS,
   CLOSE_WINDOW,
+  IS_CHILD_DEV_TOOLS_OPENED,
+  OPEN_CHILD_DEV_TOOLS,
+  CLOSE_CHILD_DEV_TOOLS,
+  CLOSE_CHILD_WINDOW,
   GET_APP_CONFIG,
   SET_APP_CONFIG,
 };

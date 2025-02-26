@@ -57,7 +57,7 @@ class Log {
   end() {
     const timestamp = new Date().toISOString();
 
-    this.logStream.write(`[${timestamp}] [APP CLOSED]\n`);
+    this.logStream.write(`[${timestamp}] [APP CLOSED]\n\n`);
 
     this.logStream.end();
   }

@@ -9,6 +9,10 @@ interface AppAPI {
   openDevTools: () => Promise<void>;
   closeDevTools: () => Promise<void>;
   close: () => Promise<void>;
+  isChildDevToolsOpened: (path: string) => Promise<boolean>;
+  openChildDevTools: (path: string) => Promise<void>;
+  closeChildDevTools: (path: string) => Promise<void>;
+  closeChild: (path: string) => Promise<void>;
   getAppConfig: () => Promise<string>;
   setAppConfig: (data?: string) => Promise<void>;
 }

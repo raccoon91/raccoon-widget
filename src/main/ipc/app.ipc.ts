@@ -10,9 +10,9 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
     try {
       if (browserWindow.isMinimizable()) {
         browserWindow.minimize();
-      }
 
-      log.info("APP_IPC MINIMIZE_WINDOW");
+        log.info("APP_IPC MINIMIZE_WINDOW");
+      }
     } catch (error) {
       log.error(error);
     }
@@ -22,9 +22,9 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
     try {
       if (browserWindow.isMaximizable()) {
         browserWindow.maximize();
-      }
 
-      log.info("APP_IPC MAXIMIZE_WINDOW");
+        log.info("APP_IPC MAXIMIZE_WINDOW");
+      }
     } catch (error) {
       log.error(error);
     }
@@ -46,9 +46,9 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
     try {
       if (!browserWindow.webContents.isDevToolsOpened()) {
         browserWindow.webContents.openDevTools({ mode: "detach" });
-      }
 
-      log.info("APP_IPC OPEN_DEV_TOOLS");
+        log.info("APP_IPC OPEN_DEV_TOOLS");
+      }
     } catch (error) {
       log.error(error);
     }
@@ -58,9 +58,9 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
     try {
       if (browserWindow.webContents.isDevToolsOpened()) {
         browserWindow.webContents.closeDevTools();
-      }
 
-      log.info("APP_IPC CLOSE_DEV_TOOLS");
+        log.info("APP_IPC CLOSE_DEV_TOOLS");
+      }
     } catch (error) {
       log.error(error);
     }
@@ -70,9 +70,89 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
     try {
       if (browserWindow.isClosable()) {
         browserWindow.close();
-      }
 
-      log.info("APP_IPC CLOSE_WINDOW");
+        log.info("APP_IPC CLOSE_WINDOW");
+      }
+    } catch (error) {
+      log.error(error);
+    }
+  });
+
+  ipcMain.handle(APP_IPC.IS_CHILD_DEV_TOOLS_OPENED, async (_, path: string) => {
+    try {
+      const childWindows = browserWindow.getChildWindows();
+
+      const child = childWindows.find((window) => {
+        const url = new URL(window.webContents.getURL());
+
+        return url.pathname === path;
+      });
+
+      log.info("APP_IPC IS_CHILD_DEV_TOOLS_OPENED");
+
+      return child?.webContents.isDevToolsOpened();
+    } catch (error) {
+      log.error(error);
+
+      return false;
+    }
+  });
+
+  ipcMain.handle(APP_IPC.OPEN_CHILD_DEV_TOOLS, async (_, path: string) => {
+    try {
+      const childWindows = browserWindow.getChildWindows();
+
+      const child = childWindows.find((window) => {
+        const url = new URL(window.webContents.getURL());
+
+        return url.pathname === path;
+      });
+
+      if (!child?.webContents.isDevToolsOpened()) {
+        child?.webContents.openDevTools({ mode: "detach" });
+
+        log.info("APP_IPC OPEN_CHILD_DEV_TOOLS");
+      }
+    } catch (error) {
+      log.error(error);
+    }
+  });
+
+  ipcMain.handle(APP_IPC.CLOSE_CHILD_DEV_TOOLS, async (_, path: string) => {
+    try {
+      const childWindows = browserWindow.getChildWindows();
+
+      const child = childWindows.find((window) => {
+        const url = new URL(window.webContents.getURL());
+
+        return url.pathname === path;
+      });
+
+      if (child?.webContents.isDevToolsOpened()) {
+        child?.webContents.closeDevTools();
+
+        log.info("APP_IPC CLOSE_CHILD_DEV_TOOLS");
+      }
+    } catch (error) {
+      log.error(error);
+    }
+  });
+
+  ipcMain.handle(APP_IPC.CLOSE_CHILD_WINDOW, async (_, path: string) => {
+    try {
+      const childWindows = browserWindow.getChildWindows();
+
+      const child = childWindows.find((window) => {
+        const url = new URL(window.webContents.getURL());
+
+        return url.pathname === path;
+      });
+
+      if (child?.isClosable()) {
+        child.close();
+
+        log.info("APP_IPC CLOSE_CHILD_WINDOW");
+      }
     } catch (error) {
       log.error(error);
     }

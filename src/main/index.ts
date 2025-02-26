@@ -1,5 +1,5 @@
 import { join } from "path";
-import { app, shell, BrowserWindow } from "electron";
+import { app, BrowserWindow } from "electron";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
 import { APP } from "@/constants/app";
@@ -53,8 +53,25 @@ function createWindow(): void {
     widget.moveToBottom(mainWindow);
   });
 
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url);
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url) {
+      return {
+        action: "allow",
+        overrideBrowserWindowOptions: {
+          icon,
+          frame: false,
+          transparent: true,
+          hasShadow: false,
+          fullscreenable: false,
+          titleBarStyle: "hidden",
+          parent: mainWindow,
+          webPreferences: {
+            preload: join(__dirname, "../preload/index.js"),
+            sandbox: false,
+          },
+        },
+      };
+    }
 
     return { action: "deny" };
   });

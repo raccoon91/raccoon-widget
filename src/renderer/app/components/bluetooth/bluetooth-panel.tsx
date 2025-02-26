@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useShallow } from "zustand/shallow";
 import { Button, Center, Flex, HStack, Stack, Text } from "@chakra-ui/react";
 
@@ -6,20 +6,17 @@ import { useLocalStore } from "@app/stores/local.store";
 import { useAppStore } from "@app/stores/app.store";
 import { useBluetoothStore } from "@app/stores/bluetooth.store";
 import { useInterval } from "@app/hooks/useInterval";
-import { BluetoothDialog } from "./bluetooth-dialog";
 import { BluetoothCard } from "./bluetooth-card";
 
 export const BluetoothPanel = () => {
   const mode = useAppStore((state) => state.mode);
   const bluetooth = useLocalStore((state) => state.bluetooth);
-  const { bluetoothInfoMap, pullDeviceInfo, getDeviceByClass } = useBluetoothStore(
+  const { bluetoothInfoMap, pullDeviceInfo } = useBluetoothStore(
     useShallow((state) => ({
       bluetoothInfoMap: state.bluetoothInfoMap,
       pullDeviceInfo: state.pullDeviceInfo,
-      getDeviceByClass: state.getDeviceByClass,
     })),
   );
-  const [isOpenBluetoothDialog, setIsOpenBluetoothDialog] = useState(false);
 
   useInterval(() => {
     pullDeviceInfo();
@@ -29,12 +26,8 @@ export const BluetoothPanel = () => {
     pullDeviceInfo();
   }, []);
 
-  useEffect(() => {
-    getDeviceByClass("Bluetooth");
-  }, []);
-
   const handleOpenBluetoothDialog = () => {
-    setIsOpenBluetoothDialog(true);
+    window.open("/bluetooth");
   };
 
   return (
@@ -73,7 +66,7 @@ export const BluetoothPanel = () => {
         )}
       </Stack>
 
-      <BluetoothDialog open={isOpenBluetoothDialog} setOpen={setIsOpenBluetoothDialog} />
+      {/* <BluetoothDialog open={isOpenBluetoothDialog} setOpen={setIsOpenBluetoothDialog} /> */}
     </>
   );
 };

@@ -251,7 +251,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
         },
       }),
       {
-        name: "system-store",
+        name: "bluetooth-store",
         storage: createJSONStorage(() => sessionStorage),
         partialize: (state) => ({
           loadingDevice: state.loadingDevice,

@@ -5,18 +5,23 @@ interface AppStore {
   mode: string;
   config: Record<string, number>;
   isDevToolsOpen: boolean;
+  isChildDevToolsOpenMap: Record<string, boolean>;
 
   initAppInfo: () => Promise<void>;
-
-  openDevTools: () => Promise<void>;
-  closeDevTools: () => Promise<void>;
+  initChildAppInfo: (path: string) => Promise<void>;
 
   changeToDisplayMode: (width: number, height: number, x: number, y: number) => void;
   changeToSettingMode: () => void;
 
   minimize: () => void;
   maximize: () => void;
+  openDevTools: () => Promise<void>;
+  closeDevTools: () => Promise<void>;
   close: () => void;
+
+  openChildDevTools: (path: string) => Promise<void>;
+  closeChildDevTools: (path: string) => Promise<void>;
+  closeChild: (path: string) => void;
 }
 
 export const useAppStore = create<AppStore>()(
@@ -33,16 +38,15 @@ export const useAppStore = create<AppStore>()(
 
       set({ config, isDevToolsOpen });
     },
+    initChildAppInfo: async (path) => {
+      const isChildDevToolsOpen = await window.appAPI.isChildDevToolsOpened(path);
 
-    openDevTools: async () => {
-      await window.appAPI.openDevTools();
-
-      set({ isDevToolsOpen: true });
-    },
-    closeDevTools: async () => {
-      await window.appAPI.closeDevTools();
-
-      set({ isDevToolsOpen: false });
+      set((p) => ({
+        isChildDevToolsOpenMap: {
+          ...p.isChildDevToolsOpenMap,
+          [path]: isChildDevToolsOpen,
+        },
+      }));
     },
 
     changeToDisplayMode: (width, height, x, y) => {
@@ -79,8 +83,42 @@ export const useAppStore = create<AppStore>()(
     maximize: () => {
       window.appAPI.maximize();
     },
+    openDevTools: async () => {
+      await window.appAPI.openDevTools();
+
+      set({ isDevToolsOpen: true });
+    },
+    closeDevTools: async () => {
+      await window.appAPI.closeDevTools();
+
+      set({ isDevToolsOpen: false });
+    },
     close: () => {
       window.appAPI.close();
+    },
+
+    openChildDevTools: async (path: string) => {
+      await window.appAPI.openChildDevTools(path);
+
+      set((p) => ({
+        isChildDevToolsOpenMap: {
+          ...p.isChildDevToolsOpenMap,
+          [path]: true,
+        },
+      }));
+    },
+    closeChildDevTools: async (path: string) => {
+      await window.appAPI.closeChildDevTools(path);
+
+      set((p) => ({
+        isChildDevToolsOpenMap: {
+          ...p.isChildDevToolsOpenMap,
+          [path]: false,
+        },
+      }));
+    },
+    closeChild: (path: string) => {
+      window.appAPI.closeChild(path);
     },
   })),
 );

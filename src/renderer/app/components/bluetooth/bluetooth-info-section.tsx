@@ -33,7 +33,14 @@ export const BluetoothInfoSection = () => {
         </Text>
       </HStack>
 
-      <Box position="relative" overflowY={loadingDevice ? "hidden" : "auto"} h="240px" border="1px solid" rounded="md">
+      <Box
+        position="relative"
+        overflowY={loadingDevice ? "hidden" : "auto"}
+        h="240px"
+        border="1px solid"
+        borderColor="fg.muted"
+        rounded="md"
+      >
         {loadingProperty ? (
           <Center
             position="absolute"
