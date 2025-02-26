@@ -1,6 +1,6 @@
 {
-  "name": "windows-widget",
-  "productName": "windows-widget",
+  "name": "raccoon-widget",
+  "productName": "raccoon-widget",
   "license": "MIT",
   "version": "1.0.0",
   "main": "./out/main/index.js",
