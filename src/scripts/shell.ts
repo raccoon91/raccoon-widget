@@ -6,18 +6,26 @@
 // };
 
 (async () => {
-  console.time("shell");
+  try {
+    console.time("shell");
 
-  // const stdout = await shell.run("Get-CimInstance -Class Win32_Battery ");
-  // const stdout = await shell.run(`Get-PnpDevice -Class ${className.bluetooth} | Select-Object InstanceId, FriendlyName`);
-  // const stdout = await shell.getDeviceByClass(className.bluetooth);
-  // const stdout = await shell.getDevicePropertyById(instanceId.qcy);
-  // const stdout = await shell.run(`Get-PnpDevice -InstanceId '${instanceId.qcy}' | Get-PnpDeviceProperty | Select-Object Keyname, Data`);
-  // const stdout = await shell.getSystemByContainerId(containerId.qcy);
+    // const stdout = await shell.run("Get-PnpDevice -Class Bluetooth");
 
-  // const result = JSON.parse(stdout);
+    // const stdout = await shell.run("Get-CimInstance -Class Win32_Battery ");
+    // const stdout = await shell.run(`Get-PnpDevice -Class ${className.bluetooth} | Select-Object InstanceId, FriendlyName`);
+    // const stdout = await shell.getDeviceByClass(className.bluetooth);
+    // const stdout = await shell.getDevicePropertyById(instanceId.qcy);
+    // const stdout = await shell.run(`Get-PnpDevice -InstanceId '${instanceId.qcy}' | Get-PnpDeviceProperty | Select-Object Keyname, Data`);
+    // const stdout = await shell.getSystemByContainerId(containerId.qcy);
 
-  // console.log(result);
+    // const result = JSON.parse(stdout);
 
-  console.timeEnd("shell");
+    // console.log(result);
+
+    console.timeEnd("shell");
+  } catch (error) {
+    console.log("=== === ERROR === ===");
+    console.log(error);
+    console.log("=== === ===== === ===");
+  }
 })();
