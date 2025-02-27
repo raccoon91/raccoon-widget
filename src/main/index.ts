@@ -4,9 +4,11 @@ import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
 import { APP } from "@/constants/app";
 import config from "@/main/lib/config";
+import storage from "@/main/lib/storage";
 import widget from "@/main/lib/widget";
 import log from "@/main/lib/log";
 import { appIpcHandler } from "@/main/ipc/app.ipc";
+import { storageIpcHandler } from "@/main/ipc/storage.ipc";
 import { widgetIpcHandler } from "@/main/ipc/widget.ipc";
 import { bluetoothIpcHandler } from "@/main/ipc/bluetooth.ipc";
 import icon from "@resources/icon.png?asset";
@@ -33,9 +35,8 @@ function createWindow(): void {
   });
 
   appIpcHandler(mainWindow);
-
+  storageIpcHandler();
   widgetIpcHandler(mainWindow);
-
   bluetoothIpcHandler();
 
   mainWindow.setMenu(null);
@@ -53,8 +54,17 @@ function createWindow(): void {
     widget.moveToBottom(mainWindow);
   });
 
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+  mainWindow.webContents.setWindowOpenHandler(({ url, features }) => {
     if (url) {
+      const feature =
+        features?.split(",").reduce<Record<string, number>>((acc, cur) => {
+          const [key, value] = cur.split("=");
+
+          acc[key.trim()] = Number(value.trim());
+
+          return acc;
+        }, {}) ?? {};
+
       return {
         action: "allow",
         overrideBrowserWindowOptions: {
@@ -65,6 +75,10 @@ function createWindow(): void {
           fullscreenable: false,
           titleBarStyle: "hidden",
           parent: mainWindow,
+          width: feature.width ?? 600,
+          height: feature.height ?? 400,
+          x: feature.left ?? 100,
+          y: feature.top ?? 100,
           webPreferences: {
             preload: join(__dirname, "../preload/index.js"),
             sandbox: false,
@@ -109,6 +123,7 @@ app.whenReady().then(() => {
 });
 
 app.on("before-quit", () => {
+  storage.save();
   log.end();
 });
 

@@ -27,20 +27,16 @@ class Config {
     );
   }
 
-  isExist(path?: string) {
-    const paths = [this.homePath, APP.APP_NAME, path].filter((path) => !!path) as string[];
+  isExist() {
+    const path = resolve(this.homePath, APP.APP_NAME);
 
-    const targetPath = resolve(...paths);
-
-    return existsSync(targetPath);
+    return existsSync(path);
   }
 
-  makeDirectory(path?: string) {
-    const paths = [this.homePath, APP.APP_NAME, path].filter((path) => !!path) as string[];
+  makeDirectory() {
+    const path = resolve(this.homePath, APP.APP_NAME);
 
-    const targetPath = resolve(...paths);
-
-    mkdirSync(targetPath);
+    mkdirSync(path);
   }
 
   readFile(path?: string) {

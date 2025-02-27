@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
 
-import { APP_IPC, BLUETOOTH_IPC, WIDGET_IPC } from "@/constants/ipc";
+import { APP_IPC, BLUETOOTH_IPC, STORAGE_IPC, WIDGET_IPC } from "@/constants/ipc";
 
 const appAPI: AppAPI = {
   minimize: () => ipcRenderer.invoke(APP_IPC.MINIMIZE_WINDOW),
@@ -18,7 +18,14 @@ const appAPI: AppAPI = {
   setAppConfig: (data?: string) => ipcRenderer.invoke(APP_IPC.SET_APP_CONFIG, data),
 };
 
-const systemAPI: SystemAPI = {
+const storageAPI: StorageAPI = {
+  getStorage: () => ipcRenderer.invoke(STORAGE_IPC.GET_STORAGE),
+  setStorage: (data: any) => ipcRenderer.invoke(STORAGE_IPC.SET_STORAGE, data),
+  getSession: () => ipcRenderer.invoke(STORAGE_IPC.GET_SESSION),
+  setSession: (data: any) => ipcRenderer.invoke(STORAGE_IPC.SET_SESSION, data),
+};
+
+const bluetoothAPI: BluetoothAPI = {
   getDeviceByClass: (className) => ipcRenderer.invoke(BLUETOOTH_IPC.GET_DEVICE_BY_CLASS, className),
   getDevicePropertyById: (instanceId) => ipcRenderer.invoke(BLUETOOTH_IPC.GET_DEVICE_PROPERTY_BY_ID, instanceId),
   getSystemByContainerId: (containerId) => ipcRenderer.invoke(BLUETOOTH_IPC.GET_SYSTEM_BY_CONTAINER_ID, containerId),
@@ -40,7 +47,8 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld("electron", electronAPI);
     contextBridge.exposeInMainWorld("appAPI", appAPI);
-    contextBridge.exposeInMainWorld("systemAPI", systemAPI);
+    contextBridge.exposeInMainWorld("storageAPI", storageAPI);
+    contextBridge.exposeInMainWorld("bluetoothAPI", bluetoothAPI);
     contextBridge.exposeInMainWorld("widgetAPI", widgetAPI);
   } catch (error) {
     console.error(error);
@@ -48,6 +56,7 @@ if (process.contextIsolated) {
 } else {
   window.electron = electronAPI;
   window.appAPI = appAPI;
-  window.systemAPI = systemAPI;
+  window.storageAPI = storageAPI;
+  window.bluetoothAPI = bluetoothAPI;
   window.widgetAPI = widgetAPI;
 }

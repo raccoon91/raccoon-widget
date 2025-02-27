@@ -1,5 +1,28 @@
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { createJSONStorage, devtools, persist } from "zustand/middleware";
+
+const appLocalStorage = {
+  getItem: async (key: string) => {
+    const storage = await window.storageAPI.getStorage();
+
+    return storage[key];
+  },
+  setItem: async (key: string, value: any) => {
+    const storage = await window.storageAPI.getStorage();
+
+    window.storageAPI.setStorage({
+      ...storage,
+      [key]: value,
+    });
+  },
+  removeItem: async (key: string) => {
+    const storage = await window.storageAPI.getStorage();
+
+    delete storage[key];
+
+    window.storageAPI.setStorage(storage);
+  },
+};
 
 interface LocalStore {
   bluetooth: { device: Device; system: System }[];
@@ -33,6 +56,7 @@ export const useLocalStore = create<LocalStore>()(
       }),
       {
         name: "local-store",
+        storage: createJSONStorage(() => appLocalStorage),
         partialize: (state) => ({
           bluetooth: state.bluetooth,
         }),

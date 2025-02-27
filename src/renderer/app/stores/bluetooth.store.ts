@@ -4,6 +4,29 @@ import { createJSONStorage, devtools, persist } from "zustand/middleware";
 import { PROPERTY_MAP } from "@/constants/bluetooth";
 import { useLocalStore } from "./local.store";
 
+const appSessionStorage = {
+  getItem: async (key: string) => {
+    const session = await window.storageAPI.getSession();
+
+    return session[key];
+  },
+  setItem: async (key: string, value: any) => {
+    const session = await window.storageAPI.getSession();
+
+    window.storageAPI.setSession({
+      ...session,
+      [key]: value,
+    });
+  },
+  removeItem: async (key: string) => {
+    const session = await window.storageAPI.getSession();
+
+    delete session[key];
+
+    window.storageAPI.setSession(session);
+  },
+};
+
 interface BluetoothStore {
   loadingDeviceInfo: boolean;
   loadingSystemInfoMap: Record<string, boolean>;
@@ -76,7 +99,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
           Promise.all(
             bluetooth.map((data) =>
-              window.systemAPI.getDevicePropertyById(data.device.InstanceId).then((result) => {
+              window.bluetoothAPI.getDevicePropertyById(data.device.InstanceId).then((result) => {
                 if (!result) return;
 
                 const deviceProperties: DeviceProperty[] = JSON.parse(result);
@@ -119,7 +142,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
           if (!data) return;
 
-          window.systemAPI.getSystemPropertyById(data.system.InstanceId).then((result) => {
+          window.bluetoothAPI.getSystemPropertyById(data.system.InstanceId).then((result) => {
             if (!result) return;
 
             const systemProperties: DeviceProperty[] = JSON.parse(result);
@@ -165,7 +188,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
             set({ loadingDevice: true, deviceLoadingMessage: "Loading Device ..." });
 
-            const result = await window.systemAPI.getDeviceByClass(className);
+            const result = await window.bluetoothAPI.getDeviceByClass(className);
 
             if (!result) throw new Error("No Device Data");
 
@@ -196,7 +219,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
             const devices = get().devices;
             const selectedDevice = devices.find((device) => device.InstanceId === instanceId);
 
-            const devicePropertyResult = await window.systemAPI.getDevicePropertyById(instanceId);
+            const devicePropertyResult = await window.bluetoothAPI.getDevicePropertyById(instanceId);
 
             if (!devicePropertyResult) throw new Error("No Device Property");
 
@@ -210,7 +233,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
             set({ propertyLoadingMessage: "Loading System ..." });
 
-            const systemResult = await window.systemAPI.getSystemByContainerId(containerId);
+            const systemResult = await window.bluetoothAPI.getSystemByContainerId(containerId);
 
             if (!systemResult) throw new Error("No System Data");
 
@@ -220,7 +243,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
             set({ propertyLoadingMessage: "Loading System Property ..." });
 
-            const systemPropertyResult = await window.systemAPI.getSystemPropertyById(system.InstanceId);
+            const systemPropertyResult = await window.bluetoothAPI.getSystemPropertyById(system.InstanceId);
 
             if (!systemPropertyResult) throw new Error("No System Property");
 
@@ -252,11 +275,21 @@ export const useBluetoothStore = create<BluetoothStore>()(
       }),
       {
         name: "bluetooth-store",
-        storage: createJSONStorage(() => sessionStorage),
+        storage: createJSONStorage(() => appSessionStorage),
         partialize: (state) => ({
+          loadingDeviceInfo: state.loadingDeviceInfo,
+          loadingSystemInfoMap: state.loadingSystemInfoMap,
           loadingDevice: state.loadingDevice,
           loadingProperty: state.loadingProperty,
           loadingPropertyMap: state.loadingPropertyMap,
+          deviceLoadingMessage: state.deviceLoadingMessage,
+          propertyLoadingMessage: state.propertyLoadingMessage,
+          bluetoothInfoMap: state.bluetoothInfoMap,
+          devices: state.devices,
+          deviceProperties: state.deviceProperties,
+          selectedDevice: state.selectedDevice,
+          selectedSystem: state.selectedSystem,
+          systemProperties: state.systemProperties,
         }),
       },
     ),

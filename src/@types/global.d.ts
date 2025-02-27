@@ -17,7 +17,14 @@ interface AppAPI {
   setAppConfig: (data?: string) => Promise<void>;
 }
 
-interface SystemAPI {
+interface StorageAPI {
+  getStorage: () => Promise<any>;
+  setStorage: (data: any) => Promise<any>;
+  getSession: () => Promise<any>;
+  setSession: (data: any) => Promise<any>;
+}
+
+interface BluetoothAPI {
   getDeviceByClass: (className: string) => Promise<Nullish<string>>;
   getDevicePropertyById: (instanceId: string) => Promise<Nullish<string>>;
   getSystemByContainerId: (containerId: string | string[]) => Promise<Nullish<string>>;
@@ -37,6 +44,7 @@ interface WidgetAPI {
 interface Window {
   electron: ElectronAPI;
   appAPI: AppAPI;
-  systemAPI: SystemAPI;
+  storageAPI: StorageAPI;
+  bluetoothAPI: BluetoothAPI;
   widgetAPI: WidgetAPI;
 }

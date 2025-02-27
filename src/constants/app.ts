@@ -4,6 +4,8 @@ export const APP_CONFIG_FILE_NAME = "config.txt";
 
 export const APP_LOG_FILE_NAME = "log.txt";
 
+export const APP_STORAGE_FILE_NAME = "storage.txt";
+
 export const APP_DEFAULT_WIDTH = 800;
 
 export const APP_DEFAULT_HEIGHT = 600;
@@ -16,6 +18,7 @@ export const APP = {
   APP_NAME,
   APP_CONFIG_FILE_NAME,
   APP_LOG_FILE_NAME,
+  APP_STORAGE_FILE_NAME,
   APP_DEFAULT_WIDTH,
   APP_DEFAULT_HEIGHT,
   APP_DEFAULT_POSITION_X,

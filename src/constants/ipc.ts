@@ -32,6 +32,14 @@ export const GET_SYSTEM_PROPERTY_BY_ID = "get-system-property-by-id";
 
 export const GET_SYSTEM_PROPERTY_BY_CONTAINER_ID = "get-system-property-by-container-id";
 
+export const GET_STORAGE = "get-storage";
+
+export const SET_STORAGE = "set-storage";
+
+export const GET_SESSION = "get-session";
+
+export const SET_SESSION = "set-session";
+
 export const PREVENT_FROM_AERO_PEEK = "prevent-from-aero-peek";
 
 export const PREVENT_FROM_SHOW_DESKTOP = "prevent-from-show-desktop";
@@ -57,6 +65,13 @@ export const APP_IPC = {
   CLOSE_CHILD_WINDOW,
   GET_APP_CONFIG,
   SET_APP_CONFIG,
+};
+
+export const STORAGE_IPC = {
+  GET_STORAGE,
+  SET_STORAGE,
+  GET_SESSION,
+  SET_SESSION,
 };
 
 export const BLUETOOTH_IPC = {
