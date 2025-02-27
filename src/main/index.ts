@@ -14,7 +14,7 @@ import { bluetoothIpcHandler } from "@/main/ipc/bluetooth.ipc";
 import icon from "@resources/icon.png?asset";
 
 function createWindow(): void {
-  const setting = config.read();
+  const setting = config.get();
 
   const mainWindow = new BrowserWindow({
     show: false,
@@ -53,16 +53,10 @@ function createWindow(): void {
     widget.moveToBottom(mainWindow);
   });
 
-  mainWindow.webContents.setWindowOpenHandler(({ url, features }) => {
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (url) {
-      const feature =
-        features?.split(",").reduce<Record<string, number>>((acc, cur) => {
-          const [key, value] = cur.split("=");
-
-          acc[key.trim()] = Number(value.trim());
-
-          return acc;
-        }, {}) ?? {};
+      const path = new URL(url).pathname;
+      const setting = config.getChild(path);
 
       return {
         action: "allow",
@@ -74,10 +68,10 @@ function createWindow(): void {
           fullscreenable: false,
           titleBarStyle: "hidden",
           parent: mainWindow,
-          width: feature.width ?? 600,
-          height: feature.height ?? 400,
-          x: feature.left ?? 100,
-          y: feature.top ?? 100,
+          width: setting.width,
+          height: setting.height,
+          x: setting.x,
+          y: setting.y,
           webPreferences: {
             preload: join(__dirname, "../preload/index.js"),
             sandbox: false,
@@ -122,6 +116,7 @@ app.whenReady().then(() => {
 });
 
 app.on("before-quit", () => {
+  config.save();
   storage.save();
   log.end();
 });

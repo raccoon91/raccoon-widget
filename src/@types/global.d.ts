@@ -3,18 +3,21 @@ type Nullish<T> = T | null | undefined;
 type Nullable<T> = T | null;
 
 interface AppAPI {
+  getAppConfig: () => Promise<Nullable<Record<string, number>>>;
+  setAppConfig: (data?: Record<string, number>) => Promise<void>;
   minimize: () => Promise<void>;
   maximize: () => Promise<void>;
   isDevToolsOpened: () => Promise<boolean>;
   openDevTools: () => Promise<void>;
   closeDevTools: () => Promise<void>;
   close: () => Promise<void>;
+
+  getAppChildConfig: (path: string) => Promise<Nullable<Record<string, number>>>;
+  setAppChildConfig: (path: string, data?: Record<string, number>) => Promise<void>;
   isChildDevToolsOpened: (path: string) => Promise<boolean>;
   openChildDevTools: (path: string) => Promise<void>;
   closeChildDevTools: (path: string) => Promise<void>;
   closeChild: (path: string) => Promise<void>;
-  getAppConfig: () => Promise<Nullable<Record<string, number>>>;
-  setAppConfig: (data?: Record<string, number>) => Promise<void>;
 }
 
 interface StorageAPI {

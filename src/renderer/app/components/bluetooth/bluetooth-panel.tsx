@@ -27,7 +27,7 @@ export const BluetoothPanel = () => {
   }, []);
 
   const handleOpenBluetoothWindow = () => {
-    window.open("/bluetooth", "_blank", "top=100,left=400,width=500,height=600");
+    window.open("/bluetooth");
   };
 
   return (

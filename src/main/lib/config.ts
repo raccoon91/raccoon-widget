@@ -2,22 +2,29 @@ import { APP } from "@/constants/app";
 import { File } from "./file";
 
 class Config extends File {
+  config: Record<string, Record<string, any>>;
+
   constructor() {
     super();
 
     const isExist = this.isExist(APP.APP_CONFIG_FILE_NAME);
 
-    if (isExist) return;
+    if (!isExist) {
+      this._write({
+        parent: {
+          width: APP.APP_DEFAULT_WIDTH,
+          height: APP.APP_DEFAULT_HEIGHT,
+          x: APP.APP_DEFAULT_POSITION_X,
+          y: APP.APP_DEFAULT_POSITION_Y,
+        },
+        child: {},
+      });
+    }
 
-    this.write({
-      width: APP.APP_DEFAULT_WIDTH,
-      height: APP.APP_DEFAULT_HEIGHT,
-      x: APP.APP_DEFAULT_POSITION_X,
-      y: APP.APP_DEFAULT_POSITION_Y,
-    });
+    this.config = this._read() ?? {};
   }
 
-  read(): Record<string, number> | null {
+  _read(): Nullable<Record<string, Record<string, number>>> {
     const targetPath = this.getAppPath(APP.APP_CONFIG_FILE_NAME);
 
     const result = this.readFileSync(targetPath);
@@ -25,12 +32,43 @@ class Config extends File {
     return result ? JSON.parse(result) : null;
   }
 
-  write(data?: Record<string, number>) {
+  _write(data?: Record<string, any>) {
     if (!data) return;
 
     const targetPath = this.getAppPath(APP.APP_CONFIG_FILE_NAME);
 
     this.writeFileSync(targetPath, JSON.stringify(data));
+  }
+
+  save() {
+    this._write(this.config);
+  }
+
+  get() {
+    return this.config["parent"];
+  }
+
+  set(data?: Record<string, number>) {
+    if (!data) return;
+
+    this.config["parent"] = data;
+  }
+
+  getChild(path: string) {
+    return (
+      this.config.child?.[path] ?? {
+        width: APP.APP_CHILD_DEFAULT_WIDTH,
+        height: APP.APP_CHILD_DEFAULT_HEIGHT,
+        x: APP.APP_CHILD_DEFAULT_POSITION_X,
+        y: APP.APP_CHILD_DEFAULT_POSITION_Y,
+      }
+    );
+  }
+
+  setChild(path: string, data?: Record<string, number>) {
+    if (!data) return;
+
+    this.config.child[path] = data;
   }
 }
 

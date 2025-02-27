@@ -33,7 +33,12 @@ export const MainHeader = () => {
   };
 
   const handleClickDisplayMode = () => {
-    changeToDisplayMode(window.innerWidth, window.innerHeight, window.screenX, window.screenY);
+    changeToDisplayMode({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      x: window.screenX,
+      y: window.screenY,
+    });
   };
 
   const handleClickCloseApp = () => {

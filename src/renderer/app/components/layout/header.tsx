@@ -31,7 +31,12 @@ export const Header: FC<HeaderProps> = ({ path }) => {
   };
 
   const handleCloseChildWindow = () => {
-    closeChild(path);
+    closeChild(path, {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      x: window.screenX,
+      y: window.screenY,
+    });
   };
 
   return (

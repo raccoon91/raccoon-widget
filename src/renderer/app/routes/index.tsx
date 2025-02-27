@@ -10,16 +10,16 @@ import { BluetoothPanel } from "@app/components/bluetooth/bluetooth-panel";
 import { WindowFrame } from "@app/components/layout/window-frame";
 
 const Home = () => {
-  const { mode, initAppInfo } = useAppStore(
+  const { mode, getAppConfig } = useAppStore(
     useShallow((state) => ({
       mode: state.mode,
-      initAppInfo: state.initAppInfo,
+      getAppConfig: state.getAppConfig,
     })),
   );
   const getDeviceByClass = useBluetoothStore((state) => state.getDeviceByClass);
 
   useEffect(() => {
-    initAppInfo();
+    getAppConfig();
     getDeviceByClass("Bluetooth");
   }, []);
 

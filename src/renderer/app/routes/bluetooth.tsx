@@ -12,9 +12,9 @@ import { BluetoothInfoSection } from "@app/components/bluetooth/bluetooth-info-s
 
 const Bluetooth = () => {
   const addDevice = useLocalStore((state) => state.addDevice);
-  const { initChildAppInfo, closeChild } = useAppStore(
+  const { getAppChildConfig, closeChild } = useAppStore(
     useShallow((state) => ({
-      initChildAppInfo: state.initChildAppInfo,
+      getAppChildConfig: state.getAppChildConfig,
       closeChild: state.closeChild,
     })),
   );
@@ -29,7 +29,7 @@ const Bluetooth = () => {
   );
 
   useEffect(() => {
-    initChildAppInfo("/bluetooth");
+    getAppChildConfig("/bluetooth");
   }, []);
 
   const handleAddDevice = () => {

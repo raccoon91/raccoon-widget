@@ -1,3 +1,7 @@
+export const GET_APP_CONFIG = "get-app-config";
+
+export const SET_APP_CONFIG = "set-app-config";
+
 export const MINIMIZE_WINDOW = "minimize-window";
 
 export const MAXIMIZE_WINDOW = "maximize-window";
@@ -10,6 +14,10 @@ export const CLOSE_DEV_TOOLS = "close-dev-tools";
 
 export const CLOSE_WINDOW = "close-window";
 
+export const GET_APP_CHILD_CONFIG = "get-app-child-config";
+
+export const SET_APP_CHILD_CONFIG = "set-app-child-config";
+
 export const IS_CHILD_DEV_TOOLS_OPENED = "is-child-dev-tools-opened";
 
 export const OPEN_CHILD_DEV_TOOLS = "open-child-dev-tools";
@@ -17,10 +25,6 @@ export const OPEN_CHILD_DEV_TOOLS = "open-child-dev-tools";
 export const CLOSE_CHILD_DEV_TOOLS = "close-child-dev-tools";
 
 export const CLOSE_CHILD_WINDOW = "close-child-window";
-
-export const GET_APP_CONFIG = "get-app-config";
-
-export const SET_APP_CONFIG = "set-app-config";
 
 export const GET_DEVICE_BY_CLASS = "get-device-by-class";
 
@@ -53,18 +57,21 @@ export const ALWAYS_TO_BOTTOM = "always-on-bottom";
 export const CANCEL_ALWAYS_TO_BOTTOM = "cancel-always-on-bottom";
 
 export const APP_IPC = {
+  GET_APP_CONFIG,
+  SET_APP_CONFIG,
   MINIMIZE_WINDOW,
   MAXIMIZE_WINDOW,
   IS_DEV_TOOLS_OPENED,
   OPEN_DEV_TOOLS,
   CLOSE_DEV_TOOLS,
   CLOSE_WINDOW,
+
+  GET_APP_CHILD_CONFIG,
+  SET_APP_CHILD_CONFIG,
   IS_CHILD_DEV_TOOLS_OPENED,
   OPEN_CHILD_DEV_TOOLS,
   CLOSE_CHILD_DEV_TOOLS,
   CLOSE_CHILD_WINDOW,
-  GET_APP_CONFIG,
-  SET_APP_CONFIG,
 };
 
 export const STORAGE_IPC = {

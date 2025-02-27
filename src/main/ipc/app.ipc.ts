@@ -5,6 +5,30 @@ import config from "@/main/lib/config";
 import log from "@/main/lib/log";
 
 export const appIpcHandler = (browserWindow: BrowserWindow) => {
+  ipcMain.handle(APP_IPC.GET_APP_CONFIG, () => {
+    try {
+      const result = config.get();
+
+      log.info("APP_IPC GET_APP_CONFIG");
+
+      return result;
+    } catch (error) {
+      log.error(error);
+
+      return null;
+    }
+  });
+
+  ipcMain.handle(APP_IPC.SET_APP_CONFIG, (_, data?: Record<string, number>) => {
+    try {
+      config.set(data);
+
+      log.info("APP_IPC SET_APP_CONFIG");
+    } catch (error) {
+      log.error(error);
+    }
+  });
+
   ipcMain.handle(APP_IPC.MINIMIZE_WINDOW, async () => {
     try {
       if (browserWindow.isMinimizable()) {
@@ -72,6 +96,30 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
 
         log.info("APP_IPC CLOSE_WINDOW");
       }
+    } catch (error) {
+      log.error(error);
+    }
+  });
+
+  ipcMain.handle(APP_IPC.GET_APP_CHILD_CONFIG, (_, path: string) => {
+    try {
+      const result = config.getChild(path);
+
+      log.info("APP_IPC GET_APP_CHILD_CONFIG");
+
+      return result;
+    } catch (error) {
+      log.error(error);
+
+      return null;
+    }
+  });
+
+  ipcMain.handle(APP_IPC.SET_APP_CHILD_CONFIG, (_, path: string, data?: Record<string, number>) => {
+    try {
+      config.setChild(path, data);
+
+      log.info("APP_IPC SET_APP_CHILD_CONFIG");
     } catch (error) {
       log.error(error);
     }
@@ -152,30 +200,6 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
 
         log.info("APP_IPC CLOSE_CHILD_WINDOW");
       }
-    } catch (error) {
-      log.error(error);
-    }
-  });
-
-  ipcMain.handle(APP_IPC.GET_APP_CONFIG, () => {
-    try {
-      const result = config.read();
-
-      log.info("APP_IPC GET_APP_CONFIG");
-
-      return result;
-    } catch (error) {
-      log.error(error);
-
-      return null;
-    }
-  });
-
-  ipcMain.handle(APP_IPC.SET_APP_CONFIG, (_, data?: Record<string, number>) => {
-    try {
-      config.write(data);
-
-      log.info("APP_IPC SET_APP_CONFIG");
     } catch (error) {
       log.error(error);
     }
