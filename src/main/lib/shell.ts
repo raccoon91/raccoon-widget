@@ -12,7 +12,9 @@ class Shell {
 
           if (stderr) return reject(stderr);
 
-          resolve(stdout);
+          const result = stdout ? JSON.parse(stdout) : null;
+
+          resolve(result);
         },
       );
     });
@@ -27,7 +29,9 @@ class Shell {
 
           if (stderr) return reject(stderr);
 
-          resolve(stdout);
+          const result = stdout ? JSON.parse(stdout) : null;
+
+          resolve(result);
         },
       );
     });
@@ -42,7 +46,9 @@ class Shell {
 
           if (stderr) return reject(stderr);
 
-          resolve(stdout);
+          const result = stdout ? JSON.parse(stdout) : null;
+
+          resolve(result);
         },
       );
     });
@@ -57,7 +63,9 @@ class Shell {
 
           if (stderr) return reject(stderr);
 
-          resolve(stdout);
+          const result = stdout ? JSON.parse(stdout) : null;
+
+          resolve(result);
         },
       );
     });
@@ -72,7 +80,9 @@ class Shell {
 
           if (stderr) return reject(stderr);
 
-          resolve(stdout);
+          const result = stdout ? JSON.parse(stdout) : null;
+
+          resolve(result);
         },
       );
     });
@@ -87,7 +97,9 @@ class Shell {
 
           if (stderr) return reject(stderr);
 
-          resolve(stdout);
+          const result = stdout ? JSON.parse(stdout) : null;
+
+          resolve(result);
         },
       );
     });

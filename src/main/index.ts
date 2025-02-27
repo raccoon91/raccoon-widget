@@ -14,8 +14,7 @@ import { bluetoothIpcHandler } from "@/main/ipc/bluetooth.ipc";
 import icon from "@resources/icon.png?asset";
 
 function createWindow(): void {
-  const stringSetting = config.readFile(APP.APP_CONFIG_FILE_NAME);
-  const setting = stringSetting ? JSON.parse(stringSetting) : null;
+  const setting = config.read();
 
   const mainWindow = new BrowserWindow({
     show: false,

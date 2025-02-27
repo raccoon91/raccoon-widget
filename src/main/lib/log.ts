@@ -1,27 +1,21 @@
-import { resolve } from "path";
-import { createWriteStream, existsSync, mkdirSync, WriteStream } from "fs";
-import { app } from "electron";
+import { createWriteStream, WriteStream } from "fs";
 
 import { APP } from "@/constants/app";
+import { File } from "./file";
 
-class Log {
-  homePath: string;
+class Log extends File {
   logStream: WriteStream;
 
   constructor() {
-    this.homePath = app.getPath("home");
+    super();
 
-    const isExist = this.isExist();
-
-    if (!isExist) this.makeDirectory();
-
-    const paths = resolve(this.homePath, APP.APP_NAME, APP.APP_LOG_FILE_NAME);
+    const paths = this.getAppPath(APP.APP_LOG_FILE_NAME);
 
     this.logStream = createWriteStream(paths, { flags: "a" });
 
     const timestamp = new Date().toISOString();
 
-    this.logStream.write(`[${timestamp}] [APP OPENED]\n`);
+    this.logStream.write(`[${timestamp}] [LOG START]\n`);
   }
 
   info(message: unknown) {
@@ -57,21 +51,9 @@ class Log {
   end() {
     const timestamp = new Date().toISOString();
 
-    this.logStream.write(`[${timestamp}] [APP CLOSED]\n\n`);
+    this.logStream.write(`[${timestamp}] [LOG FINISH]\n\n`);
 
     this.logStream.end();
-  }
-
-  isExist() {
-    const path = resolve(this.homePath, APP.APP_NAME);
-
-    return existsSync(path);
-  }
-
-  makeDirectory() {
-    const path = resolve(this.homePath, APP.APP_NAME);
-
-    mkdirSync(path);
   }
 }
 

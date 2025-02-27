@@ -15,7 +15,7 @@ const appAPI: AppAPI = {
   closeChildDevTools: (path: string) => ipcRenderer.invoke(APP_IPC.CLOSE_CHILD_DEV_TOOLS, path),
   closeChild: (path: string) => ipcRenderer.invoke(APP_IPC.CLOSE_CHILD_WINDOW, path),
   getAppConfig: () => ipcRenderer.invoke(APP_IPC.GET_APP_CONFIG),
-  setAppConfig: (data?: string) => ipcRenderer.invoke(APP_IPC.SET_APP_CONFIG, data),
+  setAppConfig: (data?: Record<string, number>) => ipcRenderer.invoke(APP_IPC.SET_APP_CONFIG, data),
 };
 
 const storageAPI: StorageAPI = {

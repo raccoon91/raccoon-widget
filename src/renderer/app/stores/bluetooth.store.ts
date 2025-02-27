@@ -102,8 +102,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
               window.bluetoothAPI.getDevicePropertyById(data.device.InstanceId).then((result) => {
                 if (!result) return;
 
-                const deviceProperties: DeviceProperty[] = JSON.parse(result);
-                const device = deviceProperties
+                const device = result
                   .filter((property) => !!PROPERTY_MAP?.[property.KeyName])
                   .reduce<Record<string, string>>((acc, cur) => {
                     const key = PROPERTY_MAP[cur.KeyName].value;
@@ -145,8 +144,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
           window.bluetoothAPI.getSystemPropertyById(data.system.InstanceId).then((result) => {
             if (!result) return;
 
-            const systemProperties: DeviceProperty[] = JSON.parse(result);
-            const system = systemProperties
+            const system = result
               .filter((property) => !!PROPERTY_MAP?.[property.KeyName])
               .reduce<Record<string, string>>((acc, cur) => {
                 const key = PROPERTY_MAP[cur.KeyName].value;
@@ -188,12 +186,11 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
             set({ loadingDevice: true, deviceLoadingMessage: "Loading Device ..." });
 
-            const result = await window.bluetoothAPI.getDeviceByClass(className);
+            const result = await window.bluetoothAPI.getDeviceByClass<Device>(className);
 
             if (!result) throw new Error("No Device Data");
 
-            const devices: Device[] = JSON.parse(result);
-            const filteredDevices = devices.filter((device) => !bluetoothMap[device.InstanceId]);
+            const filteredDevices = result.filter((device) => !bluetoothMap[device.InstanceId]);
 
             set({ loadingDevice: false, deviceLoadingMessage: null, devices: filteredDevices });
           } catch (error) {
@@ -219,11 +216,9 @@ export const useBluetoothStore = create<BluetoothStore>()(
             const devices = get().devices;
             const selectedDevice = devices.find((device) => device.InstanceId === instanceId);
 
-            const devicePropertyResult = await window.bluetoothAPI.getDevicePropertyById(instanceId);
+            const deviceProperties = await window.bluetoothAPI.getDevicePropertyById<DeviceProperty>(instanceId);
 
-            if (!devicePropertyResult) throw new Error("No Device Property");
-
-            const deviceProperties: DeviceProperty[] = JSON.parse(devicePropertyResult);
+            if (!deviceProperties) throw new Error("No Device Property");
 
             const containerId = deviceProperties.find(
               (property) => property.KeyName === "DEVPKEY_Device_ContainerId",
@@ -233,21 +228,17 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
             set({ propertyLoadingMessage: "Loading System ..." });
 
-            const systemResult = await window.bluetoothAPI.getSystemByContainerId(containerId);
+            const system = await window.bluetoothAPI.getSystemByContainerId<System>(containerId);
 
-            if (!systemResult) throw new Error("No System Data");
+            if (!system) throw new Error("No System Data");
 
-            const system = JSON.parse(systemResult);
-
-            if (!system.InstanceId) throw new Error("No System Instance Id");
+            if (!system?.InstanceId) throw new Error("No System Instance Id");
 
             set({ propertyLoadingMessage: "Loading System Property ..." });
 
-            const systemPropertyResult = await window.bluetoothAPI.getSystemPropertyById(system.InstanceId);
+            const systemProperties = await window.bluetoothAPI.getSystemPropertyById<SystemProperty>(system.InstanceId);
 
-            if (!systemPropertyResult) throw new Error("No System Property");
-
-            const systemProperties: SystemProperty[] = JSON.parse(systemPropertyResult);
+            if (!systemProperties) throw new Error("No System Property");
 
             set({
               loadingProperty: false,

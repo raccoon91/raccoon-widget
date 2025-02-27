@@ -1,29 +1,49 @@
-import { resolve } from "path";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
-import { app } from "electron";
-
 import { APP } from "@/constants/app";
+import { File } from "./file";
 
-class Storage {
-  homePath: string;
+class Storage extends File {
   storage: Record<string, any> = {};
   session: Record<string, any> = {};
 
   constructor() {
-    this.homePath = app.getPath("home");
+    super();
 
-    this.init();
+    const isExist = this.isExist(APP.APP_STORAGE_FILE_NAME);
 
-    const stringStorage = this.readFile();
+    if (!isExist) this._write({});
 
-    this.storage = JSON.parse(stringStorage);
+    this.storage = this._read();
+  }
+
+  _read() {
+    const targetPath = this.getAppPath(APP.APP_STORAGE_FILE_NAME);
+
+    const result = this.readFileSync(targetPath);
+
+    return result ? JSON.parse(result) : null;
+  }
+
+  _write(data?: Record<string, any>) {
+    if (!data) return;
+
+    const targetPath = this.getAppPath(APP.APP_STORAGE_FILE_NAME);
+
+    this.writeFileSync(targetPath, JSON.stringify(data));
+  }
+
+  save() {
+    this._write(this.storage);
   }
 
   getStorage() {
+    console.log("get storage");
+
     return this.storage;
   }
 
   setStorage(data: any) {
+    console.log("set storage");
+
     this.storage = data;
   }
 
@@ -33,42 +53,6 @@ class Storage {
 
   setSession(data: any) {
     this.session = data;
-  }
-
-  save() {
-    this.writeFile(JSON.stringify(this.storage));
-  }
-
-  init() {
-    const appPath = resolve(this.homePath, APP.APP_NAME);
-
-    const isDirExist = existsSync(appPath);
-
-    if (!isDirExist) {
-      const path = resolve(this.homePath, APP.APP_NAME);
-
-      mkdirSync(path);
-    }
-
-    const storagePath = resolve(this.homePath, APP.APP_NAME, APP.APP_STORAGE_FILE_NAME);
-
-    const isStorageExist = existsSync(storagePath);
-
-    if (!isStorageExist) {
-      this.writeFile(JSON.stringify({}));
-    }
-  }
-
-  readFile() {
-    const path = resolve(this.homePath, APP.APP_NAME, APP.APP_STORAGE_FILE_NAME);
-
-    return readFileSync(path, { encoding: "utf-8" });
-  }
-
-  writeFile(data: string) {
-    const path = resolve(this.homePath, APP.APP_NAME, APP.APP_STORAGE_FILE_NAME);
-
-    writeFileSync(path, data, "utf-8");
   }
 }
 

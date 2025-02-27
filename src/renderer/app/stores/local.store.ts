@@ -5,10 +5,14 @@ const appLocalStorage = {
   getItem: async (key: string) => {
     const storage = await window.storageAPI.getStorage();
 
+    console.log("get store");
+
     return storage[key];
   },
   setItem: async (key: string, value: any) => {
     const storage = await window.storageAPI.getStorage();
+
+    console.log("set store");
 
     window.storageAPI.setStorage({
       ...storage,

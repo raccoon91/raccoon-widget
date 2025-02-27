@@ -30,9 +30,7 @@ export const useAppStore = create<AppStore>()(
     isDevToolsOpen: false,
 
     initAppInfo: async () => {
-      const stringConfig = await window.appAPI.getAppConfig();
-
-      const config = stringConfig ? JSON.parse(stringConfig) : {};
+      const config = (await window.appAPI.getAppConfig()) ?? {};
 
       const isDevToolsOpen = await window.appAPI.isDevToolsOpened();
 
@@ -61,18 +59,14 @@ export const useAppStore = create<AppStore>()(
         y,
       };
 
-      const stringConfig = JSON.stringify(newConfig);
-
-      window.appAPI.setAppConfig(stringConfig);
+      window.appAPI.setAppConfig(newConfig);
 
       set({ mode: "display", config: newConfig });
     },
     changeToSettingMode: async () => {
       window.widgetAPI.cancelAlwaysOnBottom();
 
-      const stringConfig = await window.appAPI.getAppConfig();
-
-      const config = stringConfig ? JSON.parse(stringConfig) : {};
+      const config = (await window.appAPI.getAppConfig()) ?? {};
 
       set({ mode: "setting", config });
     },

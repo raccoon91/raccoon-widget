@@ -13,8 +13,8 @@ interface AppAPI {
   openChildDevTools: (path: string) => Promise<void>;
   closeChildDevTools: (path: string) => Promise<void>;
   closeChild: (path: string) => Promise<void>;
-  getAppConfig: () => Promise<string>;
-  setAppConfig: (data?: string) => Promise<void>;
+  getAppConfig: () => Promise<Nullable<Record<string, number>>>;
+  setAppConfig: (data?: Record<string, number>) => Promise<void>;
 }
 
 interface StorageAPI {
@@ -25,11 +25,11 @@ interface StorageAPI {
 }
 
 interface BluetoothAPI {
-  getDeviceByClass: (className: string) => Promise<Nullish<string>>;
-  getDevicePropertyById: (instanceId: string) => Promise<Nullish<string>>;
-  getSystemByContainerId: (containerId: string | string[]) => Promise<Nullish<string>>;
-  getSystemPropertyById: (containerId: string | string[]) => Promise<Nullish<string>>;
-  getSystemPropertyByContainerId: (containerId: string) => Promise<Nullish<string>>;
+  getDeviceByClass: <T = Record<string, any>>(className: string) => Promise<Nullable<T[]>>;
+  getDevicePropertyById: <T = Record<string, any>>(instanceId: string) => Promise<Nullable<T[]>>;
+  getSystemByContainerId: <T = Record<string, any>>(containerId: string | string[]) => Promise<Nullable<T>>;
+  getSystemPropertyById: <T = Record<string, any>>(containerId: string | string[]) => Promise<Nullable<T[]>>;
+  getSystemPropertyByContainerId: <T = Record<string, any>>(containerId: string) => Promise<Nullable<T[]>>;
 }
 
 interface WidgetAPI {
