@@ -2,7 +2,7 @@ import { BrowserWindow, ipcMain } from "electron";
 
 import { APP_IPC } from "@/constants/ipc";
 import { APP } from "@/constants/app";
-import appConfig from "@/main/lib/app-config";
+import config from "@/main/lib/config";
 import log from "@/main/lib/log";
 
 export const appIpcHandler = (browserWindow: BrowserWindow) => {
@@ -160,7 +160,7 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
 
   ipcMain.handle(APP_IPC.GET_APP_CONFIG, () => {
     try {
-      const result = appConfig.readFile(APP.APP_CONFIG_FILE_NAME);
+      const result = config.readFile(APP.APP_CONFIG_FILE_NAME);
 
       log.info("APP_IPC GET_APP_CONFIG");
 
@@ -174,7 +174,7 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
 
   ipcMain.handle(APP_IPC.SET_APP_CONFIG, (_, data?: string) => {
     try {
-      appConfig.writeFile(APP.APP_CONFIG_FILE_NAME, data);
+      config.writeFile(APP.APP_CONFIG_FILE_NAME, data);
 
       log.info("APP_IPC SET_APP_CONFIG");
     } catch (error) {

@@ -3,7 +3,7 @@ import { app, BrowserWindow } from "electron";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
 import { APP } from "@/constants/app";
-import appConfig from "@/main/lib/app-config";
+import config from "@/main/lib/config";
 import widget from "@/main/lib/widget";
 import log from "@/main/lib/log";
 import { appIpcHandler } from "@/main/ipc/app.ipc";
@@ -12,8 +12,8 @@ import { bluetoothIpcHandler } from "@/main/ipc/bluetooth.ipc";
 import icon from "@resources/icon.png?asset";
 
 function createWindow(): void {
-  const stringConfig = appConfig.readFile(APP.APP_CONFIG_FILE_NAME);
-  const config = stringConfig ? JSON.parse(stringConfig) : null;
+  const stringSetting = config.readFile(APP.APP_CONFIG_FILE_NAME);
+  const setting = stringSetting ? JSON.parse(stringSetting) : null;
 
   const mainWindow = new BrowserWindow({
     show: false,
@@ -22,10 +22,10 @@ function createWindow(): void {
     transparent: true,
     hasShadow: false,
     titleBarStyle: "hidden",
-    width: config?.width ?? APP.APP_DEFAULT_WIDTH,
-    height: config?.height ?? APP.APP_DEFAULT_HEIGHT,
-    x: config?.x ?? APP.APP_DEFAULT_POSITION_X,
-    y: config?.y ?? APP.APP_DEFAULT_POSITION_Y,
+    width: setting?.width ?? APP.APP_DEFAULT_WIDTH,
+    height: setting?.height ?? APP.APP_DEFAULT_HEIGHT,
+    x: setting?.x ?? APP.APP_DEFAULT_POSITION_X,
+    y: setting?.y ?? APP.APP_DEFAULT_POSITION_Y,
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
       sandbox: false,

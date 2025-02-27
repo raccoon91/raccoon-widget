@@ -4,7 +4,7 @@ import { app } from "electron";
 
 import { APP } from "@/constants/app";
 
-class AppConfig {
+class Config {
   homePath: string;
 
   constructor() {
@@ -60,4 +60,4 @@ class AppConfig {
   }
 }
 
-export default new AppConfig();
+export default new Config();
