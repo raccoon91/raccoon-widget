@@ -4,22 +4,19 @@ import { useShallow } from "zustand/shallow";
 import { Box } from "@chakra-ui/react";
 
 import { useAppStore } from "@app/stores/app.store";
-import { Header } from "@app/components/layout/header";
+import { useBluetoothStore } from "@app/stores/bluetooth.store";
+import { MainHeader } from "@app/components/layout/main-header";
 import { BluetoothPanel } from "@app/components/bluetooth/bluetooth-panel";
-import { useBluetoothStore } from "../stores/bluetooth.store";
+import { WindowFrame } from "@app/components/layout/window-frame";
 
-export const HomeRoute = () => {
+const Home = () => {
   const { mode, initAppInfo } = useAppStore(
     useShallow((state) => ({
       mode: state.mode,
       initAppInfo: state.initAppInfo,
     })),
   );
-  const { getDeviceByClass } = useBluetoothStore(
-    useShallow((state) => ({
-      getDeviceByClass: state.getDeviceByClass,
-    })),
-  );
+  const getDeviceByClass = useBluetoothStore((state) => state.getDeviceByClass);
 
   useEffect(() => {
     initAppInfo();
@@ -27,16 +24,14 @@ export const HomeRoute = () => {
   }, []);
 
   return (
-    <Box overflow="hidden" w="vw" h="vh" backgroundColor={mode === "setting" ? "blackAlpha.700" : "transparent"}>
-      <Header />
-
+    <WindowFrame header={<MainHeader />} backgroundColor={mode === "display" ? "transparent" : undefined}>
       <Box p="16px 32px">
         <BluetoothPanel />
       </Box>
-    </Box>
+    </WindowFrame>
   );
 };
 
 export const Route = createFileRoute("/")({
-  component: HomeRoute,
+  component: Home,
 });

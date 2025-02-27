@@ -10,85 +10,83 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as BluetoothImport } from './routes/bluetooth'
-import { Route as IndexImport } from './routes/index'
+import { Route as rootRoute } from "./routes/__root";
+import { Route as BluetoothImport } from "./routes/bluetooth";
+import { Route as IndexImport } from "./routes/index";
 
 // Create/Update Routes
 
 const BluetoothRoute = BluetoothImport.update({
-  id: '/bluetooth',
-  path: '/bluetooth',
+  id: "/bluetooth",
+  path: "/bluetooth",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/bluetooth': {
-      id: '/bluetooth'
-      path: '/bluetooth'
-      fullPath: '/bluetooth'
-      preLoaderRoute: typeof BluetoothImport
-      parentRoute: typeof rootRoute
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/bluetooth": {
+      id: "/bluetooth";
+      path: "/bluetooth";
+      fullPath: "/bluetooth";
+      preLoaderRoute: typeof BluetoothImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/bluetooth': typeof BluetoothRoute
+  "/": typeof IndexRoute;
+  "/bluetooth": typeof BluetoothRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/bluetooth': typeof BluetoothRoute
+  "/": typeof IndexRoute;
+  "/bluetooth": typeof BluetoothRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/bluetooth': typeof BluetoothRoute
+  __root__: typeof rootRoute;
+  "/": typeof IndexRoute;
+  "/bluetooth": typeof BluetoothRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/bluetooth'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/bluetooth'
-  id: '__root__' | '/' | '/bluetooth'
-  fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths: "/" | "/bluetooth";
+  fileRoutesByTo: FileRoutesByTo;
+  to: "/" | "/bluetooth";
+  id: "__root__" | "/" | "/bluetooth";
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  BluetoothRoute: typeof BluetoothRoute
+  IndexRoute: typeof IndexRoute;
+  BluetoothRoute: typeof BluetoothRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BluetoothRoute: BluetoothRoute,
-}
+};
 
-export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {
