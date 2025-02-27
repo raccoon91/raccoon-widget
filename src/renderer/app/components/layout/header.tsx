@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo } from "react";
+import { FC, useMemo } from "react";
 import { Box, Center, Flex } from "@chakra-ui/react";
 import { useShallow } from "zustand/shallow";
 import { LuX } from "react-icons/lu";
@@ -11,10 +11,9 @@ interface HeaderProps {
 }
 
 export const Header: FC<HeaderProps> = ({ path }) => {
-  const { isChildDevToolsOpenMap, initChildAppInfo, openChildDevTools, closeChildDevTools, closeChild } = useAppStore(
+  const { isChildDevToolsOpenMap, openChildDevTools, closeChildDevTools, closeChild } = useAppStore(
     useShallow((state) => ({
       isChildDevToolsOpenMap: state.isChildDevToolsOpenMap,
-      initChildAppInfo: state.initChildAppInfo,
       openChildDevTools: state.openChildDevTools,
       closeChildDevTools: state.closeChildDevTools,
       closeChild: state.closeChild,
@@ -22,10 +21,6 @@ export const Header: FC<HeaderProps> = ({ path }) => {
   );
 
   const isChildDevToolsOpen = useMemo(() => isChildDevToolsOpenMap?.[path], [isChildDevToolsOpenMap]);
-
-  useEffect(() => {
-    initChildAppInfo(path);
-  }, []);
 
   const handleClickOpenChildDevTools = () => {
     openChildDevTools(path);

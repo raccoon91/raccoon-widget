@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useShallow } from "zustand/shallow";
 import { Button, HStack, Stack } from "@chakra-ui/react";
@@ -11,7 +12,12 @@ import { BluetoothInfoSection } from "@app/components/bluetooth/bluetooth-info-s
 
 const Bluetooth = () => {
   const addDevice = useLocalStore((state) => state.addDevice);
-  const closeChild = useAppStore((state) => state.closeChild);
+  const { initChildAppInfo, closeChild } = useAppStore(
+    useShallow((state) => ({
+      initChildAppInfo: state.initChildAppInfo,
+      closeChild: state.closeChild,
+    })),
+  );
   const { selectedDevice, selectedSystem, clearDeviceState, pullDeviceInfo } = useBluetoothStore(
     useShallow((state) => ({
       selectedDevice: state.selectedDevice,
@@ -21,6 +27,10 @@ const Bluetooth = () => {
       pullDeviceInfo: state.pullDeviceInfo,
     })),
   );
+
+  useEffect(() => {
+    initChildAppInfo("/bluetooth");
+  }, []);
 
   const handleAddDevice = () => {
     addDevice(selectedDevice, selectedSystem);
