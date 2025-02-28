@@ -12,6 +12,7 @@ interface AppAPI {
   closeDevTools: () => Promise<void>;
   close: () => Promise<void>;
 
+  chilWindowOpened: (path: string) => Promise<void>;
   getAppChildConfig: (path: string) => Promise<Nullable<Record<string, number>>>;
   setAppChildConfig: (path: string, data?: Record<string, number>) => Promise<void>;
   childDevtoolsStatusChanged: (callback: (event: IpcRendererEvent, args: any) => void) => IpcRenderer;

@@ -103,25 +103,29 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
     }
   });
 
+  ipcMain.handle(APP_IPC.CHILD_WINDOW_OPENDED, (_, path: string) => {
+    const childWindows = browserWindow.getChildWindows();
+
+    const child = childWindows.find((window) => {
+      const url = new URL(window.webContents.getURL());
+
+      return url.pathname === path;
+    });
+
+    if (!child) return;
+
+    child.webContents.on("devtools-opened", () => {
+      child.webContents.send(APP_IPC.CHILD_DEVTOOLS_STATUS_CHAGEND, true);
+    });
+
+    child.webContents.on("devtools-closed", () => {
+      child.webContents.send(APP_IPC.CHILD_DEVTOOLS_STATUS_CHAGEND, false);
+    });
+  });
+
   ipcMain.handle(APP_IPC.SET_APP_CHILD_CONFIG, (_, path: string, data?: Record<string, number>) => {
     try {
       config.setChild(path, data);
-
-      const childWindows = browserWindow.getChildWindows();
-
-      const child = childWindows.find((window) => {
-        const url = new URL(window.webContents.getURL());
-
-        return url.pathname === path;
-      });
-
-      child?.webContents.on("devtools-opened", () => {
-        child.webContents.send(APP_IPC.CHILD_DEVTOOLS_STATUS_CHAGEND, true);
-      });
-
-      child?.webContents.on("devtools-closed", () => {
-        child.webContents.send(APP_IPC.CHILD_DEVTOOLS_STATUS_CHAGEND, false);
-      });
 
       log.info("APP_IPC SET_APP_CHILD_CONFIG");
     } catch (error) {

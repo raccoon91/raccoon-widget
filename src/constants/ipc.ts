@@ -14,6 +14,8 @@ export const CLOSE_DEV_TOOLS = "close-dev-tools";
 
 export const CLOSE_WINDOW = "close-window";
 
+export const CHILD_WINDOW_OPENDED = "child-window-opend";
+
 export const GET_APP_CHILD_CONFIG = "get-app-child-config";
 
 export const SET_APP_CHILD_CONFIG = "set-app-child-config";
@@ -66,6 +68,7 @@ export const APP_IPC = {
   CLOSE_DEV_TOOLS,
   CLOSE_WINDOW,
 
+  CHILD_WINDOW_OPENDED,
   GET_APP_CHILD_CONFIG,
   SET_APP_CHILD_CONFIG,
   CHILD_DEVTOOLS_STATUS_CHAGEND,

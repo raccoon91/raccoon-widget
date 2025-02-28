@@ -14,6 +14,7 @@ const appAPI: AppAPI = {
   closeDevTools: () => ipcRenderer.invoke(APP_IPC.CLOSE_DEV_TOOLS),
   close: () => ipcRenderer.invoke(APP_IPC.CLOSE_WINDOW),
 
+  chilWindowOpened: (path: string) => ipcRenderer.invoke(APP_IPC.CHILD_WINDOW_OPENDED, path),
   getAppChildConfig: (path: string) => ipcRenderer.invoke(APP_IPC.GET_APP_CHILD_CONFIG, path),
   setAppChildConfig: (path: string, data?: Record<string, number>) =>
     ipcRenderer.invoke(APP_IPC.SET_APP_CHILD_CONFIG, path, data),

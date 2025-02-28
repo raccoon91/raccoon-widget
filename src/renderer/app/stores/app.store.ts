@@ -21,6 +21,7 @@ interface AppStore {
   close: () => void;
 
   getAppChildConfig: (path: string) => Promise<void>;
+  setChildDevtoolsStatus: (path: string, status: boolean) => void;
   openChildDevTools: (path: string) => Promise<void>;
   closeChildDevTools: (path: string) => Promise<void>;
   closeChild: (path: string, config?: Record<string, number>) => void;
@@ -65,13 +66,9 @@ export const useAppStore = create<AppStore>()(
     },
     openDevTools: async () => {
       await window.appAPI.openDevTools();
-
-      set({ isDevToolsOpen: true });
     },
     closeDevTools: async () => {
       await window.appAPI.closeDevTools();
-
-      set({ isDevToolsOpen: false });
     },
     close: () => {
       window.appAPI.close();
@@ -91,25 +88,19 @@ export const useAppStore = create<AppStore>()(
         },
       }));
     },
-    openChildDevTools: async (path: string) => {
-      await window.appAPI.openChildDevTools(path);
-
+    setChildDevtoolsStatus: (path: string, status: boolean) => {
       set((p) => ({
         isChildDevToolsOpenMap: {
           ...p.isChildDevToolsOpenMap,
-          [path]: true,
+          [path]: status,
         },
       }));
     },
+    openChildDevTools: async (path: string) => {
+      await window.appAPI.openChildDevTools(path);
+    },
     closeChildDevTools: async (path: string) => {
       await window.appAPI.closeChildDevTools(path);
-
-      set((p) => ({
-        isChildDevToolsOpenMap: {
-          ...p.isChildDevToolsOpenMap,
-          [path]: false,
-        },
-      }));
     },
     closeChild: async (path: string, config?: Record<string, number>) => {
       if (config) window.appAPI.setAppChildConfig(path, config);

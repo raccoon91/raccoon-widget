@@ -12,9 +12,10 @@ import { BluetoothInfoSection } from "@app/components/bluetooth/bluetooth-info-s
 
 const Bluetooth = () => {
   const addDevice = useSharedStore((state) => state.addDevice);
-  const { getAppChildConfig, closeChild } = useAppStore(
+  const { getAppChildConfig, setChildDevtoolsStatus, closeChild } = useAppStore(
     useShallow((state) => ({
       getAppChildConfig: state.getAppChildConfig,
+      setChildDevtoolsStatus: state.setChildDevtoolsStatus,
       closeChild: state.closeChild,
     })),
   );
@@ -27,6 +28,13 @@ const Bluetooth = () => {
       pullDeviceInfo: state.pullDeviceInfo,
     })),
   );
+
+  useEffect(() => {
+    window.appAPI.chilWindowOpened("/bluetooth");
+    window.appAPI.childDevtoolsStatusChanged((_, status) => {
+      setChildDevtoolsStatus("/bluetooth", status);
+    });
+  }, []);
 
   useEffect(() => {
     getAppChildConfig("/bluetooth");

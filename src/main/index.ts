@@ -63,33 +63,31 @@ function createWindow(): void {
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url) {
-      const path = new URL(url).pathname;
-      const setting = config.getChild(path);
+    if (!url) return { action: "deny" };
 
-      return {
-        action: "allow",
-        overrideBrowserWindowOptions: {
-          icon,
-          frame: false,
-          transparent: true,
-          hasShadow: false,
-          fullscreenable: false,
-          titleBarStyle: "hidden",
-          parent: mainWindow,
-          width: setting.width,
-          height: setting.height,
-          x: setting.x,
-          y: setting.y,
-          webPreferences: {
-            preload: join(__dirname, "../preload/index.js"),
-            sandbox: false,
-          },
+    const path = new URL(url).pathname;
+    const setting = config.getChild(path);
+
+    return {
+      action: "allow",
+      overrideBrowserWindowOptions: {
+        icon,
+        frame: false,
+        transparent: true,
+        hasShadow: false,
+        fullscreenable: false,
+        titleBarStyle: "hidden",
+        parent: mainWindow,
+        width: setting.width,
+        height: setting.height,
+        x: setting.x,
+        y: setting.y,
+        webPreferences: {
+          preload: join(__dirname, "../preload/index.js"),
+          sandbox: false,
         },
-      };
-    }
-
-    return { action: "deny" };
+      },
+    };
   });
 
   // HMR for renderer base on electron-vite cli.
