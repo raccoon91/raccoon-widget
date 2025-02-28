@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
 import { PROPERTY_MAP } from "@/constants/bluetooth";
-import { useLocalStore } from "./local.store";
+import { useSharedStore } from "./shared.store";
 
 const appSessionStorage = {
   getItem: async (key: string) => {
@@ -95,7 +95,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
           set({ loadingDeviceInfo: true });
 
-          const bluetooth = useLocalStore.getState().bluetooth;
+          const bluetooth = useSharedStore.getState().bluetooth;
 
           Promise.all(
             bluetooth.map((data) =>
@@ -136,7 +136,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
           set({ loadingSystemInfoMap: { ...loadingSystemInfoMap, [deviceInstanceId]: true } });
 
-          const bluetooth = useLocalStore.getState().bluetooth;
+          const bluetooth = useSharedStore.getState().bluetooth;
           const data = bluetooth.find((data) => data?.device?.InstanceId === deviceInstanceId);
 
           if (!data) return;
@@ -176,7 +176,7 @@ export const useBluetoothStore = create<BluetoothStore>()(
 
             if (loadingDevice) return;
 
-            const bluetooth = useLocalStore.getState().bluetooth;
+            const bluetooth = useSharedStore.getState().bluetooth;
 
             const bluetoothMap = bluetooth.reduce<Record<string, boolean>>((acc, cur) => {
               acc[cur.device.InstanceId] = true;

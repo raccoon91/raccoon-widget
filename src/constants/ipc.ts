@@ -6,7 +6,7 @@ export const MINIMIZE_WINDOW = "minimize-window";
 
 export const MAXIMIZE_WINDOW = "maximize-window";
 
-export const IS_DEV_TOOLS_OPENED = "is-dev-tools-opened";
+export const DEVTOOLS_STATUS_CHAGEND = "devtools-status-changed";
 
 export const OPEN_DEV_TOOLS = "open-dev-tools";
 
@@ -18,7 +18,7 @@ export const GET_APP_CHILD_CONFIG = "get-app-child-config";
 
 export const SET_APP_CHILD_CONFIG = "set-app-child-config";
 
-export const IS_CHILD_DEV_TOOLS_OPENED = "is-child-dev-tools-opened";
+export const CHILD_DEVTOOLS_STATUS_CHAGEND = "child-devtools-status-changed";
 
 export const OPEN_CHILD_DEV_TOOLS = "open-child-dev-tools";
 
@@ -61,14 +61,14 @@ export const APP_IPC = {
   SET_APP_CONFIG,
   MINIMIZE_WINDOW,
   MAXIMIZE_WINDOW,
-  IS_DEV_TOOLS_OPENED,
+  DEVTOOLS_STATUS_CHAGEND,
   OPEN_DEV_TOOLS,
   CLOSE_DEV_TOOLS,
   CLOSE_WINDOW,
 
   GET_APP_CHILD_CONFIG,
   SET_APP_CHILD_CONFIG,
-  IS_CHILD_DEV_TOOLS_OPENED,
+  CHILD_DEVTOOLS_STATUS_CHAGEND,
   OPEN_CHILD_DEV_TOOLS,
   CLOSE_CHILD_DEV_TOOLS,
   CLOSE_CHILD_WINDOW,

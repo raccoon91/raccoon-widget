@@ -3,6 +3,7 @@ import { app, BrowserWindow } from "electron";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
 import { APP } from "@/constants/app";
+import { APP_IPC } from "@/constants/ipc";
 import config from "@/main/lib/config";
 import storage from "@/main/lib/storage";
 import widget from "@/main/lib/widget";
@@ -37,6 +38,14 @@ function createWindow(): void {
   storageIpcHandler();
   widgetIpcHandler(mainWindow);
   bluetoothIpcHandler();
+
+  mainWindow.webContents.on("devtools-opened", () => {
+    mainWindow.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, true);
+  });
+
+  mainWindow.webContents.on("devtools-closed", () => {
+    mainWindow.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, false);
+  });
 
   mainWindow.setMenu(null);
 
@@ -116,6 +125,10 @@ app.whenReady().then(() => {
 });
 
 app.on("before-quit", () => {
+  // Object.values(APP_IPC).forEach((channel) => {
+  //   ipcMain.removeAllListeners(channel);
+  // });
+
   config.save();
   storage.save();
   log.end();

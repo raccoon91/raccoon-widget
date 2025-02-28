@@ -36,14 +36,10 @@ class Storage extends File {
   }
 
   getStorage() {
-    console.log("get storage");
-
     return this.storage;
   }
 
   setStorage(data: any) {
-    console.log("set storage");
-
     this.storage = data;
   }
 

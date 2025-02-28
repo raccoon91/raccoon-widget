@@ -53,18 +53,6 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
     }
   });
 
-  ipcMain.handle(APP_IPC.IS_DEV_TOOLS_OPENED, async () => {
-    try {
-      log.info("APP_IPC IS_DEV_TOOLS_OPENED");
-
-      return browserWindow.webContents.isDevToolsOpened();
-    } catch (error) {
-      log.error(error);
-
-      return false;
-    }
-  });
-
   ipcMain.handle(APP_IPC.OPEN_DEV_TOOLS, async () => {
     try {
       if (!browserWindow.webContents.isDevToolsOpened()) {
@@ -119,14 +107,6 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
     try {
       config.setChild(path, data);
 
-      log.info("APP_IPC SET_APP_CHILD_CONFIG");
-    } catch (error) {
-      log.error(error);
-    }
-  });
-
-  ipcMain.handle(APP_IPC.IS_CHILD_DEV_TOOLS_OPENED, async (_, path: string) => {
-    try {
       const childWindows = browserWindow.getChildWindows();
 
       const child = childWindows.find((window) => {
@@ -135,13 +115,17 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
         return url.pathname === path;
       });
 
-      log.info("APP_IPC IS_CHILD_DEV_TOOLS_OPENED");
+      child?.webContents.on("devtools-opened", () => {
+        child.webContents.send(APP_IPC.CHILD_DEVTOOLS_STATUS_CHAGEND, true);
+      });
 
-      return child?.webContents.isDevToolsOpened();
+      child?.webContents.on("devtools-closed", () => {
+        child.webContents.send(APP_IPC.CHILD_DEVTOOLS_STATUS_CHAGEND, false);
+      });
+
+      log.info("APP_IPC SET_APP_CHILD_CONFIG");
     } catch (error) {
       log.error(error);
-
-      return false;
     }
   });
 
@@ -196,6 +180,9 @@ export const appIpcHandler = (browserWindow: BrowserWindow) => {
       });
 
       if (child?.isClosable()) {
+        child.webContents.removeAllListeners("devtools-opened");
+        child.webContents.removeAllListeners("devtools-closed");
+
         child.close();
 
         log.info("APP_IPC CLOSE_CHILD_WINDOW");

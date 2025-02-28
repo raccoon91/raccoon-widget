@@ -15,6 +15,7 @@ interface AppStore {
   getAppConfig: () => Promise<void>;
   minimize: () => void;
   maximize: () => void;
+  setDevtoolsStatus: (status: boolean) => void;
   openDevTools: () => Promise<void>;
   closeDevTools: () => Promise<void>;
   close: () => void;
@@ -51,9 +52,7 @@ export const useAppStore = create<AppStore>()(
     getAppConfig: async () => {
       const config = (await window.appAPI.getAppConfig()) ?? {};
 
-      const isDevToolsOpen = await window.appAPI.isDevToolsOpened();
-
-      set({ config, isDevToolsOpen });
+      set({ config });
     },
     minimize: () => {
       window.appAPI.minimize();
@@ -61,19 +60,18 @@ export const useAppStore = create<AppStore>()(
     maximize: () => {
       window.appAPI.maximize();
     },
+    setDevtoolsStatus: (status: boolean) => {
+      set({ isDevToolsOpen: status });
+    },
     openDevTools: async () => {
       await window.appAPI.openDevTools();
 
-      const isDevToolsOpen = await window.appAPI.isDevToolsOpened();
-
-      set({ isDevToolsOpen });
+      set({ isDevToolsOpen: true });
     },
     closeDevTools: async () => {
       await window.appAPI.closeDevTools();
 
-      const isDevToolsOpen = await window.appAPI.isDevToolsOpened();
-
-      set({ isDevToolsOpen });
+      set({ isDevToolsOpen: false });
     },
     close: () => {
       window.appAPI.close();
@@ -82,8 +80,6 @@ export const useAppStore = create<AppStore>()(
     getAppChildConfig: async (path) => {
       const config = (await window.appAPI.getAppChildConfig(path)) ?? {};
 
-      const isChildDevToolsOpen = await window.appAPI.isChildDevToolsOpened(path);
-
       set((p) => ({
         configMap: {
           ...p.configMap,
@@ -91,31 +87,27 @@ export const useAppStore = create<AppStore>()(
         },
         isChildDevToolsOpenMap: {
           ...p.isChildDevToolsOpenMap,
-          [path]: isChildDevToolsOpen,
+          [path]: false,
         },
       }));
     },
     openChildDevTools: async (path: string) => {
       await window.appAPI.openChildDevTools(path);
 
-      const isChildDevToolsOpen = await window.appAPI.isChildDevToolsOpened(path);
-
       set((p) => ({
         isChildDevToolsOpenMap: {
           ...p.isChildDevToolsOpenMap,
-          [path]: isChildDevToolsOpen,
+          [path]: true,
         },
       }));
     },
     closeChildDevTools: async (path: string) => {
       await window.appAPI.closeChildDevTools(path);
 
-      const isChildDevToolsOpen = await window.appAPI.isChildDevToolsOpened(path);
-
       set((p) => ({
         isChildDevToolsOpenMap: {
           ...p.isChildDevToolsOpenMap,
-          [path]: isChildDevToolsOpen,
+          [path]: false,
         },
       }));
     },

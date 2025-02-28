@@ -1,18 +1,14 @@
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
-const appLocalStorage = {
+const appSharedStorage = {
   getItem: async (key: string) => {
     const storage = await window.storageAPI.getStorage();
-
-    console.log("get store");
 
     return storage[key];
   },
   setItem: async (key: string, value: any) => {
     const storage = await window.storageAPI.getStorage();
-
-    console.log("set store");
 
     window.storageAPI.setStorage({
       ...storage,
@@ -28,13 +24,18 @@ const appLocalStorage = {
   },
 };
 
-interface LocalStore {
-  bluetooth: { device: Device; system: System }[];
+interface SharedState {
+  bluetooth: {
+    device: Device;
+    system: System;
+  }[];
+}
 
+interface SharedAction {
   addDevice: (device?: Nullable<Device>, system?: Nullable<System>) => void;
 }
 
-export const useLocalStore = create<LocalStore>()(
+export const useSharedStore = create<SharedState & SharedAction>()(
   devtools(
     persist(
       (set, get) => ({
@@ -59,8 +60,8 @@ export const useLocalStore = create<LocalStore>()(
         },
       }),
       {
-        name: "local-store",
-        storage: createJSONStorage(() => appLocalStorage),
+        name: "shared-store",
+        storage: createJSONStorage(() => appSharedStorage),
         partialize: (state) => ({
           bluetooth: state.bluetooth,
         }),

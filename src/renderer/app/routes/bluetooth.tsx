@@ -3,15 +3,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useShallow } from "zustand/shallow";
 import { Button, HStack, Stack } from "@chakra-ui/react";
 
-import { useLocalStore } from "@app/stores/local.store";
 import { useAppStore } from "@app/stores/app.store";
+import { useSharedStore } from "@app/stores/shared.store";
 import { useBluetoothStore } from "@app/stores/bluetooth.store";
 import { WindowFrame } from "@app/components/layout/window-frame";
 import { BluetoothDeviceSection } from "@app/components/bluetooth/bluetooth-device-section";
 import { BluetoothInfoSection } from "@app/components/bluetooth/bluetooth-info-section";
 
 const Bluetooth = () => {
-  const addDevice = useLocalStore((state) => state.addDevice);
+  const addDevice = useSharedStore((state) => state.addDevice);
   const { getAppChildConfig, closeChild } = useAppStore(
     useShallow((state) => ({
       getAppChildConfig: state.getAppChildConfig,

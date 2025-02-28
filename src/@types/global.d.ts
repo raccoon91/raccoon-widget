@@ -7,14 +7,14 @@ interface AppAPI {
   setAppConfig: (data?: Record<string, number>) => Promise<void>;
   minimize: () => Promise<void>;
   maximize: () => Promise<void>;
-  isDevToolsOpened: () => Promise<boolean>;
+  devtoolsStatusChanged: (callback: (event: IpcRendererEvent, args: any) => void) => IpcRenderer;
   openDevTools: () => Promise<void>;
   closeDevTools: () => Promise<void>;
   close: () => Promise<void>;
 
   getAppChildConfig: (path: string) => Promise<Nullable<Record<string, number>>>;
   setAppChildConfig: (path: string, data?: Record<string, number>) => Promise<void>;
-  isChildDevToolsOpened: (path: string) => Promise<boolean>;
+  childDevtoolsStatusChanged: (callback: (event: IpcRendererEvent, args: any) => void) => IpcRenderer;
   openChildDevTools: (path: string) => Promise<void>;
   closeChildDevTools: (path: string) => Promise<void>;
   closeChild: (path: string) => Promise<void>;
