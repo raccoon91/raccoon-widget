@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useShallow } from "zustand/shallow";
 import { Button, HStack, Stack } from "@chakra-ui/react";
 
+import { APP_CHILD_PATH } from "@/constants/app-child-path";
 import { useAppStore } from "@app/stores/app.store";
 import { useSharedStore } from "@app/stores/shared.store";
 import { useBluetoothStore } from "@app/stores/bluetooth.store";
@@ -30,27 +31,27 @@ const Bluetooth = () => {
   );
 
   useEffect(() => {
-    window.appChildAPI.openChilWindow("/bluetooth");
+    window.appChildAPI.openChilWindow(APP_CHILD_PATH.BLUETOOTH_PATH);
     window.appChildAPI.childDevtoolsStatusChanged((_, status) => {
-      setChildDevtoolsStatus("/bluetooth", status);
+      setChildDevtoolsStatus(APP_CHILD_PATH.BLUETOOTH_PATH, status);
     });
   }, []);
 
   useEffect(() => {
-    getAppChildConfig("/bluetooth");
+    getAppChildConfig(APP_CHILD_PATH.BLUETOOTH_PATH);
   }, []);
 
   const handleAddDevice = () => {
     addDevice(selectedDevice, selectedSystem);
 
-    closeChild("/bluetooth");
+    closeChild(APP_CHILD_PATH.BLUETOOTH_PATH);
     clearDeviceState();
 
     pullDeviceInfo();
   };
 
   return (
-    <WindowFrame path="/bluetooth">
+    <WindowFrame path={APP_CHILD_PATH.BLUETOOTH_PATH}>
       <Stack overflow="auto" flex="1" position="relative" gap="12px" p="24px">
         <BluetoothDeviceSection />
 
