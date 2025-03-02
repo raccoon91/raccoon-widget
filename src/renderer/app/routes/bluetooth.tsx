@@ -4,7 +4,7 @@ import { useShallow } from "zustand/shallow";
 import { Button, HStack, Stack } from "@chakra-ui/react";
 
 import { APP_CHILD_PATH } from "@/constants/app-child-path";
-import { useAppStore } from "@app/stores/app.store";
+import { useAppChildStore } from "@app/stores/app-child.store";
 import { useSharedStore } from "@app/stores/shared.store";
 import { useBluetoothStore } from "@app/stores/bluetooth.store";
 import { WindowFrame } from "@app/components/layout/window-frame";
@@ -13,7 +13,7 @@ import { BluetoothInfoSection } from "@app/components/bluetooth/bluetooth-info-s
 
 const Bluetooth = () => {
   const addDevice = useSharedStore((state) => state.addDevice);
-  const { getAppChildConfig, setChildDevtoolsStatus, closeChild } = useAppStore(
+  const { getAppChildConfig, setChildDevtoolsStatus, closeChild } = useAppChildStore(
     useShallow((state) => ({
       getAppChildConfig: state.getAppChildConfig,
       setChildDevtoolsStatus: state.setChildDevtoolsStatus,

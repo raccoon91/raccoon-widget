@@ -4,14 +4,14 @@ import { useShallow } from "zustand/shallow";
 import { LuX } from "react-icons/lu";
 import { BsTerminal, BsTerminalX } from "react-icons/bs";
 
-import { useAppStore } from "@app/stores/app.store";
+import { useAppChildStore } from "@app/stores/app-child.store";
 
 interface HeaderProps {
   path: string;
 }
 
 export const Header: FC<HeaderProps> = ({ path }) => {
-  const { isChildDevToolsOpenMap, openChildDevTools, closeChildDevTools, closeChild } = useAppStore(
+  const { isChildDevToolsOpenMap, openChildDevTools, closeChildDevTools, closeChild } = useAppChildStore(
     useShallow((state) => ({
       isChildDevToolsOpenMap: state.isChildDevToolsOpenMap,
       openChildDevTools: state.openChildDevTools,

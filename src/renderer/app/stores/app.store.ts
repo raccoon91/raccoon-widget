@@ -6,9 +6,6 @@ interface AppStore {
   config: Record<string, number>;
   isDevToolsOpen: boolean;
 
-  configMap: Record<string, Record<string, number>>;
-  isChildDevToolsOpenMap: Record<string, boolean>;
-
   changeToDisplayMode: (config: Record<string, number>) => void;
   changeToSettingMode: () => void;
 
@@ -19,21 +16,13 @@ interface AppStore {
   openDevTools: () => Promise<void>;
   closeDevTools: () => Promise<void>;
   close: () => void;
-
-  getAppChildConfig: (path: string) => Promise<void>;
-  setChildDevtoolsStatus: (path: string, status: boolean) => void;
-  openChildDevTools: (path: string) => Promise<void>;
-  closeChildDevTools: (path: string) => Promise<void>;
-  closeChild: (path: string, config?: Record<string, number>) => void;
 }
 
 export const useAppStore = create<AppStore>()(
   devtools((set) => ({
     mode: "display",
+    config: {},
     isDevToolsOpen: false,
-
-    configMap: {},
-    isChildDevToolsOpenMap: {},
 
     changeToDisplayMode: (config) => {
       window.widgetAPI.alwaysOnBottom();
@@ -72,40 +61,6 @@ export const useAppStore = create<AppStore>()(
     },
     close: () => {
       window.appAPI.close();
-    },
-
-    getAppChildConfig: async (path) => {
-      const config = (await window.appChildAPI.getAppChildConfig(path)) ?? {};
-
-      set((p) => ({
-        configMap: {
-          ...p.configMap,
-          [path]: config,
-        },
-        isChildDevToolsOpenMap: {
-          ...p.isChildDevToolsOpenMap,
-          [path]: false,
-        },
-      }));
-    },
-    setChildDevtoolsStatus: (path: string, status: boolean) => {
-      set((p) => ({
-        isChildDevToolsOpenMap: {
-          ...p.isChildDevToolsOpenMap,
-          [path]: status,
-        },
-      }));
-    },
-    openChildDevTools: async (path: string) => {
-      await window.appChildAPI.openChildDevTools(path);
-    },
-    closeChildDevTools: async (path: string) => {
-      await window.appChildAPI.closeChildDevTools(path);
-    },
-    closeChild: async (path: string, config?: Record<string, number>) => {
-      if (config) window.appChildAPI.setAppChildConfig(path, config);
-
-      window.appChildAPI.closeChild(path);
     },
   })),
 );
