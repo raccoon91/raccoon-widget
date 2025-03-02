@@ -25,6 +25,10 @@ export const appChildIpcHandler = (browserWindow: BrowserWindow) => {
     child.webContents.on("devtools-closed", () => {
       child.webContents.send(APP_CHILD_IPC.APP_CHILD_DEVTOOLS_STATUS_CHAGEND, false);
     });
+
+    child.webContents.on("ipc-message", (event, channel) => {
+      console.log(event, channel);
+    });
   });
 
   ipcMain.handle(APP_CHILD_IPC.GET_APP_CHILD_CONFIG, (_, path: string) => {
@@ -104,6 +108,7 @@ export const appChildIpcHandler = (browserWindow: BrowserWindow) => {
       if (child?.isClosable()) {
         child.webContents.removeAllListeners("devtools-opened");
         child.webContents.removeAllListeners("devtools-closed");
+        child.webContents.removeAllListeners("ipc-message");
 
         child.close();
 

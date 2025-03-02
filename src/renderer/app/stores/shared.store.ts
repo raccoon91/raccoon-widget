@@ -61,6 +61,7 @@ export const useSharedStore = create<SharedState & SharedAction>()(
       }),
       {
         name: "shared-store",
+        skipHydration: true,
         storage: createJSONStorage(() => appSharedStorage),
         partialize: (state) => ({
           bluetooth: state.bluetooth,

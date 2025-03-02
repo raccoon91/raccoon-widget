@@ -28,6 +28,7 @@ export const BluetoothPanel = () => {
   }, []);
 
   const handleOpenBluetoothWindow = () => {
+    // window.appChildAPI.openChilWindow(APP_CHILD_PATH.BLUETOOTH_PATH);
     window.open(APP_CHILD_PATH.BLUETOOTH_PATH);
   };
 

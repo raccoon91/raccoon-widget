@@ -30,8 +30,14 @@ const appChildAPI: AppChildAPI = {
 const storageAPI: StorageAPI = {
   getStorage: () => ipcRenderer.invoke(STORAGE_IPC.GET_STORAGE),
   setStorage: (data: any) => ipcRenderer.invoke(STORAGE_IPC.SET_STORAGE, data),
+  updateStorage: () => ipcRenderer.invoke(STORAGE_IPC.UPDATE_STORAGE),
+  storageChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) =>
+    ipcRenderer.on(STORAGE_IPC.STORAGE_CHANGED, callback),
   getSession: () => ipcRenderer.invoke(STORAGE_IPC.GET_SESSION),
   setSession: (data: any) => ipcRenderer.invoke(STORAGE_IPC.SET_SESSION, data),
+  updateSession: () => ipcRenderer.invoke(STORAGE_IPC.UPDATE_SESSION),
+  sessionChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) =>
+    ipcRenderer.on(STORAGE_IPC.SESSION_CHANGED, callback),
 };
 
 const bluetoothAPI: BluetoothAPI = {

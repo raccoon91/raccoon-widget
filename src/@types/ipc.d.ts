@@ -22,8 +22,12 @@ interface AppChildAPI {
 interface StorageAPI {
   getStorage: () => Promise<any>;
   setStorage: (data: any) => Promise<any>;
+  updateStorage: () => Promise<any>;
+  storageChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) => IpcRenderer;
   getSession: () => Promise<any>;
   setSession: (data: any) => Promise<any>;
+  updateSession: () => Promise<any>;
+  sessionChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) => IpcRenderer;
 }
 
 interface BluetoothAPI {

@@ -15,7 +15,69 @@ import { widgetIpcHandler } from "@/main/ipc/widget.ipc";
 import { bluetoothIpcHandler } from "@/main/ipc/bluetooth.ipc";
 import icon from "@resources/icon.png?asset";
 
-function createWindow(): void {
+// function createBluetoothWindow(
+//   name: string,
+// ): [{ name: string; window: BrowserWindow }, (mainWindow: BrowserWindow) => void] {
+//   const path = new URL("/bluetooth").pathname;
+//   const setting = config.getChild(path);
+
+//   const bluetoothWindow = new BrowserWindow({
+//     show: false,
+//     icon,
+//     frame: false,
+//     transparent: true,
+//     hasShadow: false,
+//     fullscreenable: false,
+//     titleBarStyle: "hidden",
+//     width: setting.width,
+//     height: setting.height,
+//     x: setting.x,
+//     y: setting.y,
+//     webPreferences: {
+//       preload: join(__dirname, "../preload/index.js"),
+//       sandbox: false,
+//     },
+//   });
+
+//   bluetoothWindow.setMenu(null);
+
+//   bluetoothWindow.on("ready-to-show", () => {
+//     // Prevent BrowserWindow from being hidden in AeroPeek.
+//     widget.preventFromAeroPeek(bluetoothWindow);
+
+//     // Prevent BrowserWindow from being hidden in ShowDesktop.
+//     widget.preventFromShowDesktop(bluetoothWindow);
+
+//     // Move BrowserWindow to the bottom of the windows
+//     // widget.moveToBottom(bluetoothWindow);
+//   });
+
+//   if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
+//     bluetoothWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);
+//   } else {
+//     bluetoothWindow.loadFile(join(__dirname, "../renderer/index.html"));
+//   }
+
+//   return [
+//     { name, window: bluetoothWindow },
+//     (mainWindow: BrowserWindow) => {
+//       bluetoothWindow.setParentWindow(mainWindow);
+
+//       appChildIpcHandler(name, bluetoothWindow);
+//       storageIpcHandler(name, bluetoothWindow);
+
+//       bluetoothWindow.webContents.on("devtools-opened", () => {
+//         bluetoothWindow.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, true);
+//       });
+
+//       bluetoothWindow.webContents.on("devtools-closed", () => {
+//         bluetoothWindow.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, false);
+//       });
+//     },
+//   ];
+// }
+
+function createWindow(): [BrowserWindow, (children?: BrowserWindow[]) => void] {
   const setting = config.get();
 
   const mainWindow = new BrowserWindow({
@@ -33,20 +95,6 @@ function createWindow(): void {
       preload: join(__dirname, "../preload/index.js"),
       sandbox: false,
     },
-  });
-
-  appIpcHandler(mainWindow);
-  appChildIpcHandler(mainWindow);
-  storageIpcHandler();
-  widgetIpcHandler(mainWindow);
-  bluetoothIpcHandler();
-
-  mainWindow.webContents.on("devtools-opened", () => {
-    mainWindow.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, true);
-  });
-
-  mainWindow.webContents.on("devtools-closed", () => {
-    mainWindow.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, false);
   });
 
   mainWindow.setMenu(null);
@@ -99,6 +147,25 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
   }
+
+  return [
+    mainWindow,
+    (children?: BrowserWindow[]) => {
+      appIpcHandler(mainWindow);
+      appChildIpcHandler(mainWindow);
+      storageIpcHandler(mainWindow);
+      widgetIpcHandler(mainWindow);
+      bluetoothIpcHandler();
+
+      mainWindow.webContents.on("devtools-opened", () => {
+        mainWindow.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, true);
+      });
+
+      mainWindow.webContents.on("devtools-closed", () => {
+        mainWindow.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, false);
+      });
+    },
+  ];
 }
 
 // This method will be called when Electron has finished
@@ -115,7 +182,11 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
 
-  createWindow();
+  const [mainWindow, mainWindowIpc] = createWindow();
+  // const [bluetoothWindow, bluetoothWindowIpc] = createBluetoothWindow(APP_CHILD_PATH.BLUETOOTH_PATH);
+
+  mainWindowIpc();
+  // bluetoothWindowIpc(mainWindow);
 
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the

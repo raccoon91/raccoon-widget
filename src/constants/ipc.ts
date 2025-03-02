@@ -46,9 +46,17 @@ export const GET_STORAGE = "get-storage";
 
 export const SET_STORAGE = "set-storage";
 
+export const STORAGE_CHANGED = "storage-changed";
+
+export const UPDATE_STORAGE = "update-storage";
+
 export const GET_SESSION = "get-session";
 
 export const SET_SESSION = "set-session";
+
+export const SESSION_CHANGED = "session-changed";
+
+export const UPDATE_SESSION = "update-session";
 
 // widget
 export const PREVENT_FROM_AERO_PEEK = "prevent-from-aero-peek";
@@ -87,8 +95,12 @@ export const APP_CHILD_IPC = {
 export const STORAGE_IPC = {
   GET_STORAGE,
   SET_STORAGE,
+  STORAGE_CHANGED,
+  UPDATE_STORAGE,
   GET_SESSION,
   SET_SESSION,
+  SESSION_CHANGED,
+  UPDATE_SESSION,
 };
 
 export const BLUETOOTH_IPC = {

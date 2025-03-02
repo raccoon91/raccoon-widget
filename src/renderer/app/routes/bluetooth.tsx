@@ -20,34 +20,44 @@ const Bluetooth = () => {
       closeChild: state.closeChild,
     })),
   );
-  const { selectedDevice, selectedSystem, clearDeviceState, pullDeviceInfo } = useBluetoothStore(
-    useShallow((state) => ({
-      selectedDevice: state.selectedDevice,
-      selectedSystem: state.selectedSystem,
-      systemProperties: state.systemProperties,
-      clearDeviceState: state.clearDeviceState,
-      pullDeviceInfo: state.pullDeviceInfo,
-    })),
-  );
+  // const { selectedDevice, selectedSystem, clearDeviceState, pullDeviceInfo } = useBluetoothStore(
+  //   useShallow((state) => ({
+  //     selectedDevice: state.selectedDevice,
+  //     selectedSystem: state.selectedSystem,
+  //     systemProperties: state.systemProperties,
+  //     clearDeviceState: state.clearDeviceState,
+  //     pullDeviceInfo: state.pullDeviceInfo,
+  //   })),
+  // );
 
   useEffect(() => {
-    window.appChildAPI.openChilWindow(APP_CHILD_PATH.BLUETOOTH_PATH);
+    // window.appChildAPI.openChilWindow(APP_CHILD_PATH.BLUETOOTH_PATH);
     window.appChildAPI.childDevtoolsStatusChanged((_, status) => {
       setChildDevtoolsStatus(APP_CHILD_PATH.BLUETOOTH_PATH, status);
     });
   }, []);
 
   useEffect(() => {
+    useBluetoothStore.persist.rehydrate();
+
     getAppChildConfig(APP_CHILD_PATH.BLUETOOTH_PATH);
   }, []);
 
+  useEffect(() => {
+    window.storageAPI.sessionChanged(() => {
+      console.log("session changed");
+      useBluetoothStore.persist.rehydrate();
+    });
+  }, []);
+
   const handleAddDevice = () => {
-    addDevice(selectedDevice, selectedSystem);
+    window.storageAPI.updateStorage();
+    // addDevice(selectedDevice, selectedSystem);
 
-    closeChild(APP_CHILD_PATH.BLUETOOTH_PATH);
-    clearDeviceState();
+    // closeChild(APP_CHILD_PATH.BLUETOOTH_PATH);
+    // clearDeviceState();
 
-    pullDeviceInfo();
+    // pullDeviceInfo();
   };
 
   return (
@@ -59,7 +69,8 @@ const Bluetooth = () => {
       </Stack>
 
       <HStack justify="end" p="8px 24px" bg="bg.subtle">
-        <Button size="xs" disabled={!selectedDevice || !selectedSystem} onClick={handleAddDevice}>
+        {/* <Button size="xs" disabled={!selectedDevice || !selectedSystem} onClick={handleAddDevice}> */}
+        <Button size="xs" onClick={handleAddDevice}>
           Add
         </Button>
       </HStack>
