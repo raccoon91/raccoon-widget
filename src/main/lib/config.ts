@@ -1,4 +1,5 @@
 import { APP } from "@/constants/app";
+import { APP_CHILD } from "@/constants/app-child";
 import { File } from "./file";
 
 class Config extends File {
@@ -57,10 +58,10 @@ class Config extends File {
   getChild(path: string) {
     return (
       this.config.child?.[path] ?? {
-        width: APP.APP_CHILD_DEFAULT_WIDTH,
-        height: APP.APP_CHILD_DEFAULT_HEIGHT,
-        x: APP.APP_CHILD_DEFAULT_POSITION_X,
-        y: APP.APP_CHILD_DEFAULT_POSITION_Y,
+        width: APP_CHILD.APP_CHILD_DEFAULT_WIDTH,
+        height: APP_CHILD.APP_CHILD_DEFAULT_HEIGHT,
+        x: APP_CHILD.APP_CHILD_DEFAULT_POSITION_X,
+        y: APP_CHILD.APP_CHILD_DEFAULT_POSITION_Y,
       }
     );
   }

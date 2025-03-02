@@ -1,3 +1,4 @@
+// app
 export const GET_APP_CONFIG = "get-app-config";
 
 export const SET_APP_CONFIG = "set-app-config";
@@ -14,20 +15,22 @@ export const CLOSE_DEV_TOOLS = "close-dev-tools";
 
 export const CLOSE_WINDOW = "close-window";
 
-export const CHILD_WINDOW_OPENDED = "child-window-opend";
+// app-child
+export const OPEN_APP_CHILD_WINDOW = "open-app-child-window";
 
 export const GET_APP_CHILD_CONFIG = "get-app-child-config";
 
 export const SET_APP_CHILD_CONFIG = "set-app-child-config";
 
-export const CHILD_DEVTOOLS_STATUS_CHAGEND = "child-devtools-status-changed";
+export const APP_CHILD_DEVTOOLS_STATUS_CHAGEND = "app-child-devtools-status-changed";
 
-export const OPEN_CHILD_DEV_TOOLS = "open-child-dev-tools";
+export const OPEN_APP_CHILD_DEV_TOOLS = "open-app-child-dev-tools";
 
-export const CLOSE_CHILD_DEV_TOOLS = "close-child-dev-tools";
+export const CLOSE_APP_CHILD_DEV_TOOLS = "close-app-child-dev-tools";
 
-export const CLOSE_CHILD_WINDOW = "close-child-window";
+export const CLOSE_APP_CHILD_WINDOW = "close-app-child-window";
 
+// bluetooth
 export const GET_DEVICE_BY_CLASS = "get-device-by-class";
 
 export const GET_DEVICE_PROPERTY_BY_ID = "get-device-property-by-id";
@@ -38,6 +41,7 @@ export const GET_SYSTEM_PROPERTY_BY_ID = "get-system-property-by-id";
 
 export const GET_SYSTEM_PROPERTY_BY_CONTAINER_ID = "get-system-property-by-container-id";
 
+// storage
 export const GET_STORAGE = "get-storage";
 
 export const SET_STORAGE = "set-storage";
@@ -46,6 +50,7 @@ export const GET_SESSION = "get-session";
 
 export const SET_SESSION = "set-session";
 
+// widget
 export const PREVENT_FROM_AERO_PEEK = "prevent-from-aero-peek";
 
 export const PREVENT_FROM_SHOW_DESKTOP = "prevent-from-show-desktop";
@@ -67,14 +72,16 @@ export const APP_IPC = {
   OPEN_DEV_TOOLS,
   CLOSE_DEV_TOOLS,
   CLOSE_WINDOW,
+};
 
-  CHILD_WINDOW_OPENDED,
+export const APP_CHILD_IPC = {
+  OPEN_APP_CHILD_WINDOW,
   GET_APP_CHILD_CONFIG,
   SET_APP_CHILD_CONFIG,
-  CHILD_DEVTOOLS_STATUS_CHAGEND,
-  OPEN_CHILD_DEV_TOOLS,
-  CLOSE_CHILD_DEV_TOOLS,
-  CLOSE_CHILD_WINDOW,
+  APP_CHILD_DEVTOOLS_STATUS_CHAGEND,
+  OPEN_APP_CHILD_DEV_TOOLS,
+  CLOSE_APP_CHILD_DEV_TOOLS,
+  CLOSE_APP_CHILD_WINDOW,
 };
 
 export const STORAGE_IPC = {

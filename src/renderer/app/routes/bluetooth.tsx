@@ -30,8 +30,8 @@ const Bluetooth = () => {
   );
 
   useEffect(() => {
-    window.appAPI.chilWindowOpened("/bluetooth");
-    window.appAPI.childDevtoolsStatusChanged((_, status) => {
+    window.appChildAPI.openChilWindow("/bluetooth");
+    window.appChildAPI.childDevtoolsStatusChanged((_, status) => {
       setChildDevtoolsStatus("/bluetooth", status);
     });
   }, []);

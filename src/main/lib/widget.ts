@@ -1,6 +1,6 @@
 import { BrowserWindow } from "electron";
 
-import { WM_WINDOWPOSCHANGING } from "@/constants/windows";
+import { WM_WINDOWPOSCHANGING } from "@/constants/widget";
 import {
   getDesktopWindow,
   getSHELLDLL_DefViewHandle,

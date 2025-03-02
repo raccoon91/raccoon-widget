@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
 
-import { APP_IPC, BLUETOOTH_IPC, STORAGE_IPC, WIDGET_IPC } from "@/constants/ipc";
+import { APP_CHILD_IPC, APP_IPC, BLUETOOTH_IPC, STORAGE_IPC, WIDGET_IPC } from "@/constants/ipc";
 
 const appAPI: AppAPI = {
   getAppConfig: () => ipcRenderer.invoke(APP_IPC.GET_APP_CONFIG),
@@ -13,16 +13,18 @@ const appAPI: AppAPI = {
   openDevTools: () => ipcRenderer.invoke(APP_IPC.OPEN_DEV_TOOLS),
   closeDevTools: () => ipcRenderer.invoke(APP_IPC.CLOSE_DEV_TOOLS),
   close: () => ipcRenderer.invoke(APP_IPC.CLOSE_WINDOW),
+};
 
-  chilWindowOpened: (path: string) => ipcRenderer.invoke(APP_IPC.CHILD_WINDOW_OPENDED, path),
-  getAppChildConfig: (path: string) => ipcRenderer.invoke(APP_IPC.GET_APP_CHILD_CONFIG, path),
+const appChildAPI: AppChildAPI = {
+  openChilWindow: (path: string) => ipcRenderer.invoke(APP_CHILD_IPC.OPEN_APP_CHILD_WINDOW, path),
+  getAppChildConfig: (path: string) => ipcRenderer.invoke(APP_CHILD_IPC.GET_APP_CHILD_CONFIG, path),
   setAppChildConfig: (path: string, data?: Record<string, number>) =>
-    ipcRenderer.invoke(APP_IPC.SET_APP_CHILD_CONFIG, path, data),
+    ipcRenderer.invoke(APP_CHILD_IPC.SET_APP_CHILD_CONFIG, path, data),
   childDevtoolsStatusChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) =>
-    ipcRenderer.on(APP_IPC.CHILD_DEVTOOLS_STATUS_CHAGEND, callback),
-  openChildDevTools: (path: string) => ipcRenderer.invoke(APP_IPC.OPEN_CHILD_DEV_TOOLS, path),
-  closeChildDevTools: (path: string) => ipcRenderer.invoke(APP_IPC.CLOSE_CHILD_DEV_TOOLS, path),
-  closeChild: (path: string) => ipcRenderer.invoke(APP_IPC.CLOSE_CHILD_WINDOW, path),
+    ipcRenderer.on(APP_CHILD_IPC.APP_CHILD_DEVTOOLS_STATUS_CHAGEND, callback),
+  openChildDevTools: (path: string) => ipcRenderer.invoke(APP_CHILD_IPC.OPEN_APP_CHILD_DEV_TOOLS, path),
+  closeChildDevTools: (path: string) => ipcRenderer.invoke(APP_CHILD_IPC.CLOSE_APP_CHILD_DEV_TOOLS, path),
+  closeChild: (path: string) => ipcRenderer.invoke(APP_CHILD_IPC.CLOSE_APP_CHILD_WINDOW, path),
 };
 
 const storageAPI: StorageAPI = {
@@ -54,6 +56,7 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld("electron", electronAPI);
     contextBridge.exposeInMainWorld("appAPI", appAPI);
+    contextBridge.exposeInMainWorld("appChildAPI", appChildAPI);
     contextBridge.exposeInMainWorld("storageAPI", storageAPI);
     contextBridge.exposeInMainWorld("bluetoothAPI", bluetoothAPI);
     contextBridge.exposeInMainWorld("widgetAPI", widgetAPI);
@@ -63,6 +66,7 @@ if (process.contextIsolated) {
 } else {
   window.electron = electronAPI;
   window.appAPI = appAPI;
+  window.appChildAPI = appChildAPI;
   window.storageAPI = storageAPI;
   window.bluetoothAPI = bluetoothAPI;
   window.widgetAPI = widgetAPI;

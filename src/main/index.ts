@@ -9,6 +9,7 @@ import storage from "@/main/lib/storage";
 import widget from "@/main/lib/widget";
 import log from "@/main/lib/log";
 import { appIpcHandler } from "@/main/ipc/app.ipc";
+import { appChildIpcHandler } from "@/main/ipc/app-child.ipc";
 import { storageIpcHandler } from "@/main/ipc/storage.ipc";
 import { widgetIpcHandler } from "@/main/ipc/widget.ipc";
 import { bluetoothIpcHandler } from "@/main/ipc/bluetooth.ipc";
@@ -35,6 +36,7 @@ function createWindow(): void {
   });
 
   appIpcHandler(mainWindow);
+  appChildIpcHandler(mainWindow);
   storageIpcHandler();
   widgetIpcHandler(mainWindow);
   bluetoothIpcHandler();

@@ -75,7 +75,7 @@ export const useAppStore = create<AppStore>()(
     },
 
     getAppChildConfig: async (path) => {
-      const config = (await window.appAPI.getAppChildConfig(path)) ?? {};
+      const config = (await window.appChildAPI.getAppChildConfig(path)) ?? {};
 
       set((p) => ({
         configMap: {
@@ -97,15 +97,15 @@ export const useAppStore = create<AppStore>()(
       }));
     },
     openChildDevTools: async (path: string) => {
-      await window.appAPI.openChildDevTools(path);
+      await window.appChildAPI.openChildDevTools(path);
     },
     closeChildDevTools: async (path: string) => {
-      await window.appAPI.closeChildDevTools(path);
+      await window.appChildAPI.closeChildDevTools(path);
     },
     closeChild: async (path: string, config?: Record<string, number>) => {
-      if (config) window.appAPI.setAppChildConfig(path, config);
+      if (config) window.appChildAPI.setAppChildConfig(path, config);
 
-      window.appAPI.closeChild(path);
+      window.appChildAPI.closeChild(path);
     },
   })),
 );
