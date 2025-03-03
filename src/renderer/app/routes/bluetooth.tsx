@@ -3,65 +3,107 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useShallow } from "zustand/shallow";
 import { Button, HStack, Stack } from "@chakra-ui/react";
 
-import { APP_CHILD_PATH } from "@/constants/app-child-path";
-import { useAppChildStore } from "@app/stores/app-child.store";
-import { useSharedStore } from "@app/stores/shared.store";
 import { useBluetoothStore } from "@app/stores/bluetooth.store";
+import { useSavedStore } from "@app/stores/saved.store";
+import { useSessionStore } from "@app/stores/session.store";
 import { WindowFrame } from "@app/components/layout/window-frame";
+import { Header } from "@app/components/layout/header";
 import { BluetoothDeviceSection } from "@app/components/bluetooth/bluetooth-device-section";
 import { BluetoothInfoSection } from "@app/components/bluetooth/bluetooth-info-section";
 
 const Bluetooth = () => {
-  const addDevice = useSharedStore((state) => state.addDevice);
-  const { getAppChildConfig, setChildDevtoolsStatus, closeChild } = useAppChildStore(
+  const addDevice = useSavedStore((state) => state.addDevice);
+  const { isDevToolsOpen, getConfig, setDevtoolsStatus, openDevTools, closeDevTools, close } = useBluetoothStore(
     useShallow((state) => ({
-      getAppChildConfig: state.getAppChildConfig,
-      setChildDevtoolsStatus: state.setChildDevtoolsStatus,
-      closeChild: state.closeChild,
+      isDevToolsOpen: state.isDevToolsOpen,
+      getConfig: state.getConfig,
+      setDevtoolsStatus: state.setDevtoolsStatus,
+      openDevTools: state.openDevTools,
+      closeDevTools: state.closeDevTools,
+      close: state.close,
     })),
   );
-  // const { selectedDevice, selectedSystem, clearDeviceState, pullDeviceInfo } = useBluetoothStore(
-  //   useShallow((state) => ({
-  //     selectedDevice: state.selectedDevice,
-  //     selectedSystem: state.selectedSystem,
-  //     systemProperties: state.systemProperties,
-  //     clearDeviceState: state.clearDeviceState,
-  //     pullDeviceInfo: state.pullDeviceInfo,
-  //   })),
-  // );
+  const { selectedDevice, selectedSystem, clearDeviceState } = useSessionStore(
+    useShallow((state) => ({
+      selectedDevice: state.selectedDevice,
+      selectedSystem: state.selectedSystem,
+      systemProperties: state.systemProperties,
+      clearDeviceState: state.clearDeviceState,
+    })),
+  );
 
   useEffect(() => {
-    // window.appChildAPI.openChilWindow(APP_CHILD_PATH.BLUETOOTH_PATH);
-    window.appChildAPI.childDevtoolsStatusChanged((_, status) => {
-      setChildDevtoolsStatus(APP_CHILD_PATH.BLUETOOTH_PATH, status);
+    window.bluetoothAppAPI.devtoolsStatusChanged((_, status) => {
+      setDevtoolsStatus(status);
+    });
+
+    return () => {
+      window.bluetoothAppAPI.removeDevtoolsStatusChanged();
+    };
+  }, []);
+
+  useEffect(() => {
+    useSavedStore.persist.rehydrate()?.then(() => {
+      useSessionStore.persist.rehydrate();
+
+      getConfig();
     });
   }, []);
 
   useEffect(() => {
-    useBluetoothStore.persist.rehydrate();
-
-    getAppChildConfig(APP_CHILD_PATH.BLUETOOTH_PATH);
-  }, []);
-
-  useEffect(() => {
-    window.storageAPI.sessionChanged(() => {
+    window.bluetoothStorageAPI.sessionChanged(() => {
       console.log("session changed");
-      useBluetoothStore.persist.rehydrate();
+      useSessionStore.persist.rehydrate();
     });
+
+    return () => {
+      window.bluetoothStorageAPI.removeSessionChanged();
+    };
   }, []);
+
+  const handleClickOpenDevTools = () => {
+    openDevTools();
+  };
+
+  const handleClickCloseDevTools = () => {
+    closeDevTools();
+  };
+
+  const handleCloseWindow = () => {
+    close({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      x: window.screenX,
+      y: window.screenY,
+    });
+  };
 
   const handleAddDevice = () => {
-    window.storageAPI.updateStorage();
-    // addDevice(selectedDevice, selectedSystem);
+    addDevice(selectedDevice, selectedSystem);
 
-    // closeChild(APP_CHILD_PATH.BLUETOOTH_PATH);
-    // clearDeviceState();
+    close({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      x: window.screenX,
+      y: window.screenY,
+    });
+    clearDeviceState();
 
-    // pullDeviceInfo();
+    window.bluetoothStorageAPI.updateSession();
+    window.bluetoothStorageAPI.updateStorage();
   };
 
   return (
-    <WindowFrame path={APP_CHILD_PATH.BLUETOOTH_PATH}>
+    <WindowFrame
+      header={
+        <Header
+          isDevToolsOpen={isDevToolsOpen}
+          openDevTools={handleClickOpenDevTools}
+          closeDevTools={handleClickCloseDevTools}
+          closeWindow={handleCloseWindow}
+        />
+      }
+    >
       <Stack overflow="auto" flex="1" position="relative" gap="12px" p="24px">
         <BluetoothDeviceSection />
 
@@ -69,8 +111,7 @@ const Bluetooth = () => {
       </Stack>
 
       <HStack justify="end" p="8px 24px" bg="bg.subtle">
-        {/* <Button size="xs" disabled={!selectedDevice || !selectedSystem} onClick={handleAddDevice}> */}
-        <Button size="xs" onClick={handleAddDevice}>
+        <Button size="xs" disabled={!selectedDevice || !selectedSystem} onClick={handleAddDevice}>
           Add
         </Button>
       </HStack>

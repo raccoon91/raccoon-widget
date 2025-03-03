@@ -1,35 +1,17 @@
-import { useEffect } from "react";
-import { useShallow } from "zustand/shallow";
 import { Button, Center, Flex, HStack, Stack, Text } from "@chakra-ui/react";
 
-import { APP_CHILD_PATH } from "@/constants/app-child-path";
 import { useAppStore } from "@app/stores/app.store";
-import { useSharedStore } from "@app/stores/shared.store";
-import { useBluetoothStore } from "@app/stores/bluetooth.store";
-import { useInterval } from "@app/hooks/useInterval";
+import { useSavedStore } from "@app/stores/saved.store";
+import { useSessionStore } from "@app/stores/session.store";
 import { BluetoothCard } from "./bluetooth-card";
 
 export const BluetoothPanel = () => {
   const mode = useAppStore((state) => state.mode);
-  const bluetooth = useSharedStore((state) => state.bluetooth);
-  const { bluetoothInfoMap, pullDeviceInfo } = useBluetoothStore(
-    useShallow((state) => ({
-      bluetoothInfoMap: state.bluetoothInfoMap,
-      pullDeviceInfo: state.pullDeviceInfo,
-    })),
-  );
-
-  useInterval(() => {
-    pullDeviceInfo();
-  });
-
-  useEffect(() => {
-    pullDeviceInfo();
-  }, []);
+  const bluetooth = useSavedStore((state) => state.bluetooth);
+  const bluetoothInfoMap = useSessionStore((state) => state.bluetoothInfoMap);
 
   const handleOpenBluetoothWindow = () => {
-    // window.appChildAPI.openChilWindow(APP_CHILD_PATH.BLUETOOTH_PATH);
-    window.open(APP_CHILD_PATH.BLUETOOTH_PATH);
+    window.mainAppAPI.openBluetoothApp();
   };
 
   return (

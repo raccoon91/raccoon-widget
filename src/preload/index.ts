@@ -1,52 +1,80 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
 
-import { APP_CHILD_IPC, APP_IPC, BLUETOOTH_IPC, STORAGE_IPC, WIDGET_IPC } from "@/constants/ipc";
+import { APP_IPC, SHELL_IPC, STORAGE_IPC, WIDGET_IPC } from "@/constants/ipc";
+import { APP_NAME } from "@/constants/app-name";
 
-const appAPI: AppAPI = {
-  getAppConfig: () => ipcRenderer.invoke(APP_IPC.GET_APP_CONFIG),
-  setAppConfig: (data?: Record<string, number>) => ipcRenderer.invoke(APP_IPC.SET_APP_CONFIG, data),
-  minimize: () => ipcRenderer.invoke(APP_IPC.MINIMIZE_WINDOW),
-  maximize: () => ipcRenderer.invoke(APP_IPC.MAXIMIZE_WINDOW),
+const mainAppAPI: AppAPI & MainAppAPI = {
+  getConfig: () => ipcRenderer.invoke(`${APP_IPC.GET_APP_CONFIG}:${APP_NAME.MAIN}`),
+  setConfig: (data?: Record<string, number>) => ipcRenderer.invoke(`${APP_IPC.SET_APP_CONFIG}:${APP_NAME.MAIN}`, data),
+  minimize: () => ipcRenderer.invoke(`${APP_IPC.MINIMIZE_WINDOW}:${APP_NAME.MAIN}`),
+  maximize: () => ipcRenderer.invoke(`${APP_IPC.MAXIMIZE_WINDOW}:${APP_NAME.MAIN}`),
   devtoolsStatusChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) =>
-    ipcRenderer.on(APP_IPC.DEVTOOLS_STATUS_CHAGEND, callback),
-  openDevTools: () => ipcRenderer.invoke(APP_IPC.OPEN_DEV_TOOLS),
-  closeDevTools: () => ipcRenderer.invoke(APP_IPC.CLOSE_DEV_TOOLS),
-  close: () => ipcRenderer.invoke(APP_IPC.CLOSE_WINDOW),
+    ipcRenderer.on(`${APP_IPC.DEVTOOLS_STATUS_CHAGEND}:${APP_NAME.MAIN}`, callback),
+  removeDevtoolsStatusChanged: () =>
+    ipcRenderer.removeAllListeners(`${APP_IPC.DEVTOOLS_STATUS_CHAGEND}:${APP_NAME.MAIN}`),
+  openDevTools: () => ipcRenderer.invoke(`${APP_IPC.OPEN_DEV_TOOLS}:${APP_NAME.MAIN}`),
+  closeDevTools: () => ipcRenderer.invoke(`${APP_IPC.CLOSE_DEV_TOOLS}:${APP_NAME.MAIN}`),
+  close: () => ipcRenderer.invoke(`${APP_IPC.CLOSE_WINDOW}:${APP_NAME.MAIN}`),
+
+  openBluetoothApp: () => ipcRenderer.invoke(`${APP_IPC.OPEN_WINDOW}:${APP_NAME.BLUETOOTH}`),
+  closeBluetoothApp: () => ipcRenderer.invoke(`${APP_IPC.CLOSE_WINDOW}:${APP_NAME.BLUETOOTH}`),
 };
 
-const appChildAPI: AppChildAPI = {
-  openChilWindow: (path: string) => ipcRenderer.invoke(APP_CHILD_IPC.OPEN_APP_CHILD_WINDOW, path),
-  getAppChildConfig: (path: string) => ipcRenderer.invoke(APP_CHILD_IPC.GET_APP_CHILD_CONFIG, path),
-  setAppChildConfig: (path: string, data?: Record<string, number>) =>
-    ipcRenderer.invoke(APP_CHILD_IPC.SET_APP_CHILD_CONFIG, path, data),
-  childDevtoolsStatusChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) =>
-    ipcRenderer.on(APP_CHILD_IPC.APP_CHILD_DEVTOOLS_STATUS_CHAGEND, callback),
-  openChildDevTools: (path: string) => ipcRenderer.invoke(APP_CHILD_IPC.OPEN_APP_CHILD_DEV_TOOLS, path),
-  closeChildDevTools: (path: string) => ipcRenderer.invoke(APP_CHILD_IPC.CLOSE_APP_CHILD_DEV_TOOLS, path),
-  closeChild: (path: string) => ipcRenderer.invoke(APP_CHILD_IPC.CLOSE_APP_CHILD_WINDOW, path),
+const bluetoothAppAPI: AppAPI = {
+  getConfig: () => ipcRenderer.invoke(`${APP_IPC.GET_APP_CONFIG}:${APP_NAME.BLUETOOTH}`),
+  setConfig: (data?: Record<string, number>) =>
+    ipcRenderer.invoke(`${APP_IPC.SET_APP_CONFIG}:${APP_NAME.BLUETOOTH}`, data),
+  minimize: () => ipcRenderer.invoke(`${APP_IPC.MINIMIZE_WINDOW}:${APP_NAME.BLUETOOTH}`),
+  maximize: () => ipcRenderer.invoke(`${APP_IPC.MAXIMIZE_WINDOW}:${APP_NAME.BLUETOOTH}`),
+  devtoolsStatusChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) =>
+    ipcRenderer.on(`${APP_IPC.DEVTOOLS_STATUS_CHAGEND}:${APP_NAME.BLUETOOTH}`, callback),
+  removeDevtoolsStatusChanged: () =>
+    ipcRenderer.removeAllListeners(`${APP_IPC.DEVTOOLS_STATUS_CHAGEND}:${APP_NAME.BLUETOOTH}`),
+  openDevTools: () => ipcRenderer.invoke(`${APP_IPC.OPEN_DEV_TOOLS}:${APP_NAME.BLUETOOTH}`),
+  closeDevTools: () => ipcRenderer.invoke(`${APP_IPC.CLOSE_DEV_TOOLS}:${APP_NAME.BLUETOOTH}`),
+  close: () => ipcRenderer.invoke(`${APP_IPC.CLOSE_WINDOW}:${APP_NAME.BLUETOOTH}`),
 };
 
-const storageAPI: StorageAPI = {
-  getStorage: () => ipcRenderer.invoke(STORAGE_IPC.GET_STORAGE),
-  setStorage: (data: any) => ipcRenderer.invoke(STORAGE_IPC.SET_STORAGE, data),
-  updateStorage: () => ipcRenderer.invoke(STORAGE_IPC.UPDATE_STORAGE),
+const mainStorageAPI: StorageAPI = {
+  getStorage: () => ipcRenderer.invoke(`${STORAGE_IPC.GET_STORAGE}:${APP_NAME.MAIN}`),
+  setStorage: (data: any) => ipcRenderer.invoke(`${STORAGE_IPC.SET_STORAGE}:${APP_NAME.MAIN}`, data),
+  updateStorage: () => ipcRenderer.invoke(`${STORAGE_IPC.UPDATE_STORAGE}:${APP_NAME.MAIN}`),
   storageChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) =>
-    ipcRenderer.on(STORAGE_IPC.STORAGE_CHANGED, callback),
-  getSession: () => ipcRenderer.invoke(STORAGE_IPC.GET_SESSION),
-  setSession: (data: any) => ipcRenderer.invoke(STORAGE_IPC.SET_SESSION, data),
-  updateSession: () => ipcRenderer.invoke(STORAGE_IPC.UPDATE_SESSION),
+    ipcRenderer.on(`${STORAGE_IPC.STORAGE_CHANGED}:${APP_NAME.MAIN}`, callback),
+  removeStorageChanged: () => ipcRenderer.removeAllListeners(`${STORAGE_IPC.STORAGE_CHANGED}:${APP_NAME.MAIN}`),
+
+  getSession: () => ipcRenderer.invoke(`${STORAGE_IPC.GET_SESSION}:${APP_NAME.MAIN}`),
+  setSession: (data: any) => ipcRenderer.invoke(`${STORAGE_IPC.SET_SESSION}:${APP_NAME.MAIN}`, data),
+  updateSession: () => ipcRenderer.invoke(`${STORAGE_IPC.UPDATE_SESSION}:${APP_NAME.MAIN}`),
   sessionChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) =>
-    ipcRenderer.on(STORAGE_IPC.SESSION_CHANGED, callback),
+    ipcRenderer.on(`${STORAGE_IPC.SESSION_CHANGED}:${APP_NAME.MAIN}`, callback),
+  removeSessionChanged: () => ipcRenderer.removeAllListeners(`${STORAGE_IPC.SESSION_CHANGED}:${APP_NAME.MAIN}`),
 };
 
-const bluetoothAPI: BluetoothAPI = {
-  getDeviceByClass: (className) => ipcRenderer.invoke(BLUETOOTH_IPC.GET_DEVICE_BY_CLASS, className),
-  getDevicePropertyById: (instanceId) => ipcRenderer.invoke(BLUETOOTH_IPC.GET_DEVICE_PROPERTY_BY_ID, instanceId),
-  getSystemByContainerId: (containerId) => ipcRenderer.invoke(BLUETOOTH_IPC.GET_SYSTEM_BY_CONTAINER_ID, containerId),
-  getSystemPropertyById: (containerId) => ipcRenderer.invoke(BLUETOOTH_IPC.GET_SYSTEM_PROPERTY_BY_ID, containerId),
+const bluetoothStorageAPI: StorageAPI = {
+  getStorage: () => ipcRenderer.invoke(`${STORAGE_IPC.GET_STORAGE}:${APP_NAME.BLUETOOTH}`),
+  setStorage: (data: any) => ipcRenderer.invoke(`${STORAGE_IPC.SET_STORAGE}:${APP_NAME.BLUETOOTH}`, data),
+  updateStorage: () => ipcRenderer.invoke(`${STORAGE_IPC.UPDATE_STORAGE}:${APP_NAME.BLUETOOTH}`),
+  storageChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) =>
+    ipcRenderer.on(`${STORAGE_IPC.STORAGE_CHANGED}:${APP_NAME.BLUETOOTH}`, callback),
+  removeStorageChanged: () => ipcRenderer.removeAllListeners(`${STORAGE_IPC.STORAGE_CHANGED}:${APP_NAME.BLUETOOTH}`),
+
+  getSession: () => ipcRenderer.invoke(`${STORAGE_IPC.GET_SESSION}:${APP_NAME.BLUETOOTH}`),
+  setSession: (data: any) => ipcRenderer.invoke(`${STORAGE_IPC.SET_SESSION}:${APP_NAME.BLUETOOTH}`, data),
+  updateSession: () => ipcRenderer.invoke(`${STORAGE_IPC.UPDATE_SESSION}:${APP_NAME.BLUETOOTH}`),
+  sessionChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) =>
+    ipcRenderer.on(`${STORAGE_IPC.SESSION_CHANGED}:${APP_NAME.BLUETOOTH}`, callback),
+  removeSessionChanged: () => ipcRenderer.removeAllListeners(`${STORAGE_IPC.SESSION_CHANGED}:${APP_NAME.BLUETOOTH}`),
+};
+
+const shellAPI: ShellAPI = {
+  getDeviceByClass: (className) => ipcRenderer.invoke(SHELL_IPC.GET_DEVICE_BY_CLASS, className),
+  getDevicePropertyById: (instanceId) => ipcRenderer.invoke(SHELL_IPC.GET_DEVICE_PROPERTY_BY_ID, instanceId),
+  getSystemByContainerId: (containerId) => ipcRenderer.invoke(SHELL_IPC.GET_SYSTEM_BY_CONTAINER_ID, containerId),
+  getSystemPropertyById: (containerId) => ipcRenderer.invoke(SHELL_IPC.GET_SYSTEM_PROPERTY_BY_ID, containerId),
   getSystemPropertyByContainerId: (containerId) =>
-    ipcRenderer.invoke(BLUETOOTH_IPC.GET_SYSTEM_PROPERTY_BY_CONTAINER_ID, containerId),
+    ipcRenderer.invoke(SHELL_IPC.GET_SYSTEM_PROPERTY_BY_CONTAINER_ID, containerId),
 };
 
 const widgetAPI: WidgetAPI = {
@@ -61,19 +89,21 @@ const widgetAPI: WidgetAPI = {
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld("electron", electronAPI);
-    contextBridge.exposeInMainWorld("appAPI", appAPI);
-    contextBridge.exposeInMainWorld("appChildAPI", appChildAPI);
-    contextBridge.exposeInMainWorld("storageAPI", storageAPI);
-    contextBridge.exposeInMainWorld("bluetoothAPI", bluetoothAPI);
+    contextBridge.exposeInMainWorld("mainAppAPI", mainAppAPI);
+    contextBridge.exposeInMainWorld("bluetoothAppAPI", bluetoothAppAPI);
+    contextBridge.exposeInMainWorld("mainStorageAPI", mainStorageAPI);
+    contextBridge.exposeInMainWorld("bluetoothStorageAPI", bluetoothStorageAPI);
+    contextBridge.exposeInMainWorld("shellAPI", shellAPI);
     contextBridge.exposeInMainWorld("widgetAPI", widgetAPI);
   } catch (error) {
     console.error(error);
   }
 } else {
   window.electron = electronAPI;
-  window.appAPI = appAPI;
-  window.appChildAPI = appChildAPI;
-  window.storageAPI = storageAPI;
-  window.bluetoothAPI = bluetoothAPI;
+  window.mainAppAPI = mainAppAPI;
+  window.bluetoothAppAPI = bluetoothAppAPI;
+  window.mainStorageAPI = mainStorageAPI;
+  window.bluetoothStorageAPI = bluetoothStorageAPI;
+  window.shellAPI = shellAPI;
   window.widgetAPI = widgetAPI;
 }

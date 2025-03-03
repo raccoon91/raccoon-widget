@@ -4,35 +4,61 @@ import { useShallow } from "zustand/shallow";
 import { Box } from "@chakra-ui/react";
 
 import { useAppStore } from "@app/stores/app.store";
-import { useSharedStore } from "@app/stores/shared.store";
-import { useBluetoothStore } from "@app/stores/bluetooth.store";
+import { useSavedStore } from "@app/stores/saved.store";
+import { useSessionStore } from "@app/stores/session.store";
+import { useInterval } from "@app/hooks/useInterval";
 import { MainHeader } from "@app/components/layout/main-header";
 import { BluetoothPanel } from "@app/components/bluetooth/bluetooth-panel";
 import { WindowFrame } from "@app/components/layout/window-frame";
 
 const Home = () => {
-  const { mode, getAppConfig, setDevtoolsStatus } = useAppStore(
+  const { mode, getConfig, setDevtoolsStatus } = useAppStore(
     useShallow((state) => ({
       mode: state.mode,
-      getAppConfig: state.getAppConfig,
+      getConfig: state.getConfig,
       setDevtoolsStatus: state.setDevtoolsStatus,
     })),
   );
-  const getDeviceByClass = useBluetoothStore((state) => state.getDeviceByClass);
+  const { getDeviceByClass, pullDeviceInfo } = useSessionStore(
+    useShallow((state) => ({
+      getDeviceByClass: state.getDeviceByClass,
+      pullDeviceInfo: state.pullDeviceInfo,
+    })),
+  );
+
+  useInterval(() => {
+    pullDeviceInfo();
+  });
 
   useEffect(() => {
-    window.appAPI.devtoolsStatusChanged((_, status) => {
+    window.mainAppAPI.devtoolsStatusChanged((_, status) => {
       setDevtoolsStatus(status);
     });
+
+    return () => {
+      window.mainAppAPI.removeDevtoolsStatusChanged();
+    };
   }, []);
 
   useEffect(() => {
-    useSharedStore.persist.rehydrate();
+    window.mainStorageAPI.storageChanged(() => {
+      console.log("storage updated");
+      useSavedStore.persist.rehydrate();
+    });
 
-    getAppConfig();
-    getDeviceByClass("Bluetooth").then(() => {
-      console.log("get device done");
-      window.storageAPI.updateSession();
+    return () => {
+      window.mainStorageAPI.removeStorageChanged();
+    };
+  }, []);
+
+  useEffect(() => {
+    useSavedStore.persist.rehydrate()?.then(() => {
+      getConfig();
+      pullDeviceInfo();
+      getDeviceByClass("Bluetooth").then(() => {
+        console.log("get device done");
+        window.mainStorageAPI.updateSession();
+      });
     });
   }, []);
 

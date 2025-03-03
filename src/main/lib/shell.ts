@@ -1,6 +1,6 @@
 import { exec } from "child_process";
 
-import { POWERSHELL, PROPERTY_KEY_NAMES } from "@/constants/bluetooth";
+import { POWERSHELL, PROPERTY_KEY_NAMES } from "@/constants/shell";
 
 class Shell {
   run(script: string) {

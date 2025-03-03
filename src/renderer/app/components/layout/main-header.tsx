@@ -42,7 +42,12 @@ export const MainHeader = () => {
   };
 
   const handleClickCloseApp = () => {
-    close();
+    close({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      x: window.screenX,
+      y: window.screenY,
+    });
   };
 
   return (

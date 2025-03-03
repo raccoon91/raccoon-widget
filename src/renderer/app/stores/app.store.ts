@@ -9,13 +9,13 @@ interface AppStore {
   changeToDisplayMode: (config: Record<string, number>) => void;
   changeToSettingMode: () => void;
 
-  getAppConfig: () => Promise<void>;
+  getConfig: () => Promise<void>;
   minimize: () => void;
   maximize: () => void;
   setDevtoolsStatus: (status: boolean) => void;
   openDevTools: () => Promise<void>;
   closeDevTools: () => Promise<void>;
-  close: () => void;
+  close: (config: Record<string, number>) => void;
 }
 
 export const useAppStore = create<AppStore>()(
@@ -27,40 +27,41 @@ export const useAppStore = create<AppStore>()(
     changeToDisplayMode: (config) => {
       window.widgetAPI.alwaysOnBottom();
 
-      window.appAPI.setAppConfig(config);
+      window.mainAppAPI.setConfig(config);
 
       set({ mode: "display", config });
     },
     changeToSettingMode: async () => {
       window.widgetAPI.cancelAlwaysOnBottom();
 
-      const config = (await window.appAPI.getAppConfig()) ?? {};
+      const config = (await window.mainAppAPI.getConfig()) ?? {};
 
       set({ mode: "setting", config });
     },
 
-    getAppConfig: async () => {
-      const config = (await window.appAPI.getAppConfig()) ?? {};
+    getConfig: async () => {
+      const config = (await window.mainAppAPI.getConfig()) ?? {};
 
       set({ config });
     },
     minimize: () => {
-      window.appAPI.minimize();
+      window.mainAppAPI.minimize();
     },
     maximize: () => {
-      window.appAPI.maximize();
+      window.mainAppAPI.maximize();
     },
     setDevtoolsStatus: (status: boolean) => {
       set({ isDevToolsOpen: status });
     },
     openDevTools: async () => {
-      await window.appAPI.openDevTools();
+      await window.mainAppAPI.openDevTools();
     },
     closeDevTools: async () => {
-      await window.appAPI.closeDevTools();
+      await window.mainAppAPI.closeDevTools();
     },
-    close: () => {
-      window.appAPI.close();
+    close: (config: Record<string, number>) => {
+      window.mainAppAPI.setConfig(config);
+      window.mainAppAPI.close();
     },
   })),
 );

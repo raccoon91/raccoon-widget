@@ -1,7 +1,7 @@
 import { createWriteStream, WriteStream } from "fs";
 
 import { APP } from "@/constants/app";
-import { File } from "./file";
+import { File } from "@/main/helper/file";
 
 class Log extends File {
   logStream: WriteStream;

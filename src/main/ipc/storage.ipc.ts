@@ -1,42 +1,40 @@
-import { BrowserWindow, ipcMain } from "electron";
+import { ipcMain } from "electron";
 
 import { STORAGE_IPC } from "@/constants/ipc";
 import storage from "@/main/lib/storage";
 
-export const storageIpcHandler = (browserWindow: BrowserWindow) => {
-  ipcMain.handle(STORAGE_IPC.GET_STORAGE, (_) => {
+export const storageIpcHandler = ({ app, parent, children }: { app: App; parent?: App; children?: App[] }) => {
+  ipcMain.handle(`${STORAGE_IPC.GET_STORAGE}:${app.name}`, (_) => {
     return storage.getStorage();
   });
 
-  ipcMain.handle(STORAGE_IPC.SET_STORAGE, (_, data: any) => {
+  ipcMain.handle(`${STORAGE_IPC.SET_STORAGE}:${app.name}`, (_, data: any) => {
+    console.log("set storage ipc");
     storage.setStorage(data);
   });
 
-  ipcMain.handle(STORAGE_IPC.UPDATE_STORAGE, () => {
-    browserWindow.webContents.send(STORAGE_IPC.STORAGE_CHANGED);
+  ipcMain.handle(`${STORAGE_IPC.UPDATE_STORAGE}:${app.name}`, () => {
+    if (parent) parent.window.webContents.send(`${STORAGE_IPC.STORAGE_CHANGED}:${parent.name}`);
 
-    // const children = browserWindow.getChildWindows();
-
-    // children.forEach((child) => {
-    //   child.webContents.send(STORAGE_IPC.STORAGE_CHANGED);
-    // });
+    children?.forEach((child) => {
+      child.window.webContents.send(`${STORAGE_IPC.STORAGE_CHANGED}:${child.name}`);
+    });
   });
 
-  ipcMain.handle(STORAGE_IPC.GET_SESSION, (_) => {
+  ipcMain.handle(`${STORAGE_IPC.GET_SESSION}:${app.name}`, (_) => {
     return storage.getSession();
   });
 
-  ipcMain.handle(STORAGE_IPC.SET_SESSION, (_, data: any) => {
+  ipcMain.handle(`${STORAGE_IPC.SET_SESSION}:${app.name}`, (_, data: any) => {
+    console.log("set session ipc");
     storage.setSession(data);
   });
 
-  ipcMain.handle(STORAGE_IPC.UPDATE_SESSION, () => {
-    browserWindow.webContents.send(STORAGE_IPC.SESSION_CHANGED);
+  ipcMain.handle(`${STORAGE_IPC.UPDATE_SESSION}:${app.name}`, () => {
+    if (parent) parent.window.webContents.send(`${STORAGE_IPC.SESSION_CHANGED}:${parent.name}`);
 
-    // const children = browserWindow.getChildWindows();
-
-    // children.forEach((child) => {
-    //   child.webContents.send(STORAGE_IPC.SESSION_CHANGED);
-    // });
+    children?.forEach((child) => {
+      child.window.webContents.send(`${STORAGE_IPC.SESSION_CHANGED}:${child.name}`);
+    });
   });
 };

@@ -1,48 +1,32 @@
-import { FC, useMemo } from "react";
+import { FC } from "react";
 import { Box, Center, Flex } from "@chakra-ui/react";
-import { useShallow } from "zustand/shallow";
 import { LuX } from "react-icons/lu";
 import { BsTerminal, BsTerminalX } from "react-icons/bs";
 
-import { useAppChildStore } from "@app/stores/app-child.store";
-
 interface HeaderProps {
-  path: string;
+  isDevToolsOpen: boolean;
+  openDevTools: () => void;
+  closeDevTools: () => void;
+  closeWindow: () => void;
 }
 
-export const Header: FC<HeaderProps> = ({ path }) => {
-  const { isChildDevToolsOpenMap, openChildDevTools, closeChildDevTools, closeChild } = useAppChildStore(
-    useShallow((state) => ({
-      isChildDevToolsOpenMap: state.isChildDevToolsOpenMap,
-      openChildDevTools: state.openChildDevTools,
-      closeChildDevTools: state.closeChildDevTools,
-      closeChild: state.closeChild,
-    })),
-  );
-
-  const isChildDevToolsOpen = useMemo(() => isChildDevToolsOpenMap?.[path], [isChildDevToolsOpenMap]);
-
+export const Header: FC<HeaderProps> = ({ isDevToolsOpen, openDevTools, closeDevTools, closeWindow }) => {
   const handleClickOpenChildDevTools = () => {
-    openChildDevTools(path);
+    openDevTools();
   };
 
   const handleClickCloseChildDevTools = () => {
-    closeChildDevTools(path);
+    closeDevTools();
   };
 
   const handleCloseChildWindow = () => {
-    closeChild(path, {
-      width: window.innerWidth,
-      height: window.innerHeight,
-      x: window.screenX,
-      y: window.screenY,
-    });
+    closeWindow();
   };
 
   return (
     <Flex align="stretch" justify="end" gap="0" h="36px">
       <Box flex="1" css={{ WebkitAppRegion: "drag" }} bg="bg.subtle"></Box>
-      {isChildDevToolsOpen ? (
+      {isDevToolsOpen ? (
         <Center
           px="12px"
           color="fg.subtle"

@@ -1,5 +1,5 @@
 import { APP } from "@/constants/app";
-import { File } from "./file";
+import { File } from "@/main/helper/file";
 
 class Storage extends File {
   storage: Record<string, any> = {};
@@ -40,6 +40,7 @@ class Storage extends File {
   }
 
   setStorage(data: any) {
+    console.log("set storage");
     this.storage = data;
   }
 
@@ -48,6 +49,7 @@ class Storage extends File {
   }
 
   setSession(data: any) {
+    console.log("set session");
     this.session = data;
   }
 }

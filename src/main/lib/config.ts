@@ -1,6 +1,6 @@
-import { APP } from "@/constants/app";
-import { APP_CHILD } from "@/constants/app-child";
-import { File } from "./file";
+import { APP, APP_CHILD } from "@/constants/app";
+import { APP_NAME } from "@/constants/app-name";
+import { File } from "@/main/helper/file";
 
 class Config extends File {
   config: Record<string, Record<string, any>>;
@@ -12,13 +12,18 @@ class Config extends File {
 
     if (!isExist) {
       this._write({
-        parent: {
+        [APP_NAME.MAIN]: {
           width: APP.APP_DEFAULT_WIDTH,
           height: APP.APP_DEFAULT_HEIGHT,
           x: APP.APP_DEFAULT_POSITION_X,
           y: APP.APP_DEFAULT_POSITION_Y,
         },
-        child: {},
+        [APP_NAME.BLUETOOTH]: {
+          width: APP_CHILD.APP_CHILD_DEFAULT_WIDTH,
+          height: APP_CHILD.APP_CHILD_DEFAULT_HEIGHT,
+          x: APP_CHILD.APP_CHILD_DEFAULT_POSITION_X,
+          y: APP_CHILD.APP_CHILD_DEFAULT_POSITION_Y,
+        },
       });
     }
 
@@ -45,31 +50,14 @@ class Config extends File {
     this._write(this.config);
   }
 
-  get() {
-    return this.config["parent"];
+  get(name: string) {
+    return this.config[name];
   }
 
-  set(data?: Record<string, number>) {
+  set(name: string, data?: Record<string, number>) {
     if (!data) return;
 
-    this.config["parent"] = data;
-  }
-
-  getChild(path: string) {
-    return (
-      this.config.child?.[path] ?? {
-        width: APP_CHILD.APP_CHILD_DEFAULT_WIDTH,
-        height: APP_CHILD.APP_CHILD_DEFAULT_HEIGHT,
-        x: APP_CHILD.APP_CHILD_DEFAULT_POSITION_X,
-        y: APP_CHILD.APP_CHILD_DEFAULT_POSITION_Y,
-      }
-    );
-  }
-
-  setChild(path: string, data?: Record<string, number>) {
-    if (!data) return;
-
-    this.config.child[path] = data;
+    this.config[name] = data;
   }
 }
 

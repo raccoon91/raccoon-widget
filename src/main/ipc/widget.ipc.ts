@@ -1,15 +1,15 @@
-import { BrowserWindow, ipcMain } from "electron";
+import { ipcMain } from "electron";
 
 import { WIDGET_IPC } from "@/constants/ipc";
 import widget from "@/main/lib/widget";
 import log from "@/main/lib/log";
 
-export const widgetIpcHandler = (browserWindow: BrowserWindow) => {
+export const widgetIpcHandler = ({ app }: { app: App; parent?: App; children?: App[] }) => {
   ipcMain.handle(WIDGET_IPC.PREVENT_FROM_AERO_PEEK, async () => {
     try {
-      widget.preventFromAeroPeek(browserWindow);
+      widget.preventFromAeroPeek(app.window);
 
-      log.info("WIDGET_IPC PREVENT_FROM_AERO_PEEK");
+      log.info("[WIDGET_IPC] PREVENT_FROM_AERO_PEEK");
     } catch (error) {
       log.error(error);
     }
@@ -17,9 +17,9 @@ export const widgetIpcHandler = (browserWindow: BrowserWindow) => {
 
   ipcMain.handle(WIDGET_IPC.PREVENT_FROM_SHOW_DESKTOP, async () => {
     try {
-      widget.preventFromShowDesktop(browserWindow);
+      widget.preventFromShowDesktop(app.window);
 
-      log.info("WIDGET_IPC PREVENT_FROM_SHOW_DESKTOP");
+      log.info("[WIDGET_IPC] PREVENT_FROM_SHOW_DESKTOP");
     } catch (error) {
       log.error(error);
     }
@@ -27,9 +27,9 @@ export const widgetIpcHandler = (browserWindow: BrowserWindow) => {
 
   ipcMain.handle(WIDGET_IPC.CANCEL_PREVENT_FROM_SHOW_DESKTOP, async () => {
     try {
-      widget.cancelPreventFromShowDesktop(browserWindow);
+      widget.cancelPreventFromShowDesktop(app.window);
 
-      log.info("WIDGET_IPC CANCEL_PREVENT_FROM_SHOW_DESKTOP");
+      log.info("[WIDGET_IPC] CANCEL_PREVENT_FROM_SHOW_DESKTOP");
     } catch (error) {
       log.error(error);
     }
@@ -37,9 +37,9 @@ export const widgetIpcHandler = (browserWindow: BrowserWindow) => {
 
   ipcMain.handle(WIDGET_IPC.MOVE_TO_BOTTOM, async () => {
     try {
-      widget.moveToBottom(browserWindow);
+      widget.moveToBottom(app.window);
 
-      log.info("WIDGET_IPC MOVE_TO_BOTTOM");
+      log.info("[WIDGET_IPC] MOVE_TO_BOTTOM");
     } catch (error) {
       log.error(error);
     }
@@ -47,9 +47,9 @@ export const widgetIpcHandler = (browserWindow: BrowserWindow) => {
 
   ipcMain.handle(WIDGET_IPC.ALWAYS_TO_BOTTOM, async () => {
     try {
-      widget.alwaysOnBottom(browserWindow);
+      widget.alwaysOnBottom(app.window);
 
-      log.info("WIDGET_IPC ALWAYS_TO_BOTTOM");
+      log.info("[WIDGET_IPC] ALWAYS_TO_BOTTOM");
     } catch (error) {
       log.error(error);
     }
@@ -57,9 +57,9 @@ export const widgetIpcHandler = (browserWindow: BrowserWindow) => {
 
   ipcMain.handle(WIDGET_IPC.CANCEL_ALWAYS_TO_BOTTOM, async () => {
     try {
-      widget.cancelAlwaysOnBottom(browserWindow);
+      widget.cancelAlwaysOnBottom(app.window);
 
-      log.info("WIDGET_IPC CANCEL_ALWAYS_TO_BOTTOM");
+      log.info("[WIDGET_IPC] CANCEL_ALWAYS_TO_BOTTOM");
     } catch (error) {
       log.error(error);
     }

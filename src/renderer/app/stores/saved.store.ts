@@ -1,41 +1,41 @@
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
-const appSharedStorage = {
+const savedStorage = {
   getItem: async (key: string) => {
-    const storage = await window.storageAPI.getStorage();
+    const storage = await window.mainStorageAPI.getStorage();
+
+    console.log("get storage");
+    console.log(JSON.parse(storage[key]));
 
     return storage[key];
   },
   setItem: async (key: string, value: any) => {
-    const storage = await window.storageAPI.getStorage();
+    const storage = await window.mainStorageAPI.getStorage();
 
-    window.storageAPI.setStorage({
+    window.mainStorageAPI.setStorage({
       ...storage,
       [key]: value,
     });
   },
   removeItem: async (key: string) => {
-    const storage = await window.storageAPI.getStorage();
+    const storage = await window.mainStorageAPI.getStorage();
 
     delete storage[key];
 
-    window.storageAPI.setStorage(storage);
+    window.mainStorageAPI.setStorage(storage);
   },
 };
 
-interface SharedState {
+interface SavedStore {
   bluetooth: {
     device: Device;
     system: System;
   }[];
-}
-
-interface SharedAction {
   addDevice: (device?: Nullable<Device>, system?: Nullable<System>) => void;
 }
 
-export const useSharedStore = create<SharedState & SharedAction>()(
+export const useSavedStore = create<SavedStore>()(
   devtools(
     persist(
       (set, get) => ({
@@ -60,9 +60,9 @@ export const useSharedStore = create<SharedState & SharedAction>()(
         },
       }),
       {
-        name: "shared-store",
+        name: "saved-store",
         skipHydration: true,
-        storage: createJSONStorage(() => appSharedStorage),
+        storage: createJSONStorage(() => savedStorage),
         partialize: (state) => ({
           bluetooth: state.bluetooth,
         }),

@@ -13,24 +13,11 @@ export const OPEN_DEV_TOOLS = "open-dev-tools";
 
 export const CLOSE_DEV_TOOLS = "close-dev-tools";
 
+export const OPEN_WINDOW = "open-window";
+
 export const CLOSE_WINDOW = "close-window";
 
-// app-child
-export const OPEN_APP_CHILD_WINDOW = "open-app-child-window";
-
-export const GET_APP_CHILD_CONFIG = "get-app-child-config";
-
-export const SET_APP_CHILD_CONFIG = "set-app-child-config";
-
-export const APP_CHILD_DEVTOOLS_STATUS_CHAGEND = "app-child-devtools-status-changed";
-
-export const OPEN_APP_CHILD_DEV_TOOLS = "open-app-child-dev-tools";
-
-export const CLOSE_APP_CHILD_DEV_TOOLS = "close-app-child-dev-tools";
-
-export const CLOSE_APP_CHILD_WINDOW = "close-app-child-window";
-
-// bluetooth
+// shell
 export const GET_DEVICE_BY_CLASS = "get-device-by-class";
 
 export const GET_DEVICE_PROPERTY_BY_ID = "get-device-property-by-id";
@@ -79,17 +66,8 @@ export const APP_IPC = {
   DEVTOOLS_STATUS_CHAGEND,
   OPEN_DEV_TOOLS,
   CLOSE_DEV_TOOLS,
+  OPEN_WINDOW,
   CLOSE_WINDOW,
-};
-
-export const APP_CHILD_IPC = {
-  OPEN_APP_CHILD_WINDOW,
-  GET_APP_CHILD_CONFIG,
-  SET_APP_CHILD_CONFIG,
-  APP_CHILD_DEVTOOLS_STATUS_CHAGEND,
-  OPEN_APP_CHILD_DEV_TOOLS,
-  CLOSE_APP_CHILD_DEV_TOOLS,
-  CLOSE_APP_CHILD_WINDOW,
 };
 
 export const STORAGE_IPC = {
@@ -103,7 +81,7 @@ export const STORAGE_IPC = {
   UPDATE_SESSION,
 };
 
-export const BLUETOOTH_IPC = {
+export const SHELL_IPC = {
   GET_DEVICE_BY_CLASS,
   GET_DEVICE_PROPERTY_BY_ID,
   GET_SYSTEM_BY_CONTAINER_ID,

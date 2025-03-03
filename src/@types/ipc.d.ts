@@ -1,22 +1,18 @@
 interface AppAPI {
-  getAppConfig: () => Promise<Nullable<Record<string, number>>>;
-  setAppConfig: (data?: Record<string, number>) => Promise<void>;
+  getConfig: () => Promise<Nullable<Record<string, number>>>;
+  setConfig: (data?: Record<string, number>) => Promise<void>;
   minimize: () => Promise<void>;
   maximize: () => Promise<void>;
   devtoolsStatusChanged: (callback: (event: IpcRendererEvent, args: any) => void) => IpcRenderer;
+  removeDevtoolsStatusChanged: () => IpcRenderer;
   openDevTools: () => Promise<void>;
   closeDevTools: () => Promise<void>;
   close: () => Promise<void>;
 }
 
-interface AppChildAPI {
-  openChilWindow: (path: string) => Promise<void>;
-  getAppChildConfig: (path: string) => Promise<Nullable<Record<string, number>>>;
-  setAppChildConfig: (path: string, data?: Record<string, number>) => Promise<void>;
-  childDevtoolsStatusChanged: (callback: (event: IpcRendererEvent, args: any) => void) => IpcRenderer;
-  openChildDevTools: (path: string) => Promise<void>;
-  closeChildDevTools: (path: string) => Promise<void>;
-  closeChild: (path: string) => Promise<void>;
+interface MainAppAPI {
+  openBluetoothApp: () => Promise<void>;
+  closeBluetoothApp: () => Promise<void>;
 }
 
 interface StorageAPI {
@@ -24,13 +20,16 @@ interface StorageAPI {
   setStorage: (data: any) => Promise<any>;
   updateStorage: () => Promise<any>;
   storageChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) => IpcRenderer;
+  removeStorageChanged: () => IpcRenderer;
+
   getSession: () => Promise<any>;
   setSession: (data: any) => Promise<any>;
   updateSession: () => Promise<any>;
   sessionChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) => IpcRenderer;
+  removeSessionChanged: () => IpcRenderer;
 }
 
-interface BluetoothAPI {
+interface ShellAPI {
   getDeviceByClass: <T = Record<string, any>>(className: string) => Promise<Nullable<T[]>>;
   getDevicePropertyById: <T = Record<string, any>>(instanceId: string) => Promise<Nullable<T[]>>;
   getSystemByContainerId: <T = Record<string, any>>(containerId: string | string[]) => Promise<Nullable<T>>;
