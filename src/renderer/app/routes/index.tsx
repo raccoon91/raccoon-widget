@@ -3,23 +3,23 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useShallow } from "zustand/shallow";
 import { Box } from "@chakra-ui/react";
 
-import { useAppStore } from "@app/stores/app.store";
-import { useSavedStore } from "@app/stores/saved.store";
-import { useSessionStore } from "@app/stores/session.store";
+import { useMainStore } from "@app/stores/main/main.store";
+import { useMainStorageStore } from "@app/stores/main/main-storage.store";
+import { useMainSessionStore } from "@app/stores/main/main-session.store";
 import { useInterval } from "@app/hooks/useInterval";
 import { MainHeader } from "@app/components/layout/main-header";
 import { BluetoothPanel } from "@app/components/bluetooth/bluetooth-panel";
 import { WindowFrame } from "@app/components/layout/window-frame";
 
 const Home = () => {
-  const { mode, getConfig, setDevtoolsStatus } = useAppStore(
+  const { mode, getConfig, setDevtoolsStatus } = useMainStore(
     useShallow((state) => ({
       mode: state.mode,
       getConfig: state.getConfig,
       setDevtoolsStatus: state.setDevtoolsStatus,
     })),
   );
-  const { getDeviceByClass, pullDeviceInfo } = useSessionStore(
+  const { getDeviceByClass, pullDeviceInfo } = useMainSessionStore(
     useShallow((state) => ({
       getDeviceByClass: state.getDeviceByClass,
       pullDeviceInfo: state.pullDeviceInfo,
@@ -42,8 +42,7 @@ const Home = () => {
 
   useEffect(() => {
     window.mainStorageAPI.storageChanged(() => {
-      console.log("storage updated");
-      useSavedStore.persist.rehydrate();
+      useMainStorageStore.persist.rehydrate();
     });
 
     return () => {
@@ -52,13 +51,10 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    useSavedStore.persist.rehydrate()?.then(() => {
+    useMainStorageStore.persist.rehydrate()?.then(() => {
       getConfig();
       pullDeviceInfo();
-      getDeviceByClass("Bluetooth").then(() => {
-        console.log("get device done");
-        window.mainStorageAPI.updateSession();
-      });
+      getDeviceByClass("Bluetooth");
     });
   }, []);
 

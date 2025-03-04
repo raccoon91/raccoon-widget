@@ -4,11 +4,11 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { LuMonitor, LuX } from "react-icons/lu";
 import { BsTerminal, BsTerminalX } from "react-icons/bs";
 
-import { useAppStore } from "@app/stores/app.store";
+import { useMainStore } from "@app/stores/main/main.store";
 
 export const MainHeader = () => {
   const { mode, isDevToolsOpen, openDevTools, closeDevTools, changeToDisplayMode, changeToSettingMode, close } =
-    useAppStore(
+    useMainStore(
       useShallow((state) => ({
         mode: state.mode,
         isDevToolsOpen: state.isDevToolsOpen,

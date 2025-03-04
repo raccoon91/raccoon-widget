@@ -2,35 +2,32 @@ import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
 import { PROPERTY_MAP } from "@/constants/shell";
-import { useSavedStore } from "./saved.store";
+import { useBluetoothStorageStore } from "./bluetooth-storage.store";
 
-const sessionStorage = {
+const bluetoothSession = {
   getItem: async (key: string) => {
-    const session = await window.mainStorageAPI.getSession();
-
-    console.log("get session");
-    console.log(JSON.parse(session[key]));
+    const session = await window.bluetoothStorageAPI.getSession();
 
     return session[key];
   },
   setItem: async (key: string, value: any) => {
-    const session = await window.mainStorageAPI.getSession();
+    const session = await window.bluetoothStorageAPI.getSession();
 
-    window.mainStorageAPI.setSession({
+    window.bluetoothStorageAPI.setSession({
       ...session,
       [key]: value,
     });
   },
   removeItem: async (key: string) => {
-    const session = await window.mainStorageAPI.getSession();
+    const session = await window.bluetoothStorageAPI.getSession();
 
     delete session[key];
 
-    window.mainStorageAPI.setSession(session);
+    window.bluetoothStorageAPI.setSession(session);
   },
 };
 
-interface SessionStore {
+interface BluetoothSessionStore {
   loadingDeviceInfo: boolean;
   loadingSystemInfoMap: Record<string, boolean>;
 
@@ -57,7 +54,7 @@ interface SessionStore {
   getDevicePropertyById: (instanceId?: string) => Promise<void>;
 }
 
-export const useSessionStore = create<SessionStore>()(
+export const useBluetoothSessionStore = create<BluetoothSessionStore>()(
   devtools(
     persist(
       (set, get) => ({
@@ -98,7 +95,7 @@ export const useSessionStore = create<SessionStore>()(
 
           set({ loadingDeviceInfo: true });
 
-          const bluetooth = useSavedStore.getState().bluetooth;
+          const bluetooth = useBluetoothStorageStore.getState().bluetooth;
 
           Promise.all(
             bluetooth.map((data) =>
@@ -139,7 +136,7 @@ export const useSessionStore = create<SessionStore>()(
 
           set({ loadingSystemInfoMap: { ...loadingSystemInfoMap, [deviceInstanceId]: true } });
 
-          const bluetooth = useSavedStore.getState().bluetooth;
+          const bluetooth = useBluetoothStorageStore.getState().bluetooth;
           const data = bluetooth.find((data) => data?.device?.InstanceId === deviceInstanceId);
 
           if (!data) return;
@@ -179,7 +176,7 @@ export const useSessionStore = create<SessionStore>()(
 
             if (loadingDevice) return;
 
-            const bluetooth = useSavedStore.getState().bluetooth;
+            const bluetooth = useBluetoothStorageStore.getState().bluetooth;
 
             const bluetoothMap = bluetooth.reduce<Record<string, boolean>>((acc, cur) => {
               acc[cur.device.InstanceId] = true;
@@ -270,7 +267,7 @@ export const useSessionStore = create<SessionStore>()(
       {
         name: "session-store",
         skipHydration: true,
-        storage: createJSONStorage(() => sessionStorage),
+        storage: createJSONStorage(() => bluetoothSession),
         partialize: (state) => ({
           loadingDeviceInfo: state.loadingDeviceInfo,
           loadingSystemInfoMap: state.loadingSystemInfoMap,

@@ -1,14 +1,14 @@
 import { Button, Center, Flex, HStack, Stack, Text } from "@chakra-ui/react";
 
-import { useAppStore } from "@app/stores/app.store";
-import { useSavedStore } from "@app/stores/saved.store";
-import { useSessionStore } from "@app/stores/session.store";
+import { useMainStore } from "@app/stores/main/main.store";
+import { useMainStorageStore } from "@app/stores/main/main-storage.store";
+import { useMainSessionStore } from "@app/stores/main/main-session.store";
 import { BluetoothCard } from "./bluetooth-card";
 
 export const BluetoothPanel = () => {
-  const mode = useAppStore((state) => state.mode);
-  const bluetooth = useSavedStore((state) => state.bluetooth);
-  const bluetoothInfoMap = useSessionStore((state) => state.bluetoothInfoMap);
+  const mode = useMainStore((state) => state.mode);
+  const bluetooth = useMainStorageStore((state) => state.bluetooth);
+  const bluetoothInfoMap = useMainSessionStore((state) => state.bluetoothInfoMap);
 
   const handleOpenBluetoothWindow = () => {
     window.mainAppAPI.openBluetoothApp();

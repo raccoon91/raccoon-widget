@@ -79,11 +79,11 @@ export const appIpcHandler = ({ app }: { app: App; parent?: App; children?: App[
   });
 
   app.window.webContents.on("devtools-opened", () => {
-    app.window.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, true);
+    app.window.webContents.send(`${APP_IPC.DEVTOOLS_STATUS_CHAGEND}:${app.name}`, true);
   });
 
   app.window.webContents.on("devtools-closed", () => {
-    app.window.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, false);
+    app.window.webContents.send(`${APP_IPC.DEVTOOLS_STATUS_CHAGEND}:${app.name}`, false);
   });
 
   if (app.name === APP_NAME.MAIN) {

@@ -3,11 +3,11 @@ import { useShallow } from "zustand/shallow";
 import { Box, Button, Center, HStack, IconButton, Spinner, Stack, Text } from "@chakra-ui/react";
 import { IoReload } from "react-icons/io5";
 
-import { useSessionStore } from "@app/stores/session.store";
+import { useBluetoothSessionStore } from "@app/stores/bluetooth/bluetooth-session.store";
 
 export const BluetoothDeviceSection = () => {
   const { loadingDevice, deviceLoadingMessage, devices, selectedDevice, getDeviceByClass, getDevicePropertyById } =
-    useSessionStore(
+    useBluetoothSessionStore(
       useShallow((state) => ({
         loadingDevice: state.loadingDevice,
         deviceLoadingMessage: state.deviceLoadingMessage,

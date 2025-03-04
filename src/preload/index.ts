@@ -39,14 +39,12 @@ const bluetoothAppAPI: AppAPI = {
 const mainStorageAPI: StorageAPI = {
   getStorage: () => ipcRenderer.invoke(`${STORAGE_IPC.GET_STORAGE}:${APP_NAME.MAIN}`),
   setStorage: (data: any) => ipcRenderer.invoke(`${STORAGE_IPC.SET_STORAGE}:${APP_NAME.MAIN}`, data),
-  updateStorage: () => ipcRenderer.invoke(`${STORAGE_IPC.UPDATE_STORAGE}:${APP_NAME.MAIN}`),
   storageChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) =>
     ipcRenderer.on(`${STORAGE_IPC.STORAGE_CHANGED}:${APP_NAME.MAIN}`, callback),
   removeStorageChanged: () => ipcRenderer.removeAllListeners(`${STORAGE_IPC.STORAGE_CHANGED}:${APP_NAME.MAIN}`),
 
   getSession: () => ipcRenderer.invoke(`${STORAGE_IPC.GET_SESSION}:${APP_NAME.MAIN}`),
   setSession: (data: any) => ipcRenderer.invoke(`${STORAGE_IPC.SET_SESSION}:${APP_NAME.MAIN}`, data),
-  updateSession: () => ipcRenderer.invoke(`${STORAGE_IPC.UPDATE_SESSION}:${APP_NAME.MAIN}`),
   sessionChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) =>
     ipcRenderer.on(`${STORAGE_IPC.SESSION_CHANGED}:${APP_NAME.MAIN}`, callback),
   removeSessionChanged: () => ipcRenderer.removeAllListeners(`${STORAGE_IPC.SESSION_CHANGED}:${APP_NAME.MAIN}`),
@@ -55,14 +53,12 @@ const mainStorageAPI: StorageAPI = {
 const bluetoothStorageAPI: StorageAPI = {
   getStorage: () => ipcRenderer.invoke(`${STORAGE_IPC.GET_STORAGE}:${APP_NAME.BLUETOOTH}`),
   setStorage: (data: any) => ipcRenderer.invoke(`${STORAGE_IPC.SET_STORAGE}:${APP_NAME.BLUETOOTH}`, data),
-  updateStorage: () => ipcRenderer.invoke(`${STORAGE_IPC.UPDATE_STORAGE}:${APP_NAME.BLUETOOTH}`),
   storageChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) =>
     ipcRenderer.on(`${STORAGE_IPC.STORAGE_CHANGED}:${APP_NAME.BLUETOOTH}`, callback),
   removeStorageChanged: () => ipcRenderer.removeAllListeners(`${STORAGE_IPC.STORAGE_CHANGED}:${APP_NAME.BLUETOOTH}`),
 
   getSession: () => ipcRenderer.invoke(`${STORAGE_IPC.GET_SESSION}:${APP_NAME.BLUETOOTH}`),
   setSession: (data: any) => ipcRenderer.invoke(`${STORAGE_IPC.SET_SESSION}:${APP_NAME.BLUETOOTH}`, data),
-  updateSession: () => ipcRenderer.invoke(`${STORAGE_IPC.UPDATE_SESSION}:${APP_NAME.BLUETOOTH}`),
   sessionChanged: (callback: (event: IpcRendererEvent, args: boolean) => void) =>
     ipcRenderer.on(`${STORAGE_IPC.SESSION_CHANGED}:${APP_NAME.BLUETOOTH}`, callback),
   removeSessionChanged: () => ipcRenderer.removeAllListeners(`${STORAGE_IPC.SESSION_CHANGED}:${APP_NAME.BLUETOOTH}`),

@@ -40,7 +40,6 @@ class Storage extends File {
   }
 
   setStorage(data: any) {
-    console.log("set storage");
     this.storage = data;
   }
 
@@ -49,7 +48,6 @@ class Storage extends File {
   }
 
   setSession(data: any) {
-    console.log("set session");
     this.session = data;
   }
 }

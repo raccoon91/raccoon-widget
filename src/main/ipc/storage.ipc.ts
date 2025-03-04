@@ -9,12 +9,11 @@ export const storageIpcHandler = ({ app, parent, children }: { app: App; parent?
   });
 
   ipcMain.handle(`${STORAGE_IPC.SET_STORAGE}:${app.name}`, (_, data: any) => {
-    console.log("set storage ipc");
     storage.setStorage(data);
-  });
 
-  ipcMain.handle(`${STORAGE_IPC.UPDATE_STORAGE}:${app.name}`, () => {
-    if (parent) parent.window.webContents.send(`${STORAGE_IPC.STORAGE_CHANGED}:${parent.name}`);
+    if (parent) {
+      parent.window.webContents.send(`${STORAGE_IPC.STORAGE_CHANGED}:${parent.name}`);
+    }
 
     children?.forEach((child) => {
       child.window.webContents.send(`${STORAGE_IPC.STORAGE_CHANGED}:${child.name}`);
@@ -26,12 +25,7 @@ export const storageIpcHandler = ({ app, parent, children }: { app: App; parent?
   });
 
   ipcMain.handle(`${STORAGE_IPC.SET_SESSION}:${app.name}`, (_, data: any) => {
-    console.log("set session ipc");
     storage.setSession(data);
-  });
-
-  ipcMain.handle(`${STORAGE_IPC.UPDATE_SESSION}:${app.name}`, () => {
-    if (parent) parent.window.webContents.send(`${STORAGE_IPC.SESSION_CHANGED}:${parent.name}`);
 
     children?.forEach((child) => {
       child.window.webContents.send(`${STORAGE_IPC.SESSION_CHANGED}:${child.name}`);

@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect } from "react";
 import { Card, HStack, Text, Box } from "@chakra-ui/react";
 
-import { useSessionStore } from "@app/stores/session.store";
+import { useMainSessionStore } from "@app/stores/main/main-session.store";
 import { useInterval } from "@app/hooks/useInterval";
 
 interface BluetoothCardProps {
@@ -11,7 +11,7 @@ interface BluetoothCardProps {
 }
 
 export const BluetoothCard: FC<BluetoothCardProps> = ({ deviceInstanceId, deviceName, info }) => {
-  const pullSystemInfo = useSessionStore((state) => state.pullSystemInfo);
+  const pullSystemInfo = useMainSessionStore((state) => state.pullSystemInfo);
 
   const pullSystemInfoCallback = useCallback(() => {
     if (info?.device?.connected === "true") {

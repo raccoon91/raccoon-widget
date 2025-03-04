@@ -1,33 +1,30 @@
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
-const savedStorage = {
+const bluetoothStorage = {
   getItem: async (key: string) => {
-    const storage = await window.mainStorageAPI.getStorage();
-
-    console.log("get storage");
-    console.log(JSON.parse(storage[key]));
+    const storage = await window.bluetoothStorageAPI.getStorage();
 
     return storage[key];
   },
   setItem: async (key: string, value: any) => {
-    const storage = await window.mainStorageAPI.getStorage();
+    const storage = await window.bluetoothStorageAPI.getStorage();
 
-    window.mainStorageAPI.setStorage({
+    window.bluetoothStorageAPI.setStorage({
       ...storage,
       [key]: value,
     });
   },
   removeItem: async (key: string) => {
-    const storage = await window.mainStorageAPI.getStorage();
+    const storage = await window.bluetoothStorageAPI.getStorage();
 
     delete storage[key];
 
-    window.mainStorageAPI.setStorage(storage);
+    window.bluetoothStorageAPI.setStorage(storage);
   },
 };
 
-interface SavedStore {
+interface BluetoothStorageStore {
   bluetooth: {
     device: Device;
     system: System;
@@ -35,7 +32,7 @@ interface SavedStore {
   addDevice: (device?: Nullable<Device>, system?: Nullable<System>) => void;
 }
 
-export const useSavedStore = create<SavedStore>()(
+export const useBluetoothStorageStore = create<BluetoothStorageStore>()(
   devtools(
     persist(
       (set, get) => ({
@@ -60,9 +57,9 @@ export const useSavedStore = create<SavedStore>()(
         },
       }),
       {
-        name: "saved-store",
+        name: "storage-store",
         skipHydration: true,
-        storage: createJSONStorage(() => savedStorage),
+        storage: createJSONStorage(() => bluetoothStorage),
         partialize: (state) => ({
           bluetooth: state.bluetooth,
         }),

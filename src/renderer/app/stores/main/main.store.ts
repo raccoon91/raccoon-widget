@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-interface AppStore {
+interface MainStore {
   mode: string;
   config: Record<string, number>;
   isDevToolsOpen: boolean;
@@ -18,7 +18,7 @@ interface AppStore {
   close: (config: Record<string, number>) => void;
 }
 
-export const useAppStore = create<AppStore>()(
+export const useMainStore = create<MainStore>()(
   devtools((set) => ({
     mode: "display",
     config: {},

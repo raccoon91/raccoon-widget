@@ -3,16 +3,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useShallow } from "zustand/shallow";
 import { Button, HStack, Stack } from "@chakra-ui/react";
 
-import { useBluetoothStore } from "@app/stores/bluetooth.store";
-import { useSavedStore } from "@app/stores/saved.store";
-import { useSessionStore } from "@app/stores/session.store";
+import { useBluetoothStore } from "@app/stores/bluetooth/bluetooth.store";
+import { useBluetoothStorageStore } from "@app/stores/bluetooth/bluetooth-storage.store";
+import { useBluetoothSessionStore } from "@app/stores/bluetooth/bluetooth-session.store";
 import { WindowFrame } from "@app/components/layout/window-frame";
 import { Header } from "@app/components/layout/header";
 import { BluetoothDeviceSection } from "@app/components/bluetooth/bluetooth-device-section";
 import { BluetoothInfoSection } from "@app/components/bluetooth/bluetooth-info-section";
 
 const Bluetooth = () => {
-  const addDevice = useSavedStore((state) => state.addDevice);
+  const addDevice = useBluetoothStorageStore((state) => state.addDevice);
   const { isDevToolsOpen, getConfig, setDevtoolsStatus, openDevTools, closeDevTools, close } = useBluetoothStore(
     useShallow((state) => ({
       isDevToolsOpen: state.isDevToolsOpen,
@@ -23,7 +23,7 @@ const Bluetooth = () => {
       close: state.close,
     })),
   );
-  const { selectedDevice, selectedSystem, clearDeviceState } = useSessionStore(
+  const { selectedDevice, selectedSystem, clearDeviceState } = useBluetoothSessionStore(
     useShallow((state) => ({
       selectedDevice: state.selectedDevice,
       selectedSystem: state.selectedSystem,
@@ -43,8 +43,8 @@ const Bluetooth = () => {
   }, []);
 
   useEffect(() => {
-    useSavedStore.persist.rehydrate()?.then(() => {
-      useSessionStore.persist.rehydrate();
+    useBluetoothStorageStore.persist.rehydrate()?.then(() => {
+      useBluetoothSessionStore.persist.rehydrate();
 
       getConfig();
     });
@@ -52,8 +52,7 @@ const Bluetooth = () => {
 
   useEffect(() => {
     window.bluetoothStorageAPI.sessionChanged(() => {
-      console.log("session changed");
-      useSessionStore.persist.rehydrate();
+      useBluetoothSessionStore.persist.rehydrate();
     });
 
     return () => {
@@ -88,9 +87,6 @@ const Bluetooth = () => {
       y: window.screenY,
     });
     clearDeviceState();
-
-    window.bluetoothStorageAPI.updateSession();
-    window.bluetoothStorageAPI.updateStorage();
   };
 
   return (
