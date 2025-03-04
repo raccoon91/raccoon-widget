@@ -78,6 +78,14 @@ export const appIpcHandler = ({ app }: { app: App; parent?: App; children?: App[
     }
   });
 
+  app.window.webContents.on("devtools-opened", () => {
+    app.window.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, true);
+  });
+
+  app.window.webContents.on("devtools-closed", () => {
+    app.window.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, false);
+  });
+
   if (app.name === APP_NAME.MAIN) {
     ipcMain.handle(`${APP_IPC.CLOSE_WINDOW}:${app.name}`, async () => {
       try {

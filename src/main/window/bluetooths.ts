@@ -2,7 +2,6 @@ import { join } from "path";
 import { BrowserWindow } from "electron";
 import { is } from "@electron-toolkit/utils";
 
-import { APP_IPC } from "@/constants/ipc";
 import config from "@/main/lib/config";
 import widget from "@/main/lib/widget";
 import { appIpcHandler } from "@/main/ipc/app.ipc";
@@ -36,8 +35,6 @@ export const createBluetoothWindow = (name: string): [App, (main: App) => void] 
   window.setMenu(null);
 
   window.on("ready-to-show", () => {
-    window.show();
-
     // Prevent BrowserWindow from being hidden in AeroPeek.
     widget.preventFromAeroPeek(window);
 
@@ -53,19 +50,11 @@ export const createBluetoothWindow = (name: string): [App, (main: App) => void] 
 
   return [
     app,
-    (main: App) => {
-      window.setParentWindow(main.window);
+    (parent: App) => {
+      window.setParentWindow(parent.window);
 
-      appIpcHandler({ app, parent: main });
-      storageIpcHandler({ app, parent: main });
-
-      window.webContents.on("devtools-opened", () => {
-        window.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, true);
-      });
-
-      window.webContents.on("devtools-closed", () => {
-        window.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, false);
-      });
+      appIpcHandler({ app, parent });
+      storageIpcHandler({ app, parent });
     },
   ];
 };

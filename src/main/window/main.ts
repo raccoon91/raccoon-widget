@@ -2,8 +2,6 @@ import { join } from "path";
 import { BrowserWindow } from "electron";
 import { is } from "@electron-toolkit/utils";
 
-import { APP } from "@/constants/app";
-import { APP_IPC } from "@/constants/ipc";
 import config from "@/main/lib/config";
 import widget from "@/main/lib/widget";
 import { appIpcHandler } from "@/main/ipc/app.ipc";
@@ -24,10 +22,10 @@ export const createWindow = (name: string): [App, (children?: App[]) => void] =>
     hasShadow: false,
     fullscreenable: false,
     titleBarStyle: "hidden",
-    width: setting?.width ?? APP.APP_DEFAULT_WIDTH,
-    height: setting?.height ?? APP.APP_DEFAULT_HEIGHT,
-    x: setting?.x ?? APP.APP_DEFAULT_POSITION_X,
-    y: setting?.y ?? APP.APP_DEFAULT_POSITION_Y,
+    width: setting.width,
+    height: setting.height,
+    x: setting.x,
+    y: setting.y,
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
       sandbox: false,
@@ -92,14 +90,6 @@ export const createWindow = (name: string): [App, (children?: App[]) => void] =>
       storageIpcHandler({ app, children });
       widgetIpcHandler({ app });
       shellIpcHandler();
-
-      window.webContents.on("devtools-opened", () => {
-        window.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, true);
-      });
-
-      window.webContents.on("devtools-closed", () => {
-        window.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, false);
-      });
     },
   ];
 };
