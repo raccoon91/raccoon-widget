@@ -3,7 +3,6 @@ import { BrowserWindow } from "electron";
 import { is } from "@electron-toolkit/utils";
 
 import { APP } from "@/constants/app";
-import { APP_NAME } from "@/constants/app-name";
 import { APP_IPC } from "@/constants/ipc";
 import config from "@/main/lib/config";
 import widget from "@/main/lib/widget";
@@ -14,15 +13,16 @@ import { shellIpcHandler } from "@/main/ipc/shell.ipc";
 
 import icon from "@resources/icon.png?asset";
 
-export const createWindow = (): [App, (children?: App[]) => void] => {
-  const setting = config.get(APP_NAME.MAIN);
+export const createWindow = (name: string): [App, (children?: App[]) => void] => {
+  const setting = config.get(name);
 
-  const mainWindow = new BrowserWindow({
+  const window = new BrowserWindow({
     show: false,
     icon,
     frame: false,
     transparent: true,
     hasShadow: false,
+    fullscreenable: false,
     titleBarStyle: "hidden",
     width: setting?.width ?? APP.APP_DEFAULT_WIDTH,
     height: setting?.height ?? APP.APP_DEFAULT_HEIGHT,
@@ -34,22 +34,24 @@ export const createWindow = (): [App, (children?: App[]) => void] => {
     },
   });
 
-  mainWindow.setMenu(null);
+  const app = { name, window };
 
-  mainWindow.on("ready-to-show", () => {
-    mainWindow.show();
+  window.setMenu(null);
+
+  window.on("ready-to-show", () => {
+    window.show();
 
     // Prevent BrowserWindow from being hidden in AeroPeek.
-    widget.preventFromAeroPeek(mainWindow);
+    widget.preventFromAeroPeek(window);
 
     // Prevent BrowserWindow from being hidden in ShowDesktop.
-    widget.preventFromShowDesktop(mainWindow);
+    widget.preventFromShowDesktop(window);
 
     // Move BrowserWindow to the bottom of the windows
-    widget.moveToBottom(mainWindow);
+    widget.moveToBottom(window);
   });
 
-  // mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+  // window.webContents.setWindowOpenHandler(({ url }) => {
   //   if (!url) return { action: "deny" };
   //   const path = new URL(url).pathname;
   //   const setting = config.getChild(path);
@@ -62,7 +64,7 @@ export const createWindow = (): [App, (children?: App[]) => void] => {
   //       hasShadow: false,
   //       fullscreenable: false,
   //       titleBarStyle: "hidden",
-  //       parent: mainWindow,
+  //       parent: window,
   //       width: setting.width,
   //       height: setting.height,
   //       x: setting.x,
@@ -78,27 +80,25 @@ export const createWindow = (): [App, (children?: App[]) => void] => {
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
-    mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);
+    window.loadURL(process.env["ELECTRON_RENDERER_URL"]);
   } else {
-    mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
+    window.loadFile(join(__dirname, "../renderer/index.html"));
   }
 
-  const mainApp = { name: APP_NAME.MAIN, window: mainWindow };
-
   return [
-    mainApp,
+    app,
     (children?: App[]) => {
-      appIpcHandler({ app: mainApp });
-      storageIpcHandler({ app: mainApp, children });
-      widgetIpcHandler({ app: mainApp });
+      appIpcHandler({ app });
+      storageIpcHandler({ app, children });
+      widgetIpcHandler({ app });
       shellIpcHandler();
 
-      mainWindow.webContents.on("devtools-opened", () => {
-        mainWindow.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, true);
+      window.webContents.on("devtools-opened", () => {
+        window.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, true);
       });
 
-      mainWindow.webContents.on("devtools-closed", () => {
-        mainWindow.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, false);
+      window.webContents.on("devtools-closed", () => {
+        window.webContents.send(APP_IPC.DEVTOOLS_STATUS_CHAGEND, false);
       });
     },
   ];

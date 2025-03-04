@@ -22,7 +22,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
 
-  const [mainWindow, mainWindowIpc] = createWindow();
+  const [mainWindow, mainWindowIpc] = createWindow(APP_NAME.MAIN);
   const [bluetoothWindow, bluetoothWindowIpc] = createBluetoothWindow(APP_NAME.BLUETOOTH);
 
   mainWindowIpc([bluetoothWindow]);
@@ -31,7 +31,7 @@ app.whenReady().then(() => {
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    if (BrowserWindow.getAllWindows().length === 0) createWindow(APP_NAME.MAIN);
   });
 });
 
