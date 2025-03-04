@@ -42,7 +42,9 @@ const Home = () => {
 
   useEffect(() => {
     window.mainStorageAPI.storageChanged(() => {
-      useMainStorageStore.persist.rehydrate();
+      useMainStorageStore.persist.rehydrate()?.then(() => {
+        pullDeviceInfo();
+      });
     });
 
     return () => {
