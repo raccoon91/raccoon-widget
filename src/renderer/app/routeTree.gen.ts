@@ -8,85 +8,92 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
-import { Route as rootRoute } from "./routes/__root";
-import { Route as BluetoothImport } from "./routes/bluetooth";
-import { Route as IndexImport } from "./routes/index";
+import { Route as rootRoute } from './routes/__root'
+
+// Create Virtual Routes
+
+const BluetoothLazyImport = createFileRoute('/bluetooth')()
+const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
 
-const BluetoothRoute = BluetoothImport.update({
-  id: "/bluetooth",
-  path: "/bluetooth",
+const BluetoothLazyRoute = BluetoothLazyImport.update({
+  id: '/bluetooth',
+  path: '/bluetooth',
   getParentRoute: () => rootRoute,
-} as any);
+} as any).lazy(() => import('./routes/bluetooth.lazy').then((d) => d.Route))
 
-const IndexRoute = IndexImport.update({
-  id: "/",
-  path: "/",
+const IndexLazyRoute = IndexLazyImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRoute,
-} as any);
+} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
 // Populate the FileRoutesByPath interface
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/bluetooth": {
-      id: "/bluetooth";
-      path: "/bluetooth";
-      fullPath: "/bluetooth";
-      preLoaderRoute: typeof BluetoothImport;
-      parentRoute: typeof rootRoute;
-    };
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/bluetooth': {
+      id: '/bluetooth'
+      path: '/bluetooth'
+      fullPath: '/bluetooth'
+      preLoaderRoute: typeof BluetoothLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/bluetooth": typeof BluetoothRoute;
+  '/': typeof IndexLazyRoute
+  '/bluetooth': typeof BluetoothLazyRoute
 }
 
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/bluetooth": typeof BluetoothRoute;
+  '/': typeof IndexLazyRoute
+  '/bluetooth': typeof BluetoothLazyRoute
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute;
-  "/": typeof IndexRoute;
-  "/bluetooth": typeof BluetoothRoute;
+  __root__: typeof rootRoute
+  '/': typeof IndexLazyRoute
+  '/bluetooth': typeof BluetoothLazyRoute
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/bluetooth";
-  fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/bluetooth";
-  id: "__root__" | "/" | "/bluetooth";
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/bluetooth'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/bluetooth'
+  id: '__root__' | '/' | '/bluetooth'
+  fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  BluetoothRoute: typeof BluetoothRoute;
+  IndexLazyRoute: typeof IndexLazyRoute
+  BluetoothLazyRoute: typeof BluetoothLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  BluetoothRoute: BluetoothRoute,
-};
+  IndexLazyRoute: IndexLazyRoute,
+  BluetoothLazyRoute: BluetoothLazyRoute,
+}
 
-export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* ROUTE_MANIFEST_START
 {
@@ -99,10 +106,10 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
       ]
     },
     "/": {
-      "filePath": "index.tsx"
+      "filePath": "index.lazy.tsx"
     },
     "/bluetooth": {
-      "filePath": "bluetooth.tsx"
+      "filePath": "bluetooth.lazy.tsx"
     }
   }
 }

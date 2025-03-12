@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute } from "@tanstack/react-router";
 import { useShallow } from "zustand/shallow";
 import { Button, HStack, Stack } from "@chakra-ui/react";
 
@@ -115,6 +115,6 @@ const Bluetooth = () => {
   );
 };
 
-export const Route = createFileRoute("/bluetooth")({
+export const Route = createLazyFileRoute("/bluetooth")({
   component: Bluetooth,
 });

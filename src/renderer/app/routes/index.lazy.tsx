@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute } from "@tanstack/react-router";
 import { useShallow } from "zustand/shallow";
 import { Box } from "@chakra-ui/react";
 
@@ -69,6 +69,6 @@ const Home = () => {
   );
 };
 
-export const Route = createFileRoute("/")({
+export const Route = createLazyFileRoute("/")({
   component: Home,
 });
